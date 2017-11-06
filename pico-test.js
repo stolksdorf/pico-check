@@ -161,25 +161,85 @@ const createInstance = (name, opts)=>{
 	return instance;
 }
 
+/*
+- Test cases shouldn't have access to the emitter
+- Test Cases simply return promises
+
+
+
+*/
+
+
+const getTimedReject = (time)=>new Promise((resolve,reject)=>setTimeout(()=>reject('Async test timeout'), time));
+
 
 const Test = {
-	createInstance,
+	// createTestTimeout : (assertion, time)=>{
+	// 	return new Promise((resolve, reject)=>{
+	// 		setTimeout(()=>reject('Async test timeout'), time)
+	// 	})
+	// },
+
+
+	// createAssertion2 : (onAssert=(state, msg, details)=>{})=>{
+	// 	return {
+	// 		pass : (msg)=>onAssert(true, msg),
+	// 		fail : (msg)=>onAssert(false, msg='Assetion failed'),
+	// 		is   : (actual, expected, msg)=>{
+	// 			onAssert(actual === expected, msg, {
+	// 				actual,
+	// 				expected
+	// 			})
+	// 		}
+	// 	}
+	// },
+
+	createAssertion : ()=>{
+		return {
+			pass : (msg)=>{},
+			fail : (msg='Assertion failed')=>{ throw new Error(msg); },
+			is   : (actual, expected, msg)=>{
+				if(actual !== expected){
+					throw new Error(msg)
+				}
+			}
+		}
+	},
+
+
+	createTestCase : (name, testFunc, opts={})=>{
+		return {
+			name,
+			testFunc,
+			opts,
+			run : ()=>{
+				try{
+					const newAssert = Test.createAssertion();
+					const testResult = testFunc(newAssert);
+					return Promise.race([
+						testResult,
+						(testResult instanceof Promise)
+							//TODO: Should be an opt
+							? getTimedReject(500)
+							: Promise.resolve()
+					])
+				}catch(e){
+					return Promise.reject(e);
+				}
+			}
+		}
+	},
 
 	createGroup : (name, opts={})=>{
-		let group = {
-			name,
-			opts,
-			tests : []
-		}
-
 		let tests = [];
-
+		if(!opts.file) opts.file = process.mainModule.filename// pathRelative(cwd, process.mainModule.filename);
+		//if(!name) name = opts.file;
 
 		const makeBuilder = (defaultOpts=opts)=>{
 			const testBuilder = (name, testFunc, opts=defaultOpts)=>{
 				//console.log(name);
 				//testBuilder into a create test case function
-				tests.push({ name, testFunc, opts})
+				tests.push(Test.createTestCase(name, testFunc, opts))
 			};
 			testBuilder.only = ()=>makeBuilder(Object.assign({}, defaultOpts, {only : true}));
 			testBuilder.skip = ()=>makeBuilder(Object.assign({}, defaultOpts, {skip : true}));
@@ -194,6 +254,11 @@ const Test = {
 					//TODO: handle this
 				}
 			};
+			testBuilder.add = (testItem)=>tests.push(testItem),
+			testBuilder.run = (emitter)=>{
+				emitter('start', `Starting group: ${name}`);
+				return tests.reduce((prom, test)=>prom.then(()=>test.run(emitter)), Promise.resolve());
+			},
 			testBuilder.get = ()=>{
 				const parsedTests = tests.map((test)=>{
 					//TODO: do checks for 'only'
@@ -204,6 +269,7 @@ const Test = {
 					name,
 					opts,
 					isGroup : true,
+					hasOnly : false,
 					tests : parsedTests
 				}
 			};

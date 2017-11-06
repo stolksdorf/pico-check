@@ -5,9 +5,9 @@ An incredibly tiny javascript testing library
 
 ## opts
 - Fail fast
-- Fail todos
 - output tap
 - add require hook
+- file globs
 -
 
 

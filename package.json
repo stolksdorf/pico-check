@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
-    "test": "nodemon ./tests/index.js"
+    "test": "nodemon ./tests/testcase.test.js"
   },
   "repository": {
     "type": "git",
