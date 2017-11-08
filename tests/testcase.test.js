@@ -1,9 +1,13 @@
 const ptest = require('../pico-test.js');
 
 
-const tests = [];
+const myGroup = ptest.createGroup('test');
+const myGroup2 = ptest.createGroup('test2');
 
-tests.push(ptest.createTestCase('simple pass', (t)=>{
+
+myGroup2.add(ptest.createTestCase('nested'))
+
+myGroup.add(ptest.createTestCase('simple pass', (t)=>{
 	console.log('Hello');
 	t.pass();
 
@@ -11,12 +15,12 @@ tests.push(ptest.createTestCase('simple pass', (t)=>{
 }));
 
 
-tests.push(ptest.createTestCase('simple fail', (t)=>{
-	//t.fail('Hello!');
-
+myGroup.add(ptest.createTestCase('simple fail', (t)=>{
+	console.log('fail');
+	t.fail('Hello!');
 }));
 
-tests.push(ptest.createTestCase('async', (t)=>{
+myGroup.add(ptest.createTestCase('async', (t)=>{
 	return new Promise((resolve, reject)=>{
 		setTimeout(()=>{
 			t.pass();
@@ -25,23 +29,24 @@ tests.push(ptest.createTestCase('async', (t)=>{
 	})
 }));
 
-// tests.push(ptest.createTestCase('bad code', (t)=>{
-// 	a + b;
-// }));
+myGroup.add(myGroup2)
+
+
+myGroup.add(ptest.createTestCase('bad code', (t)=>{
+	a + b;
+}));
 
 
 
+myGroup.run().then((results)=>console.log(results))
 
 
-tests.reduce((prom, test)=>prom.then(test.run), Promise.resolve())
-	.then((res)=>console.log(res))
-	.catch((err)=>{
-		console.log('FAIL', err);
-	})
 
 
 /* TODO:
 
-
+- figure out how to run multiple test cases together
+- Figure out how the failing code snippet will work. Stack trace? Read the file from memory? Pretty diff?
+-
 
 */
