@@ -1,9 +1,6 @@
 const pathRelative = require('path').relative
 const cwd = process.cwd();
 
-let tests = {};
-let Tests = [];
-
 /* FIXME:
 - Don't expose raw functions, just do call objects for now
 - Have the files call an instance of a group, to get the scope right
@@ -24,143 +21,6 @@ let Tests = [];
 -
 
 
-
-
-*/
-
-const makeTest = (scope = [])=>{
-	const Test = function(name, testFn, opts={}){
-		//If a group name was not set, it uses the file path
-		// if(!(this instanceof Test)) return new Test(name, testFn, opts);
-		console.log('HERE', process.mainModule.children[process.mainModule.children.length-1].filename);
-		if(!scope.length) scope = [pathRelative(cwd, process.mainModule.filename)]
-		// this.opts = {
-		// 	name : name,
-		// 	file : pathRelative(cwd, process.mainModule.filename),
-		// 	skip : false,
-		// 	only : false,
-		// 	group : false,
-		// }
-		Tests.push({
-			name,
-			scope,
-			testFn,
-			tests : []
-		});
-	};
-	Test.group = (name, scopeFn)=>{
-		if(!scope.length) scope = [pathRelative(cwd, process.mainModule.filename)]
-		const temp = makeTest(scope.concat(name));
-		scopeFn(temp);
-	}
-	Test.run = ()=>{
-		console.log(Tests);
-	}
-	return Test;
-}
-
-
-
-const addTest = (scope, name, fn)=>{
-	console.log('add test', scope, name);
-}
-
-
-const createTestInstance = (name)=>{
-	let res = (name, testFn)=>{
-	};
-	res.group = createGroup
-}
-
-const createScope = (name, scopes=[])=>{
-	const test = createTestFunction();
-	test.run = ()=>{
-	}
-}
-
-
-////////////////
-
-
-const createAssertion = (onAssert=(state, msg, details)=>{}, onPlan=(num)=>{})=>{
-	return {
-		plan : (num)=>onPlan(num),
-		pass : (msg)=>onAssert(true, msg),
-		fail : (msg)=>onAssert(false, msg),
-		is   : (actual, expected, msg)=>{
-			onAssert(actual === expected, msg, {
-				actual,
-				expected
-			})
-		}
-	}
-};
-
-const createTest = (name, testFn, opts)=>{
-	let planCount = 0;
-	let isPassing = true;
-	const onAssert = (state, msg, details)=>{
-	};
-	const test = {
-		run : ()=>{
-			return new Promise((resolve)=>{
-				//Do opts checks
-				const assertion = createAssertion(onAssert);
-				try{
-					testFn(assertion);
-					if(planCount === 0) resolve();
-				}catch(e){
-					//fire assertion.fail() with details
-					resolve();
-				}
-			})
-		}
-	}
-	return test;
-}
-
-const createGroup = (name, newScope)=>{
-
-};
-
-
-const createInstance = (name, opts)=>{
-	let tests = [];
-
-	const instance = {
-		test : (name, testFn, opts={})=>{
-			//possibly lift up some options
-			tests.push({
-				name,
-				testFn,
-				opts
-			})
-		},
-		group : (name, scopeFn, opts)=>{
-			let groupInstance = createInstance(name, opts);
-			scopeFn(groupInstance)
-			tests.push(groupInstance);
-		},
-		get : ()=>{
-			return {
-				name,
-				tests
-			}
-		},
-		run : ()=>{
-			//DO opts checks
-			tests.map((test)=>{
-
-				if(run.testFn){
-
-					run.testFn(createAssertion)
-				}
-			})
-		}
-	}
-	return instance;
-}
-
 /*
 - Test cases shouldn't have access to the reporter
 - Test Cases simply return promises
@@ -170,87 +30,68 @@ const createInstance = (name, opts)=>{
 */
 
 
-const getTimedReject = (time)=>new Promise((resolve,reject)=>
-	setTimeout(()=>reject('Async test timed out'), time));
+const dummyReporter=()=>{return{emit:()=>{}}};
+
+
+// const getTimedReject = (time=500)=>{
+// 	return new Promise((resolve,reject)=>{
+// 		setTimeout(()=>{
+// 			reject('Async test timed out')
+// 		}, time)
+// 	});
+// };
+
+//let currentID = 0;
+
+const assert = require('./assert.js');
 
 
 const Test = {
-	// createTestTimeout : (assertion, time)=>{
-	// 	return new Promise((resolve, reject)=>{
-	// 		setTimeout(()=>reject('Async test timeout'), time)
-	// 	})
+	//TODO: make a separate lib?
+	// createError : (msg, details)=>{
+	// 	//Clean up the stack trace
+
 	// },
 
-
-	// createAssertion2 : (onAssert=(state, msg, details)=>{})=>{
+	// createAssertion : ()=>{
 	// 	return {
-	// 		pass : (msg)=>onAssert(true, msg),
-	// 		fail : (msg)=>onAssert(false, msg='Assetion failed'),
+	// 		pass : (msg)=>{},
+	// 		fail : (msg='Assertion failed')=>{ throw new Error(msg); },
 	// 		is   : (actual, expected, msg)=>{
-	// 			onAssert(actual === expected, msg, {
-	// 				actual,
-	// 				expected
-	// 			})
+	// 			if(actual !== expected){
+	// 				//TODO: add meta
+	// 				throw new Error(msg)
+	// 			}
 	// 		}
 	// 	}
 	// },
-
-	// function getStack() {
-	// 	const obj = {};
-	// 	Error.captureStackTrace(obj, getStack);
-	// 	return obj.stack;
-	// }
-
-	createError : (msg, details)=>{
-		//Clean up the stack trace
-
-
-	},
-
-
-	createAssertion : ()=>{
-		return {
-			pass : (msg)=>{},
-			fail : (msg='Assertion failed')=>{ throw new Error(msg); },
-			is   : (actual, expected, msg)=>{
-				if(actual !== expected){
-					//TODO: add meta
-					throw new Error(msg)
-				}
-			}
-		}
-	},
 
 	//TODO: Always return a resolved promise, just returns a results objeect
 	// passed, file?, opts, stack trace, msg?
 	createTestCase : (name, testFunc, opts={})=>{
 		const testCase = {
 			name,
+			//id : currentID++,  //TODO: Maybe don't need this?
 			opts,
-			passing : null,
-			error : null,
-			run : (reporter)=>{
+			//passing : null,
+			//error : null,
+			run : (reporter=dummyReporter())=>{
+				reporter.emit('start_test', testCase);
 				return new Promise((resolve, reject)=>{
-					try{
-						const newAssert = Test.createAssertion();
-						const testResult = testFunc(newAssert);
-						Promise.race([
-							testResult,
-							(testResult instanceof Promise)
-								//TODO: Should be an opt
-								? getTimedReject(500)
-								: Promise.resolve()
-						])
-						.then(()=>{
-							testCase.passing = true;
-							resolve(testCase);
-						})
-					}catch(err){
-						testCase.passing = false;
-						testCase.error = err;
-						return resolve(testCase);
+					const caught = (err)=>{
+						testCase.error = testCase.error || err;
+						resolve();
 					}
+					try{
+						const testResult = testFunc(assert.create());
+						if(testResult instanceof Promise) assert.createTimeout(caught, opts.timeout);
+						(testResult || Promise.resolve())
+							.then(()=>caught(false))
+							.catch(caught)
+					}catch(err){ caught(err); }
 				})
+				.then(()=>reporter.emit('end_test', testCase))
+				.then(()=>testCase);
 			}
 		};
 		return testCase;
@@ -260,119 +101,60 @@ const Test = {
 			name,
 			opts,
 			tests : [],
+			passing : true,
+
 			add : (item)=>{
-				//if item.opts.only, add only to parent? Add a sub-only to true?
+				if(item.opts.only) group.opts.subonly = true;
 				group.tests.push(item);
 			},
-			run : (reporter)=>{
-					//let results = [];
+			run : (reporter=dummyReporter())=>{
+				reporter.emit('start_group', group)
 				return group.tests.reduce((prom, test)=>{
-					return prom.then(()=>test.run(reporter))
-						//.then((result)=>results.push(result))
+					return prom
+						.then(()=>test.run(reporter))
+						.then(()=>group.passing = (!group.passing ? false : !test.error))
 				}, Promise.resolve())
+				.then(()=>reporter.emit('end_group', group))
 				.then(()=>group)
 			}
 		}
 		return group;
 	},
 
-	createBuilder : ()=>{
-
-	},
-
-
-	createGroup2 : (name, opts={})=>{
-		let tests = [];
-		if(!opts.file) opts.file = process.mainModule.filename// pathRelative(cwd, process.mainModule.filename);
-		//if(!name) name = opts.file;
-
+	//TODO: Possibly rename and use per file
+	createBuilder : (name, opts={})=>{
+		if(!name) name = pathRelative(cwd, process.mainModule.filename);
+		let group = Test.createGroup(name, opts);
 		const makeBuilder = (defaultOpts=opts)=>{
 			const testBuilder = (name, testFunc, opts=defaultOpts)=>{
-				//console.log(name);
-				//testBuilder into a create test case function
-				tests.push(Test.createTestCase(name, testFunc, opts))
+				group.add(Test.createTestCase(name, testFunc, opts))
 			};
 			testBuilder.only = ()=>makeBuilder(Object.assign({}, defaultOpts, {only : true}));
 			testBuilder.skip = ()=>makeBuilder(Object.assign({}, defaultOpts, {skip : true}));
 			testBuilder.todo = ()=>makeBuilder(Object.assign({}, defaultOpts, {todo : true}));
 
 			testBuilder.group = (name, scope, opts=defaultOpts)=>{
-				const newGroup = Test.createGroup2(name, opts);
-				tests.push(newGroup);
+				const newBuilder = Test.createBuilder(name, opts);
+				group.add(newBuilder.get());
 				try{
-					scope(newGroup);
+					scope(newBuilder);
 				}catch(e){
-					//TODO: handle this
+					newBuilder.get().passing = false;
+					newBuilder.get().error = e;
 				}
 			};
-			testBuilder.add = (testItem)=>tests.push(testItem),
-			testBuilder.run = (reporter)=>{
-				reporter('start', `Starting group: ${name}`);
-				return tests.reduce((prom, test)=>prom.then(()=>test.run(reporter)), Promise.resolve());
-			},
-			testBuilder.get = ()=>{
-				const parsedTests = tests.map((test)=>{
-					//TODO: do checks for 'only'
-					if(typeof test.group == 'function') return test.get();
-					return test;
-				})
-				return {
-					name,
-					opts,
-					isGroup : true,
-					hasOnly : false,
-					tests : parsedTests
-				}
-			};
+			testBuilder.run = (reporter)=>group.run(reporter),
+			testBuilder.get = ()=>group
 			return testBuilder;
 		};
-
-
-
 		return makeBuilder();
 	},
 };
 
 
-const Builder = (name, opts={})=>{
+//TODO: Possible rmeove, come up with a better name for getting a builder?
+module.exports = Object.keys(Test)
+	.reduce((builder, key)=>
+		builder[key] = Test[key],
+		Test.createBuilder);
 
-	if(!name) name = pathRelative(cwd, process.mainModule.filename);
-
-	let group = Test.createGroup(name, opts);
-
-	const makeBuilder = (defaultOpts=opts)=>{
-		const testBuilder = (name, testFunc, opts=defaultOpts)=>{
-			group.add(Test.createTestCase(name, testFunc, opts))
-		};
-		testBuilder.only = ()=>makeBuilder(Object.assign({}, defaultOpts, {only : true}));
-		testBuilder.skip = ()=>makeBuilder(Object.assign({}, defaultOpts, {skip : true}));
-		testBuilder.todo = ()=>makeBuilder(Object.assign({}, defaultOpts, {todo : true}));
-
-		testBuilder.group = (name, scope, opts=defaultOpts)=>{
-			const newBuilder = Builder(name, opts);
-			group.add(newBuilder.get());
-			try{
-				scope(newBuilder);
-			}catch(e){
-				//TODO: handle this
-			}
-		};
-		//testBuilder.add = (testItem)=>tests.push(testItem),
-		testBuilder.run = (reporter)=>{
-			return group.run();
-			//reporter('start', `Starting group: ${name}`);
-			//return tests.reduce((prom, test)=>prom.then(()=>test.run(reporter)), Promise.resolve());
-		},
-		testBuilder.get = ()=>group
-		return testBuilder;
-	};
-	return makeBuilder();
-}
-
-
-
-
-
-
-
-module.exports = Builder;
