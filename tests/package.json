@@ -1,0 +1,14 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "pico-test yo -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "pico-test" : {
+  	"files" : "yo yoyoyoyoyo"
+  }
+}

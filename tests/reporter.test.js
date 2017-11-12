@@ -12,21 +12,26 @@ test('I should fail', (t)=>{
 
 test.group('New group', (test)=>{
 	test('I am a nested test', (t)=>{
+		console.log('Hello');
+		console.log('This is pretty cool');
+		console.log(test);
 		t.pass();
 	});
 });
 
-test('async Test', (t)=>{
-	//t.fail()
-	return new Promise((resolve, reject)=>{
-		setTimeout(()=>{
-			t.pass();
-			resolve();
-		}, 14000)
-	})
-})
+// test('async Test', (t)=>{
+// 	return new Promise((resolve, reject)=>{
+// 		setTimeout(()=>{
+// 			t.pass();
+// 			resolve();
+// 		}, 14000)
+// 	})
+// }, {timeout : 2000})
 
 
 test
 	.run(pretty)
 	.then((results)=>pretty.emit('finish', results));
+
+
+

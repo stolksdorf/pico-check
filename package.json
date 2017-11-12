@@ -6,8 +6,9 @@
   "scripts": {
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
-    "test": "nodemon ./tests/reporter.test.js"
+    "test": "pico-test -w yo"
   },
+  "bin": "cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stolksdorf/pico-test.git"

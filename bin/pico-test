@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 
-const resolveModule = require('resolve').sync;
+//const resolveModule = require('resolve').sync;
 const resolvePath = require('path').resolve;
 const parseOpts = require('minimist');
 const glob = require('glob');
@@ -9,12 +9,26 @@ const glob = require('glob');
 //TODO: Add in defaults for ignore, files,
 //TODO: Look up some defaults in the package
 
+/*
+_ - tests, defaults to '*.test.js'
+-w, --watch - defaults to false, if true make it '*.js'
+--require='' - add in a require path
+--fail-fast?
+--timeout
+
+*/
+
 
 const opts = parseOpts(process.argv.slice(2), {
 		alias: { r: 'require' },
 		string: 'require',
 		default: { r: [] }
 	});
+
+console.log(opts);
+
+
+/*
 
 const cwd = process.cwd();
 
@@ -24,8 +38,6 @@ if (typeof opts.require === 'string') {
 
 opts.require.forEach(function(module) {
 	if (module) {
-	/* This check ensures we ignore `-r ""`, trailing `-r`, or
-	* other silly things the user might (inadvertently) be doing. */
 		require(resolveModule(module, { basedir: cwd }));
 	}
 });
@@ -45,3 +57,4 @@ opts._.forEach(function (arg) {
 });
 
 // vim: ft=javascript
+*/
