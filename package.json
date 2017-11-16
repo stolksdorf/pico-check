@@ -4,9 +4,10 @@
   "description": "An incredibly tiny javascript testing library",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --fix **/*.{js,jsx}",
-    "lint:dry": "eslint **/*.{js,jsx}",
-    "test": "pico-test -w yo"
+    "lint": "eslint --fix **/*.js",
+    "lint:dry": "eslint **/*.js",
+    "dev": "nodemon --exec npm run test",
+    "test": "cd ./tests && npm run test"
   },
   "bin": "cli.js",
   "repository": {
@@ -23,7 +24,11 @@
     "url": "https://github.com/stolksdorf/pico-test/issues"
   },
   "homepage": "https://github.com/stolksdorf/pico-test#readme",
-  "devDependencies": {
-    "eslint": "^4.9.0"
+  "devDependencies": {},
+  "dependencies": {
+    "ansi-styles": "^3.2.0",
+    "chalk": "^2.3.0",
+    "concordance": "^3.0.0",
+    "stack-utils": "^1.0.1"
   }
 }

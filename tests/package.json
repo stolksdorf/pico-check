@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pico-test yo -w"
+    "dev": "nodemon --exec npm run test",
+    "test": "pico-test -v simple.test.js"
   },
   "author": "",
   "license": "ISC",
-  "pico-test" : {
-  	"files" : "yo yoyoyoyoyo"
+  "picotest" : {
+    "verbose" : true
   }
 }

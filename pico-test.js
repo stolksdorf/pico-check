@@ -30,7 +30,6 @@ const cwd = process.cwd();
 */
 
 
-const dummyReporter=()=>{return{emit:()=>{}}};
 
 
 // const getTimedReject = (time=500)=>{
@@ -43,7 +42,24 @@ const dummyReporter=()=>{return{emit:()=>{}}};
 
 //let currentID = 0;
 
-const assert = require('./assert.js');
+const createTimeout = (cb, time=500)=>{
+	setTimeout(()=>{
+		cb(new Error('Async test timed out'));
+	}, time)
+}
+
+//TODO: Apparently there's an assert lib?! Let's use that!!
+const assert = require('assert');
+const Assert = {
+	passing
+	fail
+	equal
+	notEqual
+	deepEqual
+	deepEqual
+}
+
+const utils = require('./utils.js');
 
 
 const Test = {
@@ -66,8 +82,7 @@ const Test = {
 	// 	}
 	// },
 
-	//TODO: Always return a resolved promise, just returns a results objeect
-	// passed, file?, opts, stack trace, msg?
+
 	createTestCase : (name, testFunc, opts={})=>{
 		const testCase = {
 			name,
@@ -75,8 +90,8 @@ const Test = {
 			opts,
 			//passing : null,
 			//error : null,
-			run : (reporter=dummyReporter())=>{
-				reporter.emit('start_test', testCase);
+			run : (reporter=()=>{})=>{
+				reporter('start_test', testCase);
 				return new Promise((resolve, reject)=>{
 					const caught = (err)=>{
 						testCase.error = testCase.error || err;
@@ -84,13 +99,13 @@ const Test = {
 					}
 					try{
 						const testResult = testFunc(assert.create());
-						if(testResult instanceof Promise) assert.createTimeout(caught, opts.timeout);
+						if(testResult instanceof Promise) createTimeout(caught, opts.timeout);
 						(testResult || Promise.resolve())
 							.then(()=>caught(false))
 							.catch(caught)
 					}catch(err){ caught(err); }
 				})
-				.then(()=>reporter.emit('end_test', testCase))
+				.then(()=>reporter('end_test', testCase))
 				.then(()=>testCase);
 			}
 		};
@@ -100,21 +115,21 @@ const Test = {
 		const group = {
 			name,
 			opts,
-			tests : [],
+			tests   : [],
 			passing : true,
-
 			add : (item)=>{
+				if(typeof item == 'function') item = item.get();
 				if(item.opts.only) group.opts.subonly = true;
 				group.tests.push(item);
 			},
-			run : (reporter=dummyReporter())=>{
-				reporter.emit('start_group', group)
+			run : (reporter=()=>{})=>{
+				reporter('start_group', group)
 				return group.tests.reduce((prom, test)=>{
 					return prom
 						.then(()=>test.run(reporter))
 						.then(()=>group.passing = (!group.passing ? false : !test.error))
 				}, Promise.resolve())
-				.then(()=>reporter.emit('end_group', group))
+				.then(()=>reporter('end_group', group))
 				.then(()=>group)
 			}
 		}
@@ -123,7 +138,7 @@ const Test = {
 
 	//TODO: Possibly rename and use per file
 	createBuilder : (name, opts={})=>{
-		if(!name) name = pathRelative(cwd, process.mainModule.filename);
+		if(!name) name = utils.getFilename(); //pathRelative(cwd, module.parent.filename);
 		let group = Test.createGroup(name, opts);
 		const makeBuilder = (defaultOpts=opts)=>{
 			const testBuilder = (name, testFunc, opts=defaultOpts)=>{
@@ -143,8 +158,9 @@ const Test = {
 					newBuilder.get().error = e;
 				}
 			};
-			testBuilder.run = (reporter)=>group.run(reporter),
-			testBuilder.get = ()=>group
+			testBuilder.run = (reporter)=>group.run(reporter);
+			testBuilder.get = ()=>group;
+			testBuilder.add = (item)=>group.add(item);
 			return testBuilder;
 		};
 		return makeBuilder();
@@ -154,7 +170,8 @@ const Test = {
 
 //TODO: Possible rmeove, come up with a better name for getting a builder?
 module.exports = Object.keys(Test)
-	.reduce((builder, key)=>
-		builder[key] = Test[key],
-		Test.createBuilder);
+	.reduce((builder, key)=>{
+		builder[key] = Test[key];
+		return builder;
+	}, Test.createBuilder);
 

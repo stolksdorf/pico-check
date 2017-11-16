@@ -1,43 +1,100 @@
 #!/usr/bin/env node
 
-
-const parseOpts = require('minimist');
+const minimist = require('minimist');
 const glob = require('glob');
-
 const path = require('path');
 const fs = require('fs');
+const Test = require('./pico-test.js');
+
+console.log(Object.keys(Test));
+
 const getPckg = (currPath = path.resolve(''))=>{
 	const pckg = path.join(currPath, 'package.json');
 	if(fs.existsSync(pckg)) return require(pckg);
 	const info = path.parse(currPath);
-	if(info.root == info.dir) return false;
+	if(info.root == info.dir) return {};
 	return getConfig(info.dir);
 };
+const defaults = {
+	tests   : ['*.test.js'],
+	tap     : false,
+	verbose : false,
+	require : false,
+	watch   : false,
+	timeout : 500
+};
+const parseArgs = ()=>{
+	const opts = {
+		boolean : ['tap', 'verbose'],
+		string  : ['timeout', 'require'],
+		alias   : { require : 'r', verbose : 'v', tap : 't', watch : 'w' }
+	};
+	let args = minimist(process.argv.slice(2), opts);
+	if(args._.length) args.tests = args._;
+	delete args._;
+	opts.boolean.map((key)=>{ if(!args[key]) delete args[key]; });
+	return args;
+};
+const opts = Object.assign({}, defaults, getPckg().picotest, parseArgs())
+if(opts.watch === true) opts.watch = '*.js';
+if(typeof opts.watch == 'string') opts.watch = [opts.watch];
+
+
+/* --------------------- */
+
+//console.log(opts);
+
+const runningGroup = Test.createGroup();
 
 
 
-console.log('working', getConfig());
+
+const TestGroups = [].concat(...opts.tests.map((testPath)=>glob.sync(testPath)))
+			.map((testPath)=>require(path.resolve(testPath)))
+
+TestGroups.map((testGroup)=>runningGroup.add(testGroup));
+
+console.log(runningGroup);
 
 
-//look up to find package.json
-
-console.log(process.cwd());
+//const TestGroups = glob.sync(opts.tests.join(' ')).map((testPath)=>require(path.resolve(testPath)));
 
 
-/*
-_ - tests, defaults to '*.test.js'
--w, --watch - defaults to false, if true make it '*.js'
---require='' - add in a require path
---fail-fast?
---timeout
 
-*/
+let reporter = require('./reporters/mini.js');
+if(opts.verbose) reporter = require('./reporters/verbose.js');
+if(opts.tap) reporter = require('./reporters/tap.js');
 
 
-const opts = parseOpts(process.argv.slice(2), {
-		alias: { r: 'require' },
-		string: 'require',
-		default: { r: [] }
-	});
+reporter('start', runningGroup);
 
-console.log(opts);
+runningGroup
+	.run() //TODO: add in opts
+	.then(()=>reporter('end', runningGroup))
+	.then(()=>{
+		runningGroup.passing ? process.exit(1) : process.exit(0);
+	})
+
+
+// //TODO: make into an async map
+// const result = Promise.resolve();
+// TestGroups.map((tc)=>{
+// 	console.log(tc);
+// 	result.then(()=>tc.run(reporter))
+// });
+// result
+// 	.then(()=>reporter('end'))
+// 	.then(()=>{
+// 		//check for any failed, if so emit process.exit(0)
+// 		process.exit(1);
+// 	})
+
+
+
+//Load reporter
+//call 'start'
+// map the run function with reporter as opt(?)
+
+
+// console.log(TestCases);
+

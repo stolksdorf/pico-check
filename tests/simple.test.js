@@ -1,4 +1,4 @@
-const test = require('../pico-test.js').createGroup('base.test.js');
+const test = require('../pico-test.js')();
 
 
 test('I am a basic2 test', (t)=>{

@@ -1,11 +1,7 @@
 
 
 const Assert = {
-	createTimeout : (cb, time=500)=>{
-		setTimeout(()=>{
-			cb(new Error('Async test timed out'));
-		}, time)
-	},
+
 
 
 	create : ()=>{
