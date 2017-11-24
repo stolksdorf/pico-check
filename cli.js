@@ -66,11 +66,15 @@ if(opts.verbose) reporter = require('./reporters/verbose.js');
 if(opts.tap) reporter = require('./reporters/tap.js');
 
 
-reporter('start', runningGroup);
+//reporter('start', runningGroup);
 
 runningGroup
-	.run() //TODO: add in opts
-	.then(()=>reporter('end', runningGroup))
+	.run({
+		reporter
+	}, true) //TODO: add in opts
+	//TODO: Add a second parameter to run to show that it's a top level run
+		//
+//	.then(()=>reporter('end', runningGroup))
 	.then(()=>{
 		runningGroup.passing ? process.exit(1) : process.exit(0);
 	})

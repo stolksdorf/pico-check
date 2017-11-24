@@ -34,6 +34,13 @@ const Utils = {
 
 	},
 
+	getSummary : (group)=>{
+		//Given a testing group, it iterates and returns
+		// the number of
+		//Passed, failed, skipped, todo, pending
+		//Also a list of all tests that failed
+	},
+
 	cleanStackTrace : (error)=>{
 		//split on newline
 		//map over a regex, parse into callsite objects, include a raw string
@@ -57,6 +64,8 @@ const Utils = {
 
 		//console.log(concordance);
 		//return concordance.describe(expected);
+
+		//Bump right into the error reporter
 		return concordance.diff(expected, actual, {
 			theme:concordanceTheme
 		});

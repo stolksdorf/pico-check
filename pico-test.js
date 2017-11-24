@@ -1,46 +1,6 @@
 const pathRelative = require('path').relative
 const cwd = process.cwd();
 
-/* FIXME:
-- Don't expose raw functions, just do call objects for now
-- Have the files call an instance of a group, to get the scope right
-- have a run function on a group that runs all sub tests and groups
-- run function takes an event reporter, passes it down to emit out test events
-- maybe an opts call passed down to
-
-- Two major types: Group and Assertion
-
-*/
-
-/* Shower Notes
-- Ditch plan, async tests must return a promise
-- look int promise.race for making a timed promise util
-- todo, skip, etc. should be functions. Simplifies the inheritance a ton
-- the assertion runner should return a simple promise, in the test handler it has access to the test event mitter
-- The assertion runner stops as soon as it has a failaure
--
-
-
-/*
-- Test cases shouldn't have access to the reporter
-- Test Cases simply return promises
-
-
-
-*/
-
-
-
-
-// const getTimedReject = (time=500)=>{
-// 	return new Promise((resolve,reject)=>{
-// 		setTimeout(()=>{
-// 			reject('Async test timed out')
-// 		}, time)
-// 	});
-// };
-
-//let currentID = 0;
 
 const createTimeout = (cb, time=500)=>{
 	setTimeout(()=>{
@@ -50,39 +10,19 @@ const createTimeout = (cb, time=500)=>{
 
 //TODO: Apparently there's an assert lib?! Let's use that!!
 const assert = require('assert');
-const Assert = {
-	passing
-	fail
-	equal
-	notEqual
-	deepEqual
-	deepEqual
-}
+const Assert = Object.assign({}, assert, {
+	pass : ()=>{},
+	fail : (msg = 't.fail was called')=>assert.fail(msg)
+});
 
 const utils = require('./utils.js');
 
+const report = (reporter, ...args)=>{
+	if(typeof reporter === 'function') reporter(...args);
+}
+
 
 const Test = {
-	//TODO: make a separate lib?
-	// createError : (msg, details)=>{
-	// 	//Clean up the stack trace
-
-	// },
-
-	// createAssertion : ()=>{
-	// 	return {
-	// 		pass : (msg)=>{},
-	// 		fail : (msg='Assertion failed')=>{ throw new Error(msg); },
-	// 		is   : (actual, expected, msg)=>{
-	// 			if(actual !== expected){
-	// 				//TODO: add meta
-	// 				throw new Error(msg)
-	// 			}
-	// 		}
-	// 	}
-	// },
-
-
 	createTestCase : (name, testFunc, opts={})=>{
 		const testCase = {
 			name,
@@ -90,22 +30,27 @@ const Test = {
 			opts,
 			//passing : null,
 			//error : null,
-			run : (reporter=()=>{})=>{
-				reporter('start_test', testCase);
+			run : (runOpts={})=>{
+				report(runOpts.reporter, 'start_test', testCase);
 				return new Promise((resolve, reject)=>{
 					const caught = (err)=>{
-						testCase.error = testCase.error || err;
+						//TODO: Add in a test name?
+						if(!testCase.error) testCase.error =  err;
 						resolve();
 					}
 					try{
-						const testResult = testFunc(assert.create());
+						const testResult = testFunc(Assert);
 						if(testResult instanceof Promise) createTimeout(caught, opts.timeout);
 						(testResult || Promise.resolve())
 							.then(()=>caught(false))
-							.catch(caught)
-					}catch(err){ caught(err); }
+							.catch((err)=>{
+								caught(err)
+							})
+					}catch(err){
+						caught(err);
+					}
 				})
-				.then(()=>reporter('end_test', testCase))
+				.then(()=>report(runOpts.reporter, 'end_test', testCase))
 				.then(()=>testCase);
 			}
 		};
@@ -122,14 +67,18 @@ const Test = {
 				if(item.opts.only) group.opts.subonly = true;
 				group.tests.push(item);
 			},
-			run : (reporter=()=>{})=>{
-				reporter('start_group', group)
+			run : (runOpts={}, root=false)=>{
+				if(root) report(runOpts.reporter, 'start', group);
+				report(runOpts.reporter, 'start_group', group);
 				return group.tests.reduce((prom, test)=>{
 					return prom
-						.then(()=>test.run(reporter))
+						.then(()=>test.run(runOpts))
 						.then(()=>group.passing = (!group.passing ? false : !test.error))
 				}, Promise.resolve())
-				.then(()=>reporter('end_group', group))
+				.then(()=>report(runOpts.reporter, 'end_group', group))
+				.then(()=>{
+					if(root) report(runOpts.reporter, 'end', group)
+				})
 				.then(()=>group)
 			}
 		}
@@ -158,7 +107,8 @@ const Test = {
 					newBuilder.get().error = e;
 				}
 			};
-			testBuilder.run = (reporter)=>group.run(reporter);
+			//TODO: Make into passing in opts
+			testBuilder.run = (...args)=>group.run(...args);
 			testBuilder.get = ()=>group;
 			testBuilder.add = (item)=>group.add(item);
 			return testBuilder;
