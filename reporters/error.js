@@ -6,25 +6,18 @@ const assert = require('assert');
 const StackUtils = require('stack-utils');
 const stack = new StackUtils({cwd: process.cwd(), internals: StackUtils.nodeInternals()});
 
-const indent = (string, space='  ')=>string.replace(/^(?!\s*$)/mg, space);
+const pad = (string, pad='    ')=>(string + pad).substring(0, pad.length);
 
 
 
 const fs = require('fs');
 const path = require('path');
+
 const codeSnippet = (file, line, col)=>{
 	const code = fs.readFileSync(path.resolve(process.cwd(), file), 'utf8').split('\n');
-	const lines = [code[line-2], code[line-1], code[line]].map((line)=>line.replace(/\t/g, '  '));
-
-	"test".padEnd(5)
-
-	return `${chalk.grey((line-1+':').padEnd(5))} ${lines[0]}
-${chalk.bgRed(`${line}: ${lines[1]}`)}
-${chalk.grey(line+1+':')} ${lines[2]}`
-
-
-
-}
+	const renderLine = (lineNum, color='grey')=>chalk[color](pad(lineNum+':')) + code[lineNum - 1].replace(/\t/g, '  ');
+	return [renderLine(line-1), chalk.bgRed.bold(renderLine(line, 'white')), renderLine(line+1)].join('\n')
+};
 
 
 // used by mini in final results
@@ -42,27 +35,43 @@ ${chalk.grey(line+1+':')} ${lines[2]}`
 
 
 module.exports = (error, title='')=>{
+	let report = '';
 
-	if(title) console.log(`${chalk.red('  X')} ${title}\n`);
+	if(title) report = `${chalk.red('  X')} ${title}\n`;
 
+	console.log(title);
+	console.log(typeof error);
+	console.log(typeof error.stack);
+	console.log(error.stack);
+
+	console.log('         ');
+	return;
+	console.log('CALLSITE', error.stack[0].getLineNumber());
 
 	const cleanedStack = stack.clean(error.stack);
+
+	console.log('STACK', cleanedStack);
 
 	const loc = stack.parseLine(cleanedStack.split('\n')[0]);
 
 	console.log(loc.file, loc.line);
 
-	console.log(codeSnippet(loc.file, loc.line, loc.column));
+	report += codeSnippet(loc.file, loc.line, loc.column);
+
 
 
 	if(error instanceof assert.AssertionError){
 		console.log('Difference');
-		console.log(indent(codeDiff(error.actual, error.expected)));
+		//console.log(indent(codeDiff(error.actual, error.expected)));
 
 	}else{
 
 		console.log();
 	}
+
+	console.log('RPOERT', report);
+
+	return report;
 
 
 

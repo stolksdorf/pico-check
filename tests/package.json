@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec npm run test",
-    "test": "pico-test -v simple.test.js"
+    "test": "pico-test -v -w ./simple.test.js"
   },
   "author": "",
   "license": "ISC",
-  "picotest" : {
-    "verbose" : true
+  "pico-test": {
+    "timeout": 1500,
+    "watch" : ["*.{js,jsx}"]
   }
 }

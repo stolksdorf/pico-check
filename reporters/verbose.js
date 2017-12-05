@@ -59,32 +59,34 @@ const Verbose = (type, item)=>{
 
 		//TODO: might not need this
 		start_test : (test)=>{
-			console.log(pad(chalk.yellow(`● ${test.name}...`)));
-			//console.log(pad(chalk.magenta('▼──Test Logs───────────\n')));
+			console.log('HEYEYEY', test);
+			console.log(chalk.yellow(`● ${test.name}...`));
+			//console.log(chalk.magenta('▼──Test Logs───────────\n'));
 			//logUsed = false;
 		},
 
 		end_test : (test)=>{
+			console.log('HEREER', test);
 
-			clearLines(1);
+			//clearLines(1);
 
 			// if(!logUsed){
 			// 	clearLines(3);
 			// }else{
-			// 	console.log(pad(chalk.magenta('\n▲──Test Logs────────────')));
+			// 	console.log(chalk.magenta('\n▲──Test Logs────────────'));
 			// }
 
 			if(test.error){
-				ErrorReport(test);
-
-
+				console.log('HERE', test.error);
+				console.log(ErrorReport(test.error, test.name));
 			}
 
 			if(!test.error){
-				return console.log(pad(chalk.green(`✓ ${test.name}`)));
+				console.log(test);
+				return console.log(chalk.green(`✓ ${test.name}`));
 			}
-			//console.log(pad(chalk.bgRed(`X ${test.name}`)));
-			console.log(pad(chalk.red(`X ${test.name}`)));
+			//console.log(chalk.bgRed(`X ${test.name}`));
+			//console.log(chalk.red(`X ${test.name}`));
 
 		},
 

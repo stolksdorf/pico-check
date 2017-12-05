@@ -1,8 +1,13 @@
 const test = require('../pico-test.js')();
 
 
-test('I am a basic2 test', (t)=>{
-	t.pass();
+// test('I am a basic2 test', (t)=>{
+// 	t.pass();
+// });
+
+test('I AM A FAILED TEST', (t)=>{
+	console.log('yo', t);
+	t.fail();
 });
 
 

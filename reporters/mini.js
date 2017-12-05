@@ -8,14 +8,16 @@ const clearLines = (numLines = 1)=>{
 let groups = [];
 let passed = 0;
 let failed = 0;
+let skipped = 0;
 
 const update = (test)=>{
-	clearLines(4);
+	clearLines(5);
 	test.passing ? passed++ : failed++;
 	console.log(`${groups[groups.length -1 ]} >> ${test.name}`);
 	console.log();
 	console.log(`${passed} passed`);
 	console.log(`${failed} failed`);
+	console.log(`${skipped} skipped`);
 };
 
 
@@ -36,6 +38,8 @@ const Mini = (type, item)=>{
 			//console.dir(results, {depth:null},
 			console.log('──────────');
 			console.log('Done!');
+
+			// Report each error?
 
 		}
 
