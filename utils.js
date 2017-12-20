@@ -17,17 +17,17 @@ const Utils = {
 		return list.reduce((prom, val, key)=>{
 			return prom.then((result)=>{
 				let temp = fn(val, key);
-				temp = (temp instanceof Promise ? temp : Promise.resolve(temp))
+				temp = (temp instanceof Promise ? temp : Promise.resolve(temp));
 				return temp.then((value)=>{
 					result.push(value);
 					return result;
 				});
 			});
-		}, Promise.resolve([]))
+		}, Promise.resolve([]));
 	},
 
 	getSummary : (results)=>{
-		let summary = {passed : 0, failed : 0, skipped : 0, passing : true };
+		let summary = { passed: 0, failed: 0, skipped: 0, passing: true };
 		const mergeSummaries = (sum1, sum2)=>({
 			passed  : sum1.passed + sum2.passed,
 			failed  : sum1.failed + sum2.failed,
@@ -38,13 +38,10 @@ const Utils = {
 			if(result instanceof Error){
 				summary.failed++;
 				summary.passing = false;
-			}
-			else if(result === true){  summary.passed++; }
-			else if(result === false){ summary.skipped++; }
-			else{
+			} else if(result === true){  summary.passed++; } else if(result === false){ summary.skipped++; } else {
 				summary = mergeSummaries(summary, Utils.getSummary(result));
 			}
-		})
+		});
 		return summary;
 	},
 
@@ -55,7 +52,7 @@ const Utils = {
 		//map over a regex, parse into callsite objects, include a raw string
 		//filter on common node paths and what not
 		//return
-		return stack.clean(error)
+		return stack.clean(error);
 
 		// https://github.com/tapjs/stack-utils/blob/master/index.js
 

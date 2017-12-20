@@ -5,7 +5,7 @@ const myGroup = ptest.createGroup('test');
 const myGroup2 = ptest.createGroup('test2');
 
 
-myGroup2.add(ptest.createTestCase('nested'))
+myGroup2.add(ptest.createTestCase('nested'));
 
 myGroup.add(ptest.createTestCase('simple pass', (t)=>{
 	console.log('Hello');
@@ -25,11 +25,11 @@ myGroup.add(ptest.createTestCase('async', (t)=>{
 		setTimeout(()=>{
 			t.pass();
 			resolve();
-		}, 400)
-	})
+		}, 400);
+	});
 }));
 
-myGroup.add(myGroup2)
+myGroup.add(myGroup2);
 
 
 myGroup.add(ptest.createTestCase('bad code', (t)=>{
@@ -38,7 +38,7 @@ myGroup.add(ptest.createTestCase('bad code', (t)=>{
 
 
 
-myGroup.run().then((results)=>console.log(results))
+myGroup.run().then((results)=>console.log(results));
 
 
 

@@ -9,16 +9,16 @@ const test1 = lib.createTestCase('This is a test', (t)=>{
 });
 
 const test2 = lib.createTestCase('This is a failed test', (t)=>{
-	t.is(3,[3]);
+	t.is(3, [3]);
 });
 
 const test3 = lib.createTestCase('This is a skipped test', (t)=>{
 	t.fail();
-}, {skip : true});
+}, { skip: true });
 
 const test4 = lib.createTestCase('This is a skipped test', (t)=>{
 	return new Promise((resolve)=>setTimeout(resolve, 400));
-}, {timeout : 30});
+}, { timeout: 30 });
 
 
 test1.run().then((res)=>console.log('test1', res));

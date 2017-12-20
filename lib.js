@@ -4,24 +4,24 @@ const utils = require('./utils.js');
 const Test = {
 	createTestCase : (name, testFunc, paramOpts={})=>{
 		const testCase = { name, opts : paramOpts,
-			run : (runOpts={})=>{
+			run  : (runOpts={})=>{
 				const opts = utils.merge(testCase.opts, runOpts);
 				(opts.reporter && opts.reporter.startTest(testCase));
 				return new Promise((resolve, reject)=>{
 					if(opts.skip) return resolve(false);
-					try{
+					try {
 						const testResult = testFunc(Assert);
 						if(!(testResult instanceof Promise)) return resolve();
 						Assert.timeout(resolve, opts.timeout);
 						testResult.then(resolve).catch(resolve);
-					}catch(err){
+					} catch (err){
 						resolve(err);
 					}
 				})
-				.then((result = true)=>{
-					(opts.reporter && opts.reporter.endTest(testCase))
-					return result;
-				});
+					.then((result = true)=>{
+						(opts.reporter && opts.reporter.endTest(testCase));
+						return result;
+					});
 			}
 		};
 		return testCase;
@@ -49,13 +49,13 @@ const Test = {
 					}
 					return test.run(opts);
 				})
-				.then((results)=>{
-					(opts.reporter && opts.reporter.endGroup(group));
-					(root && opts.reporter && opts.reporter.end(group));
-					return results;
-				})
+					.then((results)=>{
+						(opts.reporter && opts.reporter.endGroup(group));
+						(root && opts.reporter && opts.reporter.end(group));
+						return results;
+					});
 			}
-		}
+		};
 		return group;
 	}
 };

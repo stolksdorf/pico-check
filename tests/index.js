@@ -12,7 +12,7 @@ const displayFn = (type, info)=>{
 	}
 	new Error().stack;
 	console.log(type, info);
-}
+};
 
 const picotest = require('../pico-test.js');
 

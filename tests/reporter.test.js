@@ -6,7 +6,7 @@ const mini = require('../reporters/mini.js');
 test('I am a basic test', (t)=>{
 	a + b;
 	t.pass();
-})
+});
 
 test('I should fail', (t)=>{
 	t.fail();
@@ -26,9 +26,9 @@ test('async Test', (t)=>{
 		setTimeout(()=>{
 			t.pass();
 			resolve();
-		}, 14000)
-	})
-}, {timeout : 8000})
+		}, 14000);
+	});
+}, { timeout: 8000 });
 
 
 

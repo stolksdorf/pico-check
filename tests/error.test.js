@@ -39,12 +39,12 @@ console.log(temp2.show());
 // }
 
 const pureTest = lib.createTestCase('yo', (t)=>{
-	t.pass()
-})
+	t.pass();
+});
 pureTest.run().then((res)=>{
 	console.log(res);
 	//ErrorReport(res, 'This is a testcase error');
-})
+});
 
 // console.log('pure', pureTest);
 

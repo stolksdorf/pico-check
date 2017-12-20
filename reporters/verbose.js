@@ -20,12 +20,12 @@ const stdoutHook = (fn=()=>{})=>{
 		fn(...args);
 		old_write.call(process.stdout, ...args);
 	};
-}
+};
 
 let logUsed = false;
 stdoutHook(()=>{
 	if(!logUsed) console.log(chalk.magenta('▼──Test Logs───────────\n'));
-	logUsed = true
+	logUsed = true;
 });
 
 
@@ -40,18 +40,18 @@ const Verbose = (type, ...args)=>{
 		start : ()=>{
 			//logUsed = false;
 			results = {
-				passed : 0,
-				failed : [],
+				passed  : 0,
+				failed  : [],
 				skipped : 0,
-				todo: 0
-			}
+				todo    : 0
+			};
 
 
 		},
 
 		start_group : (group)=>{
 			if(!group.name) return;
-			console.log('\n' + pad(chalk.grey('>> ' +  group.name)));
+			console.log(`\n${pad(chalk.grey(`>> ${group.name}`))}`);
 			depth += 2;
 		},
 
@@ -75,15 +75,15 @@ const Verbose = (type, ...args)=>{
 
 			if(!logUsed){
 				clearLines(3);
-			}else{
+			} else {
 				console.log(chalk.magenta('\n▲──Test Logs────────────'));
 			}
 
 			if(result instanceof Error){
 				return console.log(ErrorReport(result, test.name));
-			}else if(result === true){
+			} else if(result === true){
 				return console.log(chalk.green(`✓ ${test.name}`));
-			}else if(result === false){
+			} else if(result === false){
 				console.log('skipped');
 			}
 			//console.log(chalk.bgRed(`X ${test.name}`));
@@ -99,7 +99,7 @@ const Verbose = (type, ...args)=>{
 		}
 	};
 
-	if(match[type]) match[type](...args)
+	if(match[type]) match[type](...args);
 };
 
 

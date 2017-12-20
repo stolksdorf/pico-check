@@ -6,8 +6,8 @@ const clearLines = (numLines = 1)=>{
 	process.stdout.clearScreenDown();
 };
 
-let groups = [];
-let errors = [];
+const groups = [];
+const errors = [];
 let passed = 0;
 let failed = 0;
 let skipped = 0;
@@ -36,7 +36,7 @@ const Mini = {
 			failed++;
 			errors.push(result);
 		}
-		update(test)
+		update(test);
 	},
 	end : (results)=>{
 		//console.dir(results, {depth:null},

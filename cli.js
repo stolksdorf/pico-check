@@ -20,24 +20,24 @@ const getOpts = ()=>{
 		return getConfig(info.dir);
 	};
 	const defaults = {
-		tests   : ['*.test.js'],
-		ignore  : ['node_modules'],
+		tests    : ['*.test.js'],
+		ignore   : ['node_modules'],
 		reporter : false,
-		tap     : false,
-		verbose : false,
-		require : false,
-		useWatch: false,
-		watch   : ['*.js'],
-		timeout : 500
+		tap      : false,
+		verbose  : false,
+		require  : false,
+		useWatch : false,
+		watch    : ['*.js'],
+		timeout  : 500
 	};
 
 	const parseArgs = ()=>{
 		const opts = {
 			boolean : ['tap', 'verbose', 'useWatch'],
 			string  : ['timeout', 'require', 'reporter', 'ignore'],
-			alias   : { require : 'r', verbose : 'v', tap : 't', useWatch : 'w', ignore : 'i' }
+			alias   : { require: 'r', verbose: 'v', tap: 't', useWatch: 'w', ignore: 'i' }
 		};
-		let args = minimist(process.argv.slice(2), opts);
+		const args = minimist(process.argv.slice(2), opts);
 		if(args._.length) args.tests = args._;
 		delete args._;
 		opts.boolean.map((key)=>{ if(!args[key]) delete args[key]; });
@@ -87,11 +87,11 @@ const runningGroup = flatMap(opts.tests, (testGlob)=>glob.sync(testGlob))
 	.reduce((group, testPath)=>{
 		const testFile = requireRelative(testPath);
 		if(!testFile) console.log(`${testPath} did not export a test group.`);
-		return group.add(testFile)
-	}, Test.createGroup())
+		return group.add(testFile);
+	}, Test.createGroup());
 
 
-console.dir(runningGroup, {depth:null});
+console.dir(runningGroup, { depth: null });
 
 
 //const TestGroups = glob.sync(opts.tests.join(' ')).map((testPath)=>require(path.resolve(testPath)));
@@ -103,15 +103,15 @@ const executeTestSuite = (group)=>{
 			reporter : loadReporter(opts)
 		}, true) //TODO: add in opts
 		.then((summary)=>{
-			console.dir('summary', summary, {depth:null});
+			console.dir('summary', summary, { depth: null });
 			if(!opts.useWatch) summary.passing ? process.exit(1) : process.exit(0);
 		})
 		.catch((err)=>{
 			console.log('CAUGHT HERE');
 			console.error(err);
-			process.exit(0)
+			process.exit(0);
 		});
-}
+};
 
 
 

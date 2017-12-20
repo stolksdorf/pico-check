@@ -8,26 +8,26 @@ test('I am a basic test', (t)=>{
 
 test('I am a skipped test', (t)=>{
 	t.fail();
-}, {skip : true});
+}, { skip: true });
 
 test.skip()('I am also a skipped test');
 
 test('I am a todo test', (t)=>{
 	t.fail();
-}, {todo : true});
+}, { todo: true });
 
 test('I am an async test', (t)=>{
 	return new Promise((resolve, reject)=>{
 		t.pass('ye');
 		setTimeout(resolve, 300);
-	})
-})
+	});
+});
 
 //Edge cases
 test('I have no test function');
 test('I call no assertions', (t)=>{});
 
-test.skip().todo()('chained modifiers')
+test.skip().todo()('chained modifiers');
 
 
 //

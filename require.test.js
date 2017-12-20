@@ -1,9 +1,9 @@
 
 let temp =0;
 
-delete require.cache[require.resolve('./require.test.js')]
+delete require.cache[require.resolve('./require.test.js')];
 
 module.exports = {
-	add : ()=>temp++,
+	add  : ()=>temp++,
 	show : ()=>temp
-}
+};

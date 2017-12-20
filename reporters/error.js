@@ -1,10 +1,10 @@
 const chalk = require('chalk');
-const codeDiff = require('../codediff.js');
+//const codeDiff = require('../codediff.js');
 const assert = require('assert');
 
 
 const StackUtils = require('stack-utils');
-const stack = new StackUtils({cwd: process.cwd(), internals: StackUtils.nodeInternals()});
+const stack = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
 
 const pad = (string, pad='    ')=>(string + pad).substring(0, pad.length);
 
@@ -15,8 +15,8 @@ const path = require('path');
 
 const codeSnippet = (file, line, col)=>{
 	const code = fs.readFileSync(path.resolve(process.cwd(), file), 'utf8').split('\n');
-	const renderLine = (lineNum, color='grey')=>chalk[color](pad(lineNum+':')) + code[lineNum - 1].replace(/\t/g, '  ');
-	return [renderLine(line-1), chalk.bgRed.bold(renderLine(line, 'white')), renderLine(line+1)].join('\n')
+	const renderLine = (lineNum, color='grey')=>chalk[color](pad(`${lineNum}:`)) + code[lineNum - 1].replace(/\t/g, '  ');
+	return [renderLine(line-1), chalk.bgRed.bold(renderLine(line, 'white')), renderLine(line+1)].join('\n');
 };
 
 
@@ -64,7 +64,7 @@ module.exports = (error, title='')=>{
 		console.log('Difference');
 		//console.log(indent(codeDiff(error.actual, error.expected)));
 
-	}else{
+	} else {
 
 		console.log();
 	}
@@ -87,4 +87,4 @@ module.exports = (error, title='')=>{
 	//If any other error, print a clean stack trace
 
 
-}
+};
