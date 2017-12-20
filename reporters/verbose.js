@@ -8,6 +8,12 @@ let depth = 0;
 
 
 /* Utils */
+const pad = (str, num)=>' '.repeat(num || depth) + str;
+const clearLines = (numLines = 1)=>{
+	process.stdout.moveCursor(0, -numLines);
+	process.stdout.clearScreenDown();
+};
+
 const stdoutHook = (fn=()=>{})=>{
 	const old_write = process.stdout.write;
 	process.stdout.write = (...args)=>{
@@ -16,24 +22,23 @@ const stdoutHook = (fn=()=>{})=>{
 	};
 }
 
-
-const pad = (str, num)=>' '.repeat(num || depth) + str;
-const clearLines = (numLines = 1)=>{
-	process.stdout.moveCursor(0, -numLines);
-	process.stdout.clearScreenDown();
-};
-
 let logUsed = false;
-//stdoutHook(()=>logUsed = true);
+stdoutHook(()=>{
+	if(!logUsed) console.log(chalk.magenta('▼──Test Logs───────────\n'));
+	logUsed = true
+});
 
 
 let results = {};
 
 
+//TODO: just return an object with the right function names
 
-const Verbose = (type, item)=>{
+
+const Verbose = (type, ...args)=>{
 	const match = {
 		start : ()=>{
+			//logUsed = false;
 			results = {
 				passed : 0,
 				failed : [],
@@ -50,7 +55,7 @@ const Verbose = (type, item)=>{
 			depth += 2;
 		},
 
-		end_group : (group)=>{
+		end_group : (group, results)=>{
 			if(!group.name) return;
 			//console.log('\n');
 			depth -= 2;
@@ -59,38 +64,34 @@ const Verbose = (type, item)=>{
 
 		//TODO: might not need this
 		start_test : (test)=>{
-			console.log('HEYEYEY', test);
 			console.log(chalk.yellow(`● ${test.name}...`));
-			//console.log(chalk.magenta('▼──Test Logs───────────\n'));
-			//logUsed = false;
+			logUsed = false;
 		},
 
-		end_test : (test)=>{
-			console.log('HEREER', test);
+		end_test : (test, result)=>{
+
 
 			//clearLines(1);
 
-			// if(!logUsed){
-			// 	clearLines(3);
-			// }else{
-			// 	console.log(chalk.magenta('\n▲──Test Logs────────────'));
-			// }
-
-			if(test.error){
-				console.log('HERE', test.error);
-				console.log(ErrorReport(test.error, test.name));
+			if(!logUsed){
+				clearLines(3);
+			}else{
+				console.log(chalk.magenta('\n▲──Test Logs────────────'));
 			}
 
-			if(!test.error){
-				console.log(test);
+			if(result instanceof Error){
+				return console.log(ErrorReport(result, test.name));
+			}else if(result === true){
 				return console.log(chalk.green(`✓ ${test.name}`));
+			}else if(result === false){
+				console.log('skipped');
 			}
 			//console.log(chalk.bgRed(`X ${test.name}`));
 			//console.log(chalk.red(`X ${test.name}`));
 
 		},
 
-		end : (results)=>{
+		end : (group, results)=>{
 			//console.dir(results, {depth:null})
 			console.log('──────────');
 			console.log('Done!');
@@ -98,7 +99,7 @@ const Verbose = (type, item)=>{
 		}
 	};
 
-	if(match[type]) match[type](item)
+	if(match[type]) match[type](...args)
 };
 
 

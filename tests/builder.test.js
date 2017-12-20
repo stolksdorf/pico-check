@@ -1,25 +1,28 @@
-const test = require('../pico-test.js')();
+const test = require('../pico-test.js');
 
-test('I am a basic test', (t)=>{
-	t.pass();
+
+
+test('Basic test', (t)=>{
+	t.is(3, 2+1)
 })
 
-test.skip()('I am a basic test', (t)=>{
-	t.fail();
+
+test.only('Only test', (t)=>t.pass())
+test.skip('This is skipped test', (t)=>t.fail(), {skip: false})
+
+test.skip().only('Skip only', ()=>{})
+test.only().skip('Only Skip', ()=>{})
+
+
+test.only().group('Grouped tests', (test)=>{
+	test('should be skipped', (t)=>{});
+	test.only('should be only and skipped', ()=>{});
 })
 
-test.group('New group', (test)=>{
-	test.only()('I am a nested test', (t)=>{
-		t.pass();
-	});
-});
 
+console.dir(test.get(), {depth:null})
 
-//console.dir(test.get(), {depth:null});
-
-
-test.run()
-	.then((group)=>console.dir(group, {depth:null}))
+test.run().then((summary)=>console.log('summary', summary))
 
 
 

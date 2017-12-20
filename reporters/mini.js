@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const ErrorReport = require('./error.js');
 
 const clearLines = (numLines = 1)=>{
 	process.stdout.moveCursor(0, -numLines);
@@ -6,46 +7,43 @@ const clearLines = (numLines = 1)=>{
 };
 
 let groups = [];
+let errors = [];
 let passed = 0;
 let failed = 0;
 let skipped = 0;
 
 const update = (test)=>{
 	clearLines(5);
-	test.passing ? passed++ : failed++;
-	console.log(`${groups[groups.length -1 ]} >> ${test.name}`);
+	console.log(`${groups[groups.length-1]} >> ${test.name}`);
 	console.log();
-	console.log(`${passed} passed`);
-	console.log(`${failed} failed`);
-	console.log(`${skipped} skipped`);
+	console.log(chalk.green(`${passed} passed`));
+	console.log(chalk.red(`${failed} failed`));
+	console.log(chalk.blue(`${skipped} skipped`));
 };
 
 
-const Mini = (type, item)=>{
-	const match = {
-		start : ()=>{
-			console.log('\n\n\n');
-		},
-
-		start_group : (group)=>groups.push(group.name),
-		end_group   : (group)=>groups.pop(),
-
-
-		start_test : (test)=>update(test),
-		end_test : (test)=>update(test),
-
-		end : (results)=>{
-			//console.dir(results, {depth:null},
-			console.log('──────────');
-			console.log('Done!');
-
-			// Report each error?
-
+const Mini = {
+	start : ()=>{
+		console.log('\n\n\n');
+	},
+	startGroup : (group)=>groups.push(group.name),
+	endGroup   : (group, result)=>groups.pop(),
+	startTest  : (test)=>update(test),
+	endTest    : (test, result)=>{
+		if(result === true) passed++;
+		if(result === false) skipped++;
+		if(result instanceof Error){
+			failed++;
+			errors.push(result);
 		}
-
-
+		update(test)
+	},
+	end : (results)=>{
+		//console.dir(results, {depth:null},
+		console.log('──────────');
+		console.log('Done!');
+		errors.map(ErrorReport);
 	}
-	if(match[type]) match[type](item);
 };
 
 module.exports = Mini;

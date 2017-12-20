@@ -1,45 +1,54 @@
-const pathRelative = require('path').relative
-const cwd = process.cwd();
-const chalk = require('chalk');
-const concordance = require('concordance');
-const concordanceTheme = require('./concordance.theme.js');
-
-const StackUtils = require('stack-utils');
-const stack = new StackUtils({cwd: process.cwd(), internals: StackUtils.nodeInternals()});
+// const pathRelative = require('path').relative
+// const cwd = process.cwd();
+// const chalk = require('chalk');
 
 
-const assert = require('assert');
+
 
 //pathRelative(cwd, module.parent.filename);
 
 const Utils = {
-	getFilename : ()=>{
-		try {
-			var err = new Error();
-			var callerfile;
-			var currentfile;
-
-			Error.prepareStackTrace = function (err, stack) { return stack; };
-
-			//return err.stack[1].getFileName();
-
-			return pathRelative(cwd, err.stack[2].getFileName());
-
-		} catch (err) {}
-		return undefined;
+	merge        : (...args)=>Object.assign({}, ...args),
+	isObjectLike : (val1, val2)=>{
+		return (val1 != null && typeof val1 == 'object') ||
+			   (val2 != null && typeof val2 == 'object');
+	},
+	sequence : (list, fn)=>{
+		return list.reduce((prom, val, key)=>{
+			return prom.then((result)=>{
+				let temp = fn(val, key);
+				temp = (temp instanceof Promise ? temp : Promise.resolve(temp))
+				return temp.then((value)=>{
+					result.push(value);
+					return result;
+				});
+			});
+		}, Promise.resolve([]))
 	},
 
-	getCodeSnippet : (filename, line, col, around=3)=>{
-
-
+	getSummary : (results)=>{
+		let summary = {passed : 0, failed : 0, skipped : 0, passing : true };
+		const mergeSummaries = (sum1, sum2)=>({
+			passed  : sum1.passed + sum2.passed,
+			failed  : sum1.failed + sum2.failed,
+			skipped : sum1.skipped + sum2.skipped,
+			passing : sum1.passing && sum2.passing
+		});
+		results.map((result)=>{
+			if(result instanceof Error){
+				summary.failed++;
+				summary.passing = false;
+			}
+			else if(result === true){  summary.passed++; }
+			else if(result === false){ summary.skipped++; }
+			else{
+				summary = mergeSummaries(summary, Utils.getSummary(result));
+			}
+		})
+		return summary;
 	},
 
-	getSummary : (group)=>{
-		//Given a testing group, it iterates and returns
-		// the number of
-		//Passed, failed, skipped, todo, pending
-		//Also a list of all tests that failed
-	},
+
 
 	cleanStackTrace : (error)=>{
 		//split on newline
@@ -52,25 +61,6 @@ const Utils = {
 
 	},
 
-	getCodeDiff : (expected, actual)=>{
-		try{
-			assert.equal(4,5)
-		}catch(err){
-			console.log(err.actual);
-			console.log(err.expected);
-		}
-
-		console.log();
-
-		//console.log(concordance);
-		//return concordance.describe(expected);
-
-		//Bump right into the error reporter
-		return concordance.diff(expected, actual, {
-			theme:concordanceTheme
-		});
-
-	}
 
 };
 

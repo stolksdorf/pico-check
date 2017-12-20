@@ -1,33 +1,26 @@
 const ErrorReport = require('../reporters/error.js');
 const assert = require('assert');
-const Assert = Object.assign({}, assert, {
-	pass : ()=>{},
-	fail : (msg = 't.fail')=>assert.fail(msg),
-	timeout : new Error('Async timeout')
-});
 
-const pt = require('../lib.js');
+const lib = require('../lib.js');
+const test = require('../pico-test.js')();
 
 
-const testcase = pt.createTestCase('testing out', (t)=>{
-	t.fail();
-});
-
-console.log(testcase);
-
-testcase.run()
-	.then((res)=>{
-		console.log('res', res);
-		console.log('---');
-		console.log(res.error.stack);
-		console.log(testcase.error.stack);
-	})
+const temp = require('../require.test.js');
 
 
+temp.add();
+console.log(temp.show());
 
+
+const temp2 = require('../require.test.js');
+
+temp2.add();
+console.log(temp2.show());
 
 
 //console.log(ErrorReport(new Error('This is an error'), "This is the message for the error"));
+
+
 
 // try{
 // 	assert.equal([1,2], [2,1], "Let's go");
@@ -45,11 +38,26 @@ testcase.run()
 // 	console.log(ErrorReport(err, "This is an external error"));
 // }
 
+const pureTest = lib.createTestCase('yo', (t)=>{
+	t.pass()
+})
+pureTest.run().then((res)=>{
+	console.log(res);
+	//ErrorReport(res, 'This is a testcase error');
+})
 
-// Promise.resolve()
-// 	.then(()=>{
-// 		assert.fail()
-// 	})
-// 	.catch((err)=>console.log(ErrorReport(err, "This is an assertion fail")))
+// console.log('pure', pureTest);
 
 
+// // test('this is a built testcase', (t)=>{
+// // 	console.log('running');
+// // 	t.equal(5,6)
+// // })
+
+// test.get().add(pureTest)
+
+
+
+// test.get().run().then((res)=>{
+// 	console.log('RES', res);
+// })

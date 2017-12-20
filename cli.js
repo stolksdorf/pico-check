@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+//const chokidar = require('chokidar');
 const minimist = require('minimist');
 const glob = require('glob');
 const path = require('path');
@@ -85,8 +85,9 @@ if(opts.require) requireRelative(opts.require);
 
 const runningGroup = flatMap(opts.tests, (testGlob)=>glob.sync(testGlob))
 	.reduce((group, testPath)=>{
-		console.log(testPath);
-		return group.add(requireRelative(testPath))
+		const testFile = requireRelative(testPath);
+		if(!testFile) console.log(`${testPath} did not export a test group.`);
+		return group.add(testFile)
 	}, Test.createGroup())
 
 
@@ -101,9 +102,9 @@ const executeTestSuite = (group)=>{
 		.run({
 			reporter : loadReporter(opts)
 		}, true) //TODO: add in opts
-		.then((group)=>{
-			console.dir(group, {depth:null});
-			group.passing ? process.exit(1) : process.exit(0);
+		.then((summary)=>{
+			console.dir('summary', summary, {depth:null});
+			if(!opts.useWatch) summary.passing ? process.exit(1) : process.exit(0);
 		})
 		.catch((err)=>{
 			console.log('CAUGHT HERE');
@@ -113,8 +114,20 @@ const executeTestSuite = (group)=>{
 }
 
 
-executeTestSuite(runningGroup);
+
 
 //reporter('start', runningGroup);
+
+if(opts.useWatch){
+	// chokidar.watch(opts.watch, {ignored: opts.ignored}).on('all', (event, path) => {
+	// 	executeTestSuite(runningGroup);
+	// 	console.log('Watcher enabled. PURPLE');
+	// });
+};
+
+
+
+
+executeTestSuite(runningGroup);
 
 

@@ -1,83 +1,59 @@
-
-//TODO: Apparently there's an assert lib?! Let's use that!!
-const assert = require('assert');
-const Assert = Object.assign({}, assert, {
-	pass : ()=>{},
-	fail : (msg = 't.fail')=>assert.fail(msg),
-	timeout : new Error('Async timeout')
-});
-
-//const utils = require('./utils.js');
-
-const report = (reporter, ...args)=>{
-	if(typeof reporter === 'function') reporter(...args);
-}
-
+const Assert = require('./assert.js');
+const utils = require('./utils.js');
 
 const Test = {
-	createTestCase : (name, testFunc, opts={})=>{
-		const testCase = {
-			name,
-			opts,
-			error : null,
+	createTestCase : (name, testFunc, paramOpts={})=>{
+		const testCase = { name, opts : paramOpts,
 			run : (runOpts={})=>{
-				//TODO: merge runopts with reg opts
-				report(runOpts.reporter, 'start_test', testCase);
+				const opts = utils.merge(testCase.opts, runOpts);
+				(opts.reporter && opts.reporter.startTest(testCase));
 				return new Promise((resolve, reject)=>{
-
-					let timer;
-					const finish = (err = false)=>{
-						if(err && !testCase.error) testCase.error =  err;
-						clearTimeout(timer);
-						resolve(testCase);
-					}
+					if(opts.skip) return resolve(false);
 					try{
-						console.log('RUNNING');
 						const testResult = testFunc(Assert);
-						console.log('TEST RESULT', testResult);
-						if(!(testResult instanceof Promise)) return finish();
-						timer = setTimeout(()=>finish(Assert.timeout), opts.timeout);
-						testResult
-							.then(()=>finish())
-							.catch((err)=>finish(err))
+						if(!(testResult instanceof Promise)) return resolve();
+						Assert.timeout(resolve, opts.timeout);
+						testResult.then(resolve).catch(resolve);
 					}catch(err){
-						console.log('type 1', err instanceof Error);
-						const temp = new Error(err)
-						console.log(err);
-						finish(new Error(err));
+						resolve(err);
 					}
 				})
-				.then(()=>report(runOpts.reporter, 'end_test', testCase))
-				.then(()=>testCase);
+				.then((result = true)=>{
+					(opts.reporter && opts.reporter.endTest(testCase))
+					return result;
+				});
 			}
 		};
 		return testCase;
 	},
-	createGroup : (name, opts={})=>{
+	createGroup : (name, paramOpts={})=>{
 		const group = {
 			name,
-			opts,
-			tests   : [],
-			passing : true,
-			add : (item)=>{
+			opts  : paramOpts,
+			tests : [],
+			add   : (item)=>{
 				if(typeof item == 'function') item = item.get();
-				if(item.opts.only) group.opts.subonly = true;
+				if(item.opts.only || item.opts.has_only) group.opts.has_only = true;
 				group.tests.push(item);
 				return group;
 			},
 			run : (runOpts={}, root=false)=>{
-				if(root) report(runOpts.reporter, 'start', group);
-				report(runOpts.reporter, 'start_group', group);
-				return group.tests.reduce((prom, test)=>{
-					return prom
-						.then(()=>test.run(runOpts))
-						.then(()=>group.passing = (!group.passing ? false : !test.error))
-				}, Promise.resolve())
-				.then(()=>report(runOpts.reporter, 'end_group', group))
-				.then(()=>{
-					if(root) report(runOpts.reporter, 'end', group)
+				const opts = utils.merge(group.opts, runOpts);
+
+				(root && opts.reporter && opts.reporter.start(group));
+				(opts.reporter && opts.reporter.startGroup(group));
+
+				return utils.sequence(group.tests, (test)=>{
+					if(group.opts.has_only && !test.opts.only){
+						return false;
+					}
+					return test.run(opts);
 				})
-				.then(()=>group)
+				.then((results)=>{
+					(opts.reporter && opts.reporter.endGroup(group));
+					(root && opts.reporter && opts.reporter.end(group));
+					return results;
+				})
 			}
 		}
 		return group;

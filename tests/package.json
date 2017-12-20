@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec npm run test",
-    "test": "pico-test -v -w ./simple.test.js"
+    "test": "pico-test -v -w ./simple.test.js ./complex.test.js"
   },
   "author": "",
   "license": "ISC",

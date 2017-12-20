@@ -4,12 +4,8 @@ module.exports = {
 		ecmaVersion  : 6,
 		sourceType   : 'module',
 		ecmaFeatures : {
-			jsx                          : true,
 			experimentalObjectRestSpread : true,
 		}
-	},
-	env : {
-		browser : true,
 	},
 	rules   : {
 		/** Errors **/
@@ -48,7 +44,7 @@ module.exports = {
 
 		/** Whitespace **/
 		'array-bracket-spacing' : ['warn', 'never'],
-		'arrow-spacing'         : ['warn', { before: true, after: true }],
+		'arrow-spacing'         : ['warn', { before: false, after: false }],
 		'comma-spacing'         : ['warn', { before: false, after: true }],
 		'indent'                : ['warn', 'tab'],
 		'keyword-spacing'       : ['warn', {
