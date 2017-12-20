@@ -1,4 +1,4 @@
-const lib = require('../lib.js');
+const lib = require('../src/lib.js');
 
 
 const group = lib.createGroup('New group');

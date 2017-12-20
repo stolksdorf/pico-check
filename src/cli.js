@@ -6,7 +6,7 @@ const path = require('path');
 const fs   = require('fs');
 const Test = require('./lib.js');
 
-
+//TODO: move to utils
 const flatMap = (list, fn)=>[].concat(...list.map(fn));
 const requireRelative = (modulePath)=>require(path.resolve(process.cwd(), modulePath));
 
@@ -59,10 +59,10 @@ const getOpts = ()=>{
 
 const loadReporter = (opts)=>{
 	if(opts.reporter) return requireRelative(opts.reporter);
-	if(opts.verbose)  return require('./reporters/verbose.js');
-	if(opts.tap)      return require('./reporters/tap.js');
+	if(opts.verbose)  return require('../reporters/verbose.js');
+	if(opts.tap)      return require('../reporters/tap.js');
 
-	return require('./reporters/mini.js');
+	return require('../reporters/mini.js');
 };
 
 
@@ -92,7 +92,7 @@ const runningGroup = flatMap(opts.tests, (testGlob)=>glob.sync(testGlob))
 
 
 console.dir(runningGroup, { depth: null });
-
+//
 
 //const TestGroups = glob.sync(opts.tests.join(' ')).map((testPath)=>require(path.resolve(testPath)));
 

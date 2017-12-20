@@ -1,5 +1,5 @@
-const Test = require('./lib.js');
-const utils = require('./utils.js');
+const Test = require('./src/lib.js');
+const utils = require('./src/utils.js');
 const path = require('path');
 delete require.cache[require.resolve('./pico-test.js')];
 

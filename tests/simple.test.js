@@ -1,8 +1,5 @@
 const test = require('../pico-test.js');
 
-
-
-
 test('I AM A FAILED TEST', (t)=>{
 	t.is([3], 4);
 });
