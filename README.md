@@ -87,6 +87,13 @@ $ npm install --save-dev pico-test
 -
 
 
+### `lib.js`
+
+`lib.createTestCase(msg, testFunc, [opts])`
+
+Create a new
+
+
 ## API
 
 ### Assertion
@@ -102,7 +109,9 @@ The testing function provided to a test case will be executed with `pico-test`'s
 const test = require('pico-test');
 
 test('Making sure addition works', (t)=>{
+	(complexCondition ? t.pass() : t.fail())
 	t.is(3 + 4, 7);
+	t.is({a : 6}, {a:6});
 });
 ```
 
