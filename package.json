@@ -7,7 +7,7 @@
     "lint": "eslint --fix **/*.js",
     "lint:dry": "eslint **/*.js",
     "dev": "nodemon --exec npm run test",
-    "test": "cd ./tests && npm run test",
+    "test:cli": "cd ./tests/cli-test && npm run test",
     "test:simple": "nodemon tests/simple.test.js",
     "test:verbose": "nodemon tests/verbose.test.js",
     "test:error": "nodemon tests/error.test.js",
@@ -36,9 +36,10 @@
   "dependencies": {
     "ansi-styles": "^3.2.0",
     "chalk": "^2.3.0",
+    "chokidar": "^2.0.0",
+    "commander": "^2.12.2",
     "concordance": "^3.0.0",
     "glob": "^7.1.2",
-    "minimist": "^1.2.0",
     "stack-utils": "^1.0.1"
   }
 }

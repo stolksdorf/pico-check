@@ -24,7 +24,7 @@ const stdoutHook = (fn=()=>{})=>{
 
 let logUsed = false;
 stdoutHook(()=>{
-	if(!logUsed) console.log(chalk.magenta('▼──Test Logs───────────\n'));
+	//if(!logUsed) console.log(chalk.magenta('▼──Test Logs───────────\n'));
 	logUsed = true;
 });
 

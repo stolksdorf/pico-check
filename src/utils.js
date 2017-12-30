@@ -2,13 +2,17 @@
 // const cwd = process.cwd();
 // const chalk = require('chalk');
 
-
+const stack = require('stack-utils');
+const path = require('path');
 
 
 //pathRelative(cwd, module.parent.filename);
 
 const Utils = {
 	merge        : (...args)=>Object.assign({}, ...args),
+	flatMap      : (list, fn)=>[].concat(...list.map(fn)),
+	relativePath : (modulePath)=>path.resolve(process.cwd(), modulePath),
+	requireRelative : (modulePath)=>require(Utils.relativePath(modulePath)),
 	isObjectLike : (val1, val2)=>{
 		return (val1 != null && typeof val1 == 'object') ||
 			   (val2 != null && typeof val2 == 'object');
@@ -25,18 +29,19 @@ const Utils = {
 			});
 		}, Promise.resolve([]))
 	},
-
 	getSummary : (results)=>{
-		let summary = {passed : 0, failed : 0, skipped : 0, passing : true };
+		let summary = {passed : 0, failed : 0, skipped : 0, passing : true, errors: [] };
 		const mergeSummaries = (sum1, sum2)=>({
-			passed  : sum1.passed + sum2.passed,
-			failed  : sum1.failed + sum2.failed,
+			passed  : sum1.passed  + sum2.passed,
+			failed  : sum1.failed  + sum2.failed,
 			skipped : sum1.skipped + sum2.skipped,
-			passing : sum1.passing && sum2.passing
+			passing : sum1.passing && sum2.passing,
+			errors  : sum1.errors.concat(sum2.errors)
 		});
 		results.map((result)=>{
 			if(result instanceof Error){
 				summary.failed++;
+				summary.errors.push(result);
 				summary.passing = false;
 			}
 			else if(result === true){  summary.passed++; }
@@ -47,26 +52,11 @@ const Utils = {
 		})
 		return summary;
 	},
+	processError : (err, testName = false)=>{
+		//console.log(err);
 
-
-
-	cleanStackTrace : (error)=>{
-		//split on newline
-		//map over a regex, parse into callsite objects, include a raw string
-		//filter on common node paths and what not
-		//return
-		return stack.clean(error)
-
-		// https://github.com/tapjs/stack-utils/blob/master/index.js
-
+		return err;
 	},
-
-
 };
-
-
-
-
-//console.log(Utils.getFilename());
 
 module.exports = Utils;

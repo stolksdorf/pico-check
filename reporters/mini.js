@@ -6,25 +6,29 @@ const clearLines = (numLines = 1)=>{
 	process.stdout.clearScreenDown();
 };
 
-const groups = [];
-const errors = [];
-let passed = 0;
-let failed = 0;
-let skipped = 0;
+let groupd, passed, failed, skipped;
 
 const update = (test)=>{
 	clearLines(5);
 	console.log(`${groups[groups.length-1]} >> ${test.name}`);
 	console.log();
-	console.log(chalk.green(`${passed} passed`));
-	console.log(chalk.red(`${failed} failed`));
-	console.log(chalk.blue(`${skipped} skipped`));
+	printSummary();
 };
+
+const printSummary = ()=>{
+	console.log(chalk.greenBright(`${passed} passed`));
+	console.log(chalk.redBright(`${failed} failed`));
+	console.log(chalk.cyanBright(`${skipped} skipped`));
+}
 
 
 const Mini = {
 	start : ()=>{
 		console.log('\n\n\n');
+		groups = [];
+		passed = 0;
+		failed = 0;
+		skipped = 0;
 	},
 	startGroup : (group)=>groups.push(group.name),
 	endGroup   : (group, result)=>groups.pop(),
@@ -32,17 +36,17 @@ const Mini = {
 	endTest    : (test, result)=>{
 		if(result === true) passed++;
 		if(result === false) skipped++;
-		if(result instanceof Error){
-			failed++;
-			errors.push(result);
-		}
+		if(result instanceof Error) failed++;
 		update(test);
 	},
-	end : (results)=>{
-		//console.dir(results, {depth:null},
+	end : (summary)=>{
+		clearLines(5);
+		printSummary();
+		//console.log(summary);
+		//console.dir(results, {depth:null})
 		console.log('──────────');
 		console.log('Done!');
-		errors.map(ErrorReport);
+		//errors.map(ErrorReport);
 	}
 };
 

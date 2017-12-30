@@ -1,133 +1,55 @@
 #!/usr/bin/env node
-//const chokidar = require('chokidar');
-const minimist = require('minimist');
+const chokidar = require('chokidar');
 const glob = require('glob');
-const path = require('path');
-const fs   = require('fs');
+const chalk = require('chalk');
+
+const utils = require('./utils.js');
 const Test = require('./lib.js');
+const opts = require('./getopts.js');
 
-//TODO: move to utils
-const flatMap = (list, fn)=>[].concat(...list.map(fn));
-const requireRelative = (modulePath)=>require(path.resolve(process.cwd(), modulePath));
+if(opts.require) opts.require.map((modulePath)=>utils.requireRelative(modulePath));
 
-
-const getOpts = ()=>{
-	const getPckg = (currPath = path.resolve(''))=>{
-		const pckg = path.join(currPath, 'package.json');
-		if(fs.existsSync(pckg)) return require(pckg);
-		const info = path.parse(currPath);
-		if(info.root == info.dir) return {};
-		return getConfig(info.dir);
-	};
-	const defaults = {
-		tests    : ['*.test.js'],
-		ignore   : ['node_modules'],
-		reporter : false,
-		tap      : false,
-		verbose  : false,
-		require  : false,
-		useWatch : false,
-		watch    : ['*.js'],
-		timeout  : 500
-	};
-
-	const parseArgs = ()=>{
-		const opts = {
-			boolean : ['tap', 'verbose', 'useWatch'],
-			string  : ['timeout', 'require', 'reporter', 'ignore'],
-			alias   : { require: 'r', verbose: 'v', tap: 't', useWatch: 'w', ignore: 'i' }
-		};
-		const args = minimist(process.argv.slice(2), opts);
-		if(args._.length) args.tests = args._;
-		delete args._;
-		opts.boolean.map((key)=>{ if(!args[key]) delete args[key]; });
-		return args;
-	};
-	const pckg = getPckg();
-	const opts = Object.assign({},
-		defaults,
-		pckg.picotest || pckg.picoTest || pckg['pico-test'],
-		parseArgs()
-	);
-
-	if(opts.watch === true) opts.watch = '*.js';
-	if(typeof opts.watch == 'string') opts.watch = [opts.watch];
-	if(typeof opts.ignore == 'string') opts.ignore = [opts.ignore];
-
-	return opts;
-};
-
-const loadReporter = (opts)=>{
-	if(opts.reporter) return requireRelative(opts.reporter);
+const loadReporter = ()=>{
+	if(opts.reporter) return utils.requireRelative(opts.reporter);
 	if(opts.verbose)  return require('../reporters/verbose.js');
 	if(opts.tap)      return require('../reporters/tap.js');
-
 	return require('../reporters/mini.js');
 };
+opts.reporter = loadReporter();
 
+const runTestSuite = ()=>{
+	const testGroups = utils.flatMap(opts.tests, (testGlob)=>glob.sync(testGlob, {ignore: opts.ignore}))
+		.reduce((acc, testPath)=>{
+			testPath = utils.relativePath(testPath);
+			delete require.cache[require.resolve(testPath)];
+			const testFile = utils.requireRelative(testPath);
+			if(!testFile || !testFile.run) throw `Err: ${testPath} did not export a test group.`;
+			return acc.concat(testFile)
+		}, []);
 
-const opts = getOpts();
+	const TestSuite = testGroups.reduce((suite, group)=>suite.add(group), Test.createGroup('Test Suite'));
 
-
-console.log(opts);
-
-
-if(opts.require) requireRelative(opts.require);
-
-
-
-
-/* --------------------- */
-
-//console.log(opts);
-
-
-
-const runningGroup = flatMap(opts.tests, (testGlob)=>glob.sync(testGlob))
-	.reduce((group, testPath)=>{
-		const testFile = requireRelative(testPath);
-		if(!testFile) console.log(`${testPath} did not export a test group.`);
-		return group.add(testFile);
-	}, Test.createGroup());
-
-
-console.dir(runningGroup, { depth: null });
-//
-
-//const TestGroups = glob.sync(opts.tests.join(' ')).map((testPath)=>require(path.resolve(testPath)));
-
-
-const executeTestSuite = (group)=>{
-	group
-		.run({
-			reporter : loadReporter(opts)
-		}, true) //TODO: add in opts
-		.then((summary)=>{
-			console.dir('summary', summary, { depth: null });
-			if(!opts.useWatch) summary.passing ? process.exit(1) : process.exit(0);
+	opts.reporter.start();
+	return TestSuite
+		.run(opts)
+		.then((results)=>{
+			const summary = utils.getSummary(results);
+			opts.reporter.end(summary);
+			if(!opts.watch) summary.passing ? process.exit(0) : process.exit(1);
 		})
 		.catch((err)=>{
-			console.log('CAUGHT HERE');
 			console.error(err);
-			process.exit(0);
+			process.exit(1);
 		});
 };
 
+if(opts.watch){
+	const runWatch = (event, path)=>{
+		runTestSuite()
+			.then(()=>console.log(chalk.magentaBright(`\nWatching enabled on ${opts.source.toString()}`)))
+	}
+	chokidar.watch(opts.source, {ignored: opts.ignore, ignoreInitial : true}).on('all', runWatch);
+	return runWatch();
+}
 
-
-
-//reporter('start', runningGroup);
-
-if(opts.useWatch){
-	// chokidar.watch(opts.watch, {ignored: opts.ignored}).on('all', (event, path) => {
-	// 	executeTestSuite(runningGroup);
-	// 	console.log('Watcher enabled. PURPLE');
-	// });
-};
-
-
-
-
-executeTestSuite(runningGroup);
-
-
+runTestSuite();

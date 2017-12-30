@@ -1,10 +1,13 @@
 const Assert = require('./assert.js');
 const utils = require('./utils.js');
 
+//TODO:
+// error processing cleans the stack and adds test details into the error obj
+
 const Test = {
 	createTestCase : (name, testFunc, paramOpts={})=>{
 		const testCase = { name, opts : paramOpts,
-			run  : (runOpts={})=>{
+			run : (runOpts={})=>{
 				const opts = utils.merge(testCase.opts, runOpts);
 				(opts.reporter && opts.reporter.startTest(testCase));
 				return new Promise((resolve, reject)=>{
@@ -13,15 +16,15 @@ const Test = {
 						const testResult = testFunc(Assert);
 						if(!(testResult instanceof Promise)) return resolve();
 						Assert.timeout(resolve, opts.timeout);
-						testResult.then(resolve).catch(resolve);
+						testResult.then(resolve).catch((err)=>resolve(utils.processError(err, name)));
 					} catch (err){
-						resolve(err);
+						resolve(utils.processError(err, name));
 					}
 				})
-					.then((result = true)=>{
-						(opts.reporter && opts.reporter.endTest(testCase));
-						return result;
-					});
+				.then((result = true)=>{
+					(opts.reporter && opts.reporter.endTest(testCase, result));
+					return result;
+				});
 			}
 		};
 		return testCase;
@@ -37,23 +40,17 @@ const Test = {
 				group.tests.push(item);
 				return group;
 			},
-			run : (runOpts={}, root=false)=>{
+			run : (runOpts={})=>{
 				const opts = utils.merge(group.opts, runOpts);
-
-				(root && opts.reporter && opts.reporter.start(group));
 				(opts.reporter && opts.reporter.startGroup(group));
-
 				return utils.sequence(group.tests, (test)=>{
-					if(group.opts.has_only && !test.opts.only){
-						return false;
-					}
+					if(group.opts.has_only && !test.opts.only) return false;
 					return test.run(opts);
 				})
-					.then((results)=>{
-						(opts.reporter && opts.reporter.endGroup(group));
-						(root && opts.reporter && opts.reporter.end(group));
-						return results;
-					});
+				.then((results)=>{
+					(opts.reporter && opts.reporter.endGroup(group, results));
+					return results;
+				});
 			}
 		};
 		return group;
