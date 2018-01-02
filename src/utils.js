@@ -1,12 +1,9 @@
-// const pathRelative = require('path').relative
-// const cwd = process.cwd();
-// const chalk = require('chalk');
-
-const stack = require('stack-utils');
 const path = require('path');
 
-
-//pathRelative(cwd, module.parent.filename);
+// const internalPaths = Object.keys(process.binding('natives'))
+// 	.concat(['bootstrap_node', 'node'])
+// 	.map((name)=>new RegExp(`${name}\\.js:\\d+:\\d+`))
+// 	.concat([new RegExp(`\\\\pico-test\\\\src\\\\`)]);
 
 const Utils = {
 	merge        : (...args)=>Object.assign({}, ...args),
@@ -15,7 +12,7 @@ const Utils = {
 	requireRelative : (modulePath)=>require(Utils.relativePath(modulePath)),
 	isObjectLike : (val1, val2)=>{
 		return (val1 != null && typeof val1 == 'object') ||
-			   (val2 != null && typeof val2 == 'object');
+				 (val2 != null && typeof val2 == 'object');
 	},
 	sequence : (list, fn)=>{
 		return list.reduce((prom, val, key)=>{
@@ -30,7 +27,7 @@ const Utils = {
 		}, Promise.resolve([]))
 	},
 	getSummary : (results)=>{
-		let summary = {passed : 0, failed : 0, skipped : 0, passing : true, errors: [] };
+		//let summary = {passed : 0, failed : 0, skipped : 0, passing : true, errors: [] };
 		const mergeSummaries = (sum1, sum2)=>({
 			passed  : sum1.passed  + sum2.passed,
 			failed  : sum1.failed  + sum2.failed,
@@ -38,7 +35,8 @@ const Utils = {
 			passing : sum1.passing && sum2.passing,
 			errors  : sum1.errors.concat(sum2.errors)
 		});
-		results.map((result)=>{
+		return results.reduce((summary, result)=>{
+			if(Array.isArray(result)) return mergeSummaries(summary, Utils.getSummary(result));
 			if(result instanceof Error){
 				summary.failed++;
 				summary.errors.push(result);
@@ -46,17 +44,34 @@ const Utils = {
 			}
 			else if(result === true){  summary.passed++; }
 			else if(result === false){ summary.skipped++; }
-			else{
-				summary = mergeSummaries(summary, Utils.getSummary(result));
-			}
-		})
-		return summary;
-	},
-	processError : (err, testName = false)=>{
-		//console.log(err);
+			return summary;
+		}, {passed : 0, failed : 0, skipped : 0, passing : true, errors: []});
 
-		return err;
+
+		// results.map((result)=>{
+		// 	if(result instanceof Error){
+		// 		summary.failed++;
+		// 		summary.errors.push(result);
+		// 		summary.passing = false;
+		// 	}
+		// 	else if(result === true){  summary.passed++; }
+		// 	else if(result === false){ summary.skipped++; }
+		// 	else summary = mergeSummaries(summary, Utils.getSummary(result));
+		// });
+		// return summary;
 	},
+	// parseError : (err)=>{
+	// 	let stack = err.stack.split('\n')
+	// 		.filter((line)=>!internalPaths.some((regex)=>regex.test(line)))
+	// 		.map((line)=>line.replace(process.cwd(), '.'))
+	// 	const matches = /\((.*):(\d+):(\d+)/.exec(stack[1]);
+	// 	return {
+	// 		file  : matches[1],
+	// 		stack : stack.join('\n'),
+	// 		line  : Number(matches[2]),
+	// 		col   : Number(matches[3])
+	// 	};
+	// },
 };
 
 module.exports = Utils;

@@ -1,9 +1,6 @@
 const Assert = require('./assert.js');
 const utils = require('./utils.js');
 
-//TODO:
-// error processing cleans the stack and adds test details into the error obj
-
 const Test = {
 	createTestCase : (name, testFunc, paramOpts={})=>{
 		const testCase = { name, opts : paramOpts,
@@ -16,9 +13,9 @@ const Test = {
 						const testResult = testFunc(Assert);
 						if(!(testResult instanceof Promise)) return resolve();
 						Assert.timeout(resolve, opts.timeout);
-						testResult.then(resolve).catch((err)=>resolve(utils.processError(err, name)));
+						testResult.then(resolve).catch((err)=>resolve(err));
 					} catch (err){
-						resolve(utils.processError(err, name));
+						resolve(err);
 					}
 				})
 				.then((result = true)=>{

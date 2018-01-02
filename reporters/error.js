@@ -1,90 +1,87 @@
-const chalk = require('chalk');
-//const codeDiff = require('../codediff.js');
-const assert = require('assert');
+const fs     = require('fs');
+const path   = require('path');
+const chalk  = require('chalk');
+const Assert = require('../src/assert.js');
 
+const codeDiff = require('../src/codediff.js');
+const utils = require('../src/utils.js');
 
-const StackUtils = require('stack-utils');
-const stack = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
+const internalPaths = Object.keys(process.binding('natives'))
+	.concat(['bootstrap_node', 'node'])
+	.map((name)=>new RegExp(`${name}\\.js:\\d+:\\d+`))
+	.concat([new RegExp(`\\\\pico-test\\\\src\\\\`)]);
 
-const pad = (string, pad='    ')=>(string + pad).substring(0, pad.length);
-
-
-
-const fs = require('fs');
-const path = require('path');
-
-const codeSnippet = (file, line, col)=>{
-	const code = fs.readFileSync(path.resolve(process.cwd(), file), 'utf8').split('\n');
-	const renderLine = (lineNum, color='grey')=>chalk[color](pad(`${lineNum}:`)) + code[lineNum - 1].replace(/\t/g, '  ');
-	return [renderLine(line-1), chalk.bgRed.bold(renderLine(line, 'white')), renderLine(line+1)].join('\n');
+const parseError = (err)=>{
+	let stack = err.stack.split('\n')
+		.filter((line)=>!internalPaths.some((regex)=>regex.test(line)))
+		.map((line)=>line.replace(process.cwd(), '.'))
+	const matches = /\((.*):(\d+):(\d+)/.exec(stack[1]);
+	return {
+		file  : matches[1],
+		stack : stack.join('\n'),
+		line  : Number(matches[2]),
+		col   : Number(matches[3])
+	};
 };
 
+// TODO: Move to Utils?
+const pad = (string, pad='    ')=>(string + pad).substring(0, pad.length);
+const indent = (string, pad='')=>string.split('\n').map((line)=>`${pad}${line}`).join('\n');
 
-// used by mini in final results
-//used by verbose
 
-// Clean error stack trace
-// Extract out file, line number, column number
-//Write a code extracter
-//Use concordance to do error diff if it is an assertion error
-//
+const codeSnippet = (file, line, col, indent='')=>{
+	const code = fs.readFileSync(path.resolve(process.cwd(), file), 'utf8').split('\n');
+	//const renderLine = (lineNum, color='grey')=>indent + chalk[color](pad(`${lineNum}:`)) + code[lineNum - 1].replace(/\t/g, '  ');
+	const renderLine = (lineNum)=>indent + chalk.grey(`${lineNum}:`.padEnd(5)) + code[lineNum - 1].replace(/\t/g, '  ');
 
-// https://github.com/avajs/ava/blob/master/lib/beautify-stack.js
+	/*Red number + indicator*/
+	// return [
+	// 	'    ' + chalk.grey(`${line - 1}:`.padEnd(5)) + code[line - 2].replace(/\t/g, '  '),
+	// 	chalk.redBright('  > ' + chalk.redBright(`${line    }:`.padEnd(5))) + code[line - 1].replace(/\t/g, '  '),
+	// 	'    ' + chalk.grey(`${line + 1}:`.padEnd(5)) + code[line - 0].replace(/\t/g, '  '),
 
-// https://github.com/avajs/ava/blob/master/lib/code-excerpt.js
+	// ].join('\n')
 
+	/* Red line */
+	// return [
+	// 	'    ' + chalk.grey(`${line - 1}:`.padEnd(5)) + code[line - 2].replace(/\t/g, '  '),
+	// 	chalk.redBright('  > ' + chalk.grey(`${line    }:`.padEnd(5)) + code[line - 1].replace(/\t/g, '  ')),
+	// 	'    ' + chalk.grey(`${line + 1}:`.padEnd(5)) + code[line - 0].replace(/\t/g, '  '),
+
+	// ].join('\n')
+
+	/* Red background */
+	return [
+		'    ' + chalk.grey(`${line - 1}:`.padEnd(5)) + code[line - 2].replace(/\t/g, '  '),
+		chalk.bgRed.bold('    ' + `${line    }:`.padEnd(5) + code[line - 1].replace(/\t/g, '  ')),
+		'    ' + chalk.grey(`${line + 1}:`.padEnd(5)) + code[line - 0].replace(/\t/g, '  '),
+
+	].join('\n')
+};
 
 module.exports = (error, title='')=>{
+	const err = parseError(error);
+
+	const name = (title ? `${title} ` : '')
+	const location = chalk.grey(` ${err.file}:${err.line}`);
+	const snippet = codeSnippet(err.file, err.line, err.column, '   ');
+
 	let report = '';
-
-	if(title) report = `${chalk.red('  X')} ${title}\n`;
-
-	console.log(title);
-	console.log(typeof error);
-	console.log(typeof error.stack);
-	console.log(error.stack);
-
-	console.log('         ');
-	return;
-	console.log('CALLSITE', error.stack[0].getLineNumber());
-
-	const cleanedStack = stack.clean(error.stack);
-
-	console.log('STACK', cleanedStack);
-
-	const loc = stack.parseLine(cleanedStack.split('\n')[0]);
-
-	console.log(loc.file, loc.line);
-
-	report += codeSnippet(loc.file, loc.line, loc.column);
-
-
-
-	if(error instanceof assert.AssertionError){
-		console.log('Difference');
-		//console.log(indent(codeDiff(error.actual, error.expected)));
-
+	if(Assert.isForcedFail(error)){
+		report = 'Forced fail yo';
+	}else if(error instanceof Assert.AssertionError){
+		report = indent(`Difference: \n${codeDiff(error.actual, error.expected)}`, '    ');
 	} else {
-
-		console.log();
+		//TODO; possibly color this?d
+		report = indent(err.stack, '    ');
 	}
 
-	console.log('RPOERT', report);
+	return `
+${chalk.red('  X')} ${name}${location}
 
-	return report;
+${snippet}
 
+${report}
 
-
-	// Print Test Case name
-	// Print filename where the error happened
-
-
-
-	//Print the code snippet
-
-	//If Assertion Error, use Concordance to print a pretty diff
-
-	//If any other error, print a clean stack trace
-
-
+`;
 };

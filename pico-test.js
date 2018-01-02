@@ -3,6 +3,9 @@ const utils = require('./src/utils.js');
 const path = require('path');
 delete require.cache[require.resolve('./pico-test.js')];
 
+
+//TODO: Add file prop to each group and test?
+
 const GroupBuilder = (name, groupOpts={})=>{
 	const group = Test.createGroup(name, groupOpts);
 

@@ -1,24 +1,36 @@
 const ErrorReport = require('../reporters/error.js');
+const utils = require('../src/utils.js');
+const Assert = require('../src/assert.js');
 const assert = require('assert');
 
-const lib = require('../lib.js');
-const test = require('../pico-test.js')();
 
 
-const temp = require('../require.test.js');
+
+const manualError = new Error('This is an error');
+let codeError;
+try{ a + b }catch(err){ codeError = err; }
+let diffError;
+try{ Assert.deepEqual({b:6, a : true}, {a: false}) }catch(err){ diffError = err; }
+let failError;
+try{ Assert.fail() }catch(err){ failError = err; }
 
 
-temp.add();
-console.log(temp.show());
+console.log(ErrorReport(manualError, 'This is an manualError'));
+console.log(ErrorReport(codeError, 'This is an codeError'));
+console.log(ErrorReport(diffError, 'This is an diffError'));
+console.log(ErrorReport(failError, 'This is an failError'));
 
 
-const temp2 = require('../require.test.js');
+// console.log(utils.parseError(manualError));
+// console.log('-----------------');
+// console.log(utils.parseError(codeError));
+// console.log('-----------------');
+// console.log(utils.parseError(assertError));
 
-temp2.add();
-console.log(temp2.show());
 
 
-//console.log(ErrorReport(new Error('This is an error'), "This is the message for the error"));
+
+//console.log(ErrorReport();
 
 
 
@@ -38,13 +50,13 @@ console.log(temp2.show());
 // 	console.log(ErrorReport(err, "This is an external error"));
 // }
 
-const pureTest = lib.createTestCase('yo', (t)=>{
-	t.pass();
-});
-pureTest.run().then((res)=>{
-	console.log(res);
-	//ErrorReport(res, 'This is a testcase error');
-});
+// const pureTest = lib.createTestCase('yo', (t)=>{
+// 	t.pass();
+// });
+// pureTest.run().then((res)=>{
+// 	console.log(res);
+// 	//ErrorReport(res, 'This is a testcase error');
+// });
 
 // console.log('pure', pureTest);
 
