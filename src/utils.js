@@ -31,6 +31,7 @@ const Utils = {
 		const mergeSummaries = (sum1, sum2)=>({
 			passed  : sum1.passed  + sum2.passed,
 			failed  : sum1.failed  + sum2.failed,
+
 			skipped : sum1.skipped + sum2.skipped,
 			passing : sum1.passing && sum2.passing,
 			errors  : sum1.errors.concat(sum2.errors)

@@ -25,7 +25,7 @@ console.log(ErrorReport(failError, 'This is an failError'));
 // console.log('-----------------');
 // console.log(utils.parseError(codeError));
 // console.log('-----------------');
-// console.log(utils.parseError(assertError));
+// console.log(utils.parseError(assertError));d
 
 
 
