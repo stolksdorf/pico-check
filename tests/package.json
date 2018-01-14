@@ -1,0 +1,18 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "pico-test",
+    "cli": "pico-test -v cli.test.js",
+    "verbose": "pico-test -v -w reporter.test.js",
+    "mini": "pico-test -w reporter.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "pico-test": {
+    "timeout": 1500,
+    "source" : "../**/*.js"
+  }
+}

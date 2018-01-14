@@ -9,10 +9,11 @@
     "dev": "nodemon --exec npm run test",
     "test:cli": "cd ./tests/cli-test && npm run test",
     "test:simple": "nodemon tests/simple.test.js",
-    "test:verbose": "nodemon tests/verbose.test.js",
     "test:error": "nodemon tests/error.test.js",
     "test:lib": "nodemon tests/lib.test.js",
-    "test:builder": "nodemon tests/builder.test.js"
+    "test:builder": "nodemon tests/builder.test.js",
+    "verbose": "cd ./tests && npm run verbose",
+    "mini": "cd ./tests && npm run mini"
   },
   "bin": "src/cli.js",
   "repository": {
@@ -39,7 +40,6 @@
     "chokidar": "^2.0.0",
     "commander": "^2.12.2",
     "concordance": "^3.0.0",
-    "glob": "^7.1.2",
-    "stack-utils": "^1.0.1"
+    "glob": "^7.1.2"
   }
 }

@@ -90,10 +90,10 @@ const Verbose = {
 
 	},
 
-	end : (group, results)=>{
-		//console.dir(results, {depth:null})
+	end : (summary)=>{
 		console.log('──────────');
 		console.log('Done!');
+		console.log('Summary', summary);
 
 	}
 };

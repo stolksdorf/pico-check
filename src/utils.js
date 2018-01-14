@@ -1,9 +1,22 @@
 const path = require('path');
 
-// const internalPaths = Object.keys(process.binding('natives'))
-// 	.concat(['bootstrap_node', 'node'])
-// 	.map((name)=>new RegExp(`${name}\\.js:\\d+:\\d+`))
-// 	.concat([new RegExp(`\\\\pico-test\\\\src\\\\`)]);
+//Polyfills
+if (!String.prototype.padEnd) {
+	String.prototype.padEnd = function padEnd(pad=1,char=' ') {
+		if (this.length > pad) return String(this);
+		pad = pad-this.length;
+		if (pad > char.length) char += char.repeat(pad/char.length);
+		return String(this) + char.slice(0,pad);
+	};
+}
+if (!String.prototype.padStart) {
+	String.prototype.padStart = function padStart(pad=1,char=' ') {
+		if (this.length > pad) return String(this);
+		pad = pad-this.length;
+		if (pad > char.length) char += char.repeat(pad/char.length);
+		return char.slice(0,pad) + String(this);
+	};
+}
 
 const Utils = {
 	merge        : (...args)=>Object.assign({}, ...args),
@@ -13,6 +26,11 @@ const Utils = {
 	isObjectLike : (val1, val2)=>{
 		return (val1 != null && typeof val1 == 'object') ||
 				 (val2 != null && typeof val2 == 'object');
+	},
+	//Todo: Allow numerical pad?
+	indent : (string, pad=1)=>{
+		if(typeof pad == 'number') pad = new Array(pad).join(' ');
+		return string.split('\n').map((line)=>`${pad}${line}`).join('\n');
 	},
 	sequence : (list, fn)=>{
 		return list.reduce((prom, val, key)=>{
@@ -31,7 +49,6 @@ const Utils = {
 		const mergeSummaries = (sum1, sum2)=>({
 			passed  : sum1.passed  + sum2.passed,
 			failed  : sum1.failed  + sum2.failed,
-
 			skipped : sum1.skipped + sum2.skipped,
 			passing : sum1.passing && sum2.passing,
 			errors  : sum1.errors.concat(sum2.errors)

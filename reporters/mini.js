@@ -46,7 +46,7 @@ const Mini = {
 		//console.dir(results, {depth:null})
 		console.log('──────────');
 		console.log('Done!');
-		console.log(summary.errors);
+		//console.log(summary.errors);
 		//errors.map(ErrorReport);
 	}
 };

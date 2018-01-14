@@ -13,7 +13,8 @@ const loadReporter = ()=>{
 	if(opts.reporter) return utils.requireRelative(opts.reporter);
 	if(opts.verbose)  return require('../reporters/verbose.js');
 	if(opts.tap)      return require('../reporters/tap.js');
-	return require('../reporters/mini.js');
+	return require('../reporters/simple.reporter.js');
+	//return require('../reporters/mini.js');
 };
 opts.reporter = loadReporter();
 
@@ -23,7 +24,8 @@ const runTestSuite = ()=>{
 			testPath = utils.relativePath(testPath);
 			delete require.cache[require.resolve(testPath)];
 			const testFile = utils.requireRelative(testPath);
-			if(!testFile || !testFile.run) throw `Err: ${testPath} did not export a test group.`;
+			//if(!testFile || !testFile.run) throw `Err: ${testPath} did not export a test group.`;
+			if(!testFile || !testFile.run) return console.error(`Err: ${testPath} did not export a test group.`);
 			return acc.concat(testFile)
 		}, []);
 
@@ -34,7 +36,7 @@ const runTestSuite = ()=>{
 		.run(opts)
 		.then((results)=>{
 			const summary = utils.getSummary(results);
-			opts.reporter.end(summary);
+			opts.reporter.end(summary, results);
 			if(!opts.watch) summary.passing ? process.exit(0) : process.exit(1);
 		})
 		.catch((err)=>{
@@ -46,7 +48,7 @@ const runTestSuite = ()=>{
 if(opts.watch){
 	const runWatch = (event, path)=>{
 		runTestSuite()
-			.then(()=>console.log(chalk.magentaBright(`\nWatching enabled on ${opts.source.toString()}`)))
+			.then(()=>console.log(chalk.magentaBright(`\n🕑 Watching enabled on ${opts.source.toString()}`)))
 	}
 	chokidar.watch(opts.source, {ignored: opts.ignore, ignoreInitial : true}).on('all', runWatch);
 	return runWatch();

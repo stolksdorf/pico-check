@@ -1,14 +1,10 @@
-const Test = require('./src/lib.js');
+const Test  = require('./src/lib.js');
 const utils = require('./src/utils.js');
-const path = require('path');
+const path  = require('path');
 delete require.cache[require.resolve('./pico-test.js')];
-
-
-//TODO: Add file prop to each group and test?
 
 const GroupBuilder = (name, groupOpts={})=>{
 	const group = Test.createGroup(name, groupOpts);
-
 	const TestBuilder = (baseOpts={})=>{
 		const testcase = function(name, testFunc, opts={}){
 			group.add(Test.createTestCase(name, testFunc, utils.merge(baseOpts, opts)));
@@ -22,14 +18,13 @@ const GroupBuilder = (name, groupOpts={})=>{
 		addCmd('only', { only: true });
 		addCmd('skip', { skip: true });
 		addCmd('todo', { todo: true });
-
 		testcase.group = (name, scope, opts)=>{
 			const newBuilder = GroupBuilder(name, utils.merge(baseOpts, opts));
 			group.add(newBuilder.get());
 			scope(newBuilder);
 			return newBuilder;
 		};
-		testcase.run = (...args)=>group.run(...args).then(utils.getSummary);
+		testcase.run = (...args)=>group.run(...args);
 		testcase.get = ()=>group;
 		testcase.add = (item)=>group.add(item);
 		return testcase;
@@ -37,5 +32,4 @@ const GroupBuilder = (name, groupOpts={})=>{
 	return TestBuilder();
 };
 
-const testFileName = path.relative(process.cwd(), module.parent.filename);
-module.exports = GroupBuilder(testFileName);
+module.exports = GroupBuilder(path.relative(process.cwd(), module.parent.filename));

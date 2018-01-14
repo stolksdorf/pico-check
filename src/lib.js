@@ -7,18 +7,21 @@ const Test = {
 			run : (runOpts={})=>{
 				const opts = utils.merge(testCase.opts, runOpts);
 				(opts.reporter && opts.reporter.startTest(testCase));
+				let timeout;
 				return new Promise((resolve, reject)=>{
 					if(opts.skip) return resolve(false);
 					try {
 						const testResult = testFunc(Assert);
 						if(!(testResult instanceof Promise)) return resolve();
-						Assert.timeout(resolve, opts.timeout);
+						timeout = Assert.timeout(resolve, opts.timeout);
 						testResult.then(resolve).catch((err)=>resolve(err));
 					} catch (err){
 						resolve(err);
 					}
 				})
 				.then((result = true)=>{
+					clearTimeout(timeout);
+					if(result instanceof Error) result.test = testCase;
 					(opts.reporter && opts.reporter.endTest(testCase, result));
 					return result;
 				});
