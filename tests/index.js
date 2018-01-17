@@ -14,7 +14,7 @@ const displayFn = (type, info)=>{
 	console.log(type, info);
 };
 
-const picotest = require('../pico-test.js');
+const picotest = require('../pico-check.js');
 
 
 

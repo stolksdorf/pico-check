@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pico-test",
-    "cli": "pico-test -v cli.test.js",
-    "verbose": "pico-test -v -w reporter.test.js",
-    "mini": "pico-test -w reporter.test.js"
+    "test": "pico-check",
+    "cli": "pico-check -v cli.test.js",
+    "verbose": "pico-check -v -w reporter.test.js",
+    "mini": "pico-check -w reporter.test.js"
   },
   "author": "",
   "license": "ISC",
-  "pico-test": {
+  "pico-check": {
     "timeout": 1500,
     "source" : "../**/*.js"
   }

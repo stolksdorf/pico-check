@@ -1,4 +1,4 @@
-const test = require('../pico-test.js');
+const test = require('../pico-check.js');
 
 
 test('I am a basic test', (t)=>{

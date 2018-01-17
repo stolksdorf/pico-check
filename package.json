@@ -1,8 +1,8 @@
 {
-  "name": "pico-test",
+  "name": "pico-check",
   "version": "0.0.1",
   "description": "An incredibly tiny javascript testing library",
-  "main": "pico-test.js",
+  "main": "pico-check.js",
   "scripts": {
     "lint": "eslint --fix **/*.js",
     "lint:dry": "eslint **/*.js",
@@ -18,7 +18,7 @@
   "bin": "src/cli.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stolksdorf/pico-test.git"
+    "url": "git+https://github.com/stolksdorf/pico-check.git"
   },
   "keywords": [
     "test",
@@ -30,10 +30,12 @@
   "author": "stolksdorf",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/stolksdorf/pico-test/issues"
+    "url": "https://github.com/stolksdorf/pico-check/issues"
   },
-  "homepage": "https://github.com/stolksdorf/pico-test#readme",
-  "devDependencies": {},
+  "homepage": "https://github.com/stolksdorf/pico-check#readme",
+  "devDependencies": {
+    "eslint": "^4.15.0"
+  },
   "dependencies": {
     "ansi-styles": "^3.2.0",
     "chalk": "^2.3.0",

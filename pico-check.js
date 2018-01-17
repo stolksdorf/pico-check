@@ -1,7 +1,7 @@
 const Test  = require('./src/lib.js');
 const utils = require('./src/utils.js');
 const path  = require('path');
-delete require.cache[require.resolve('./pico-test.js')];
+delete require.cache[require.resolve('./pico-check.js')];
 
 const GroupBuilder = (name, groupOpts={})=>{
 	const group = Test.createGroup(name, groupOpts);

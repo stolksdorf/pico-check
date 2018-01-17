@@ -1,4 +1,4 @@
-const ptest = require('../pico-test.js');
+const ptest = require('../pico-check.js');
 
 
 const myGroup = ptest.createGroup('test');

@@ -1,4 +1,4 @@
-# pico-test
+# pico-check
 An incredibly tiny javascript testing library. Heavily inspired by the wonderful [ava](https://github.com/avajs/ava) and [tape](https://github.com/substack/tape).
 
 
@@ -21,7 +21,7 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 - [Links](#links)
 - [Team](#team)
 
-## Why `pico-test`
+## Why `pico-check`
 - Incredibly small
   - *Core Library*: 100 lines
   - *CLI*: 100 lines
@@ -31,7 +31,7 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 
 ### Test Syntax
 ```js
-const test = require('pico-test');
+const test = require('pico-check');
 
 test('testing addition', (t)=>{
 	t.is(3 + 4, 7);
@@ -50,7 +50,7 @@ module.exports = test;
 ### install
 
 ```
-$ npm install --save-dev pico-test
+$ npm install --save-dev pico-check
 ```
 
 `package.json`
@@ -58,13 +58,13 @@ $ npm install --save-dev pico-test
 {
 	"name": "smashing-project",
 	"scripts": {
-		"test": "pico-test"
+		"test": "pico-check"
 	},
-	"pico-test": {
+	"pico-check": {
 		//configs here
 	},
 	"devDependencies": {
-		"pico-test": "^0.20.0"
+		"pico-check": "^0.20.0"
 	}
 }
 ```
@@ -98,7 +98,7 @@ Create a new
 
 ### Assertion
 
-The testing function provided to a test case will be executed with `pico-test`'s assertion object as it's first and only parameter. `pico-test`s assertion object is just an extension of node's built-in [assert](https://nodejs.org/api/assert.html). It extends it with three functions.
+The testing function provided to a test case will be executed with `pico-check`'s assertion object as it's first and only parameter. `pico-check`s assertion object is just an extension of node's built-in [assert](https://nodejs.org/api/assert.html). It extends it with three functions.
 
 * `t.pass([msg])` - Always passes. Alias for `t.ok(true, [msg])`
 * `t.is(actual, expected, [msg])` - Intelligently chooses between `t.equal` or `t.deepEqual` based on the type of `expected`.
@@ -106,7 +106,7 @@ The testing function provided to a test case will be executed with `pico-test`'s
 
 *usage*
 ```js
-const test = require('pico-test');
+const test = require('pico-check');
 
 test('Making sure addition works', (t)=>{
 	(complexCondition ? t.pass() : t.fail())

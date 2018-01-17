@@ -32,11 +32,11 @@ const getPckg = (currPath = path.resolve(''))=>{
 	return getPckg(info.dir);
 };
 const pckg = getPckg()
-const packageOpts = pckg.picotest || pckg.picoTest || pckg['pico-test'] || {};
+const packageOpts = pckg.picotest || pckg.picoTest || pckg['pico-check'] || {};
 
 const cliOpts = cli
 	.version(package.version)
-	.command('pico-test [tests]')
+	.command('pico-check [tests]')
 	.usage('[options] <test files...>')
 	.option('-v --verbose', 'use the verbose reporter')
 	.option('-t --tap', 'use the TAP reporter')
