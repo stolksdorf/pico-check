@@ -30,10 +30,6 @@ const parseError = (err)=>{
 	};
 };
 
-// TODO: Move to Utils?
-const pad = (string, pad='    ')=>(string + pad).substring(0, pad.length);
-const indent = (string, pad='')=>string.split('\n').map((line)=>`${pad}${line}`).join('\n');
-
 const codeSnippet = (file, line, col, indent='')=>{
 	const code = fs.readFileSync(path.resolve(process.cwd(), file), 'utf8').split('\n');
 	const renderLine = (lineNum, color='grey')=>chalk[color](`${lineNum}:`.padEnd(5)) + code[lineNum - 1].replace(/\t/g, '  ');
@@ -49,9 +45,9 @@ module.exports = (error, title='')=>{
 	const name = (title ? `${title} ` : error.test.name);
 	const location = chalk.grey(`${err.file}:${err.line}`);
 	const getReport = ()=>{
-		if(Assert.isForcedFail(error)) return indent(error.message, '    ');
-		if(error instanceof Assert.AssertionError) return indent(`Difference: \n${codeDiff(error.actual, error.expected)}`, '    ');
-		return indent(err.stack, '    '); //TODO: possibly color this?
+		if(Assert.isForcedFail(error)) return utils.indent(error.message, 5);
+		if(error instanceof Assert.AssertionError) return utils.indent(`Difference: \n${codeDiff(error.actual, error.expected)}`, 5);
+		return utils.indent(err.stack, 5); //TODO: possibly color this?
 	};
 	return `${chalk.redBright('  X')} ${name}  ${location}\n
 ${err.file ? codeSnippet(err.file, err.line, err.column, '    ') : ''}\n

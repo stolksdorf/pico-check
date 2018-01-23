@@ -1,6 +1,5 @@
 //const Emitter = require('events');
 const chalk = require('chalk');
-
 const ErrorReport = require('./error.js');
 
 let depth = 0;
@@ -15,10 +14,10 @@ const clearLines = (numLines = 1)=>{
 };
 
 const stdoutHook = (fn=()=>{})=>{
-	const old_write = process.stdout.write;
+	const oldWrite = process.stdout.write;
 	process.stdout.write = (...args)=>{
 		fn(...args);
-		old_write.call(process.stdout, ...args);
+		oldWrite.call(process.stdout, ...args);
 	};
 };
 
@@ -29,8 +28,6 @@ stdoutHook(()=>{
 });
 
 //TODO: replace with utils.getSummary
-let results = {};
-
 
 //TODO: just return an object with the right function names
 
@@ -38,13 +35,6 @@ let results = {};
 const Verbose = {
 	start : ()=>{
 		//logUsed = false;
-		results = {
-			passed  : 0,
-			failed  : [],
-			skipped : 0,
-			todo    : 0
-		};
-
 
 	},
 

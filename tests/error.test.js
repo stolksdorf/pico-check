@@ -1,7 +1,5 @@
 const ErrorReport = require('../reporters/error.js');
-const utils = require('../src/utils.js');
 const Assert = require('../src/assert.js');
-const assert = require('assert');
 
 
 

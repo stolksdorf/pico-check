@@ -19,14 +19,13 @@ const loadReporter = ()=>{
 opts.reporter = loadReporter();
 
 const runTestSuite = ()=>{
-	const testGroups = utils.flatMap(opts.tests, (testGlob)=>glob.sync(testGlob, {ignore: opts.ignore}))
+	const testGroups = utils.flatMap(opts.tests, (testGlob)=>glob.sync(testGlob, { ignore: opts.ignore }))
 		.reduce((acc, testPath)=>{
 			testPath = utils.relativePath(testPath);
 			delete require.cache[require.resolve(testPath)];
 			const testFile = utils.requireRelative(testPath);
-			//if(!testFile || !testFile.run) throw `Err: ${testPath} did not export a test group.`;
 			if(!testFile || !testFile.run) return console.error(`Err: ${testPath} did not export a test group.`);
-			return acc.concat(testFile)
+			return acc.concat(testFile);
 		}, []);
 
 	const TestSuite = testGroups.reduce((suite, group)=>suite.add(group), Test.createGroup('Test Suite'));
@@ -48,10 +47,10 @@ const runTestSuite = ()=>{
 if(opts.watch){
 	const runWatch = (event, path)=>{
 		runTestSuite()
-			.then(()=>console.log(chalk.magentaBright(`\n🕑 Watching enabled on ${opts.source.toString()}`)))
-	}
-	chokidar.watch(opts.source, {ignored: opts.ignore, ignoreInitial : true}).on('all', runWatch);
-	return runWatch();
+			.then(()=>console.log(chalk.magentaBright(`\n🕑 Watching enabled on ${opts.source.toString()}`)));
+	};
+	chokidar.watch(opts.source, { ignored: opts.ignore, ignoreInitial: true }).on('all', runWatch);
+	runWatch();
 }
 
 runTestSuite();

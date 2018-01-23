@@ -1,12 +1,12 @@
 const chalk = require('chalk');
-const ErrorReport = require('./error.js');
+//const ErrorReport = require('./error.js');
 
 const clearLines = (numLines = 1)=>{
 	process.stdout.moveCursor(0, -numLines);
 	process.stdout.clearScreenDown();
 };
 
-let groupd, passed, failed, skipped;
+let groups, passed, failed, skipped;
 
 const update = (test)=>{
 	clearLines(5);

@@ -4,9 +4,6 @@
 const test = require('../pico-check.js');
 const lib = require('../src/lib.js');
 
-const times = (n, fn)=>Array.from(Array(n)).map((unf, i)=>fn(i));
-const sample = (arr)=>arr[Math.floor(Math.random()*arr.length)];
-
 const Tests = [
 	lib.createTestCase('A basic test', (t)=>t.not(4, 5)),
 	lib.createTestCase('A test with logs', (t)=>{

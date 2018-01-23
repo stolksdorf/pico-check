@@ -33,9 +33,6 @@
     "url": "https://github.com/stolksdorf/pico-check/issues"
   },
   "homepage": "https://github.com/stolksdorf/pico-check#readme",
-  "devDependencies": {
-    "eslint": "^4.15.0"
-  },
   "dependencies": {
     "ansi-styles": "^3.2.0",
     "chalk": "^2.3.0",

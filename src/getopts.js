@@ -1,19 +1,21 @@
 const cli = require('commander');
-const package = require('../package.json');
+const rootPckg = require('../package.json');
 const path = require('path');
 const fs   = require('fs');
 const utils = require('./utils.js');
 
-const ensureArray = (key)=>{
-	if(opts[key] && !Array.isArray(opts[key])) opts[key] = [opts[key]];
+const ensureArray = (keys)=>{
+	keys.map((key)=>{
+		if(opts[key] && !Array.isArray(opts[key])) opts[key] = [opts[key]];
+	});
 };
 const applyToOpts = (obj)=>{
 	Object.keys(opts).map((key)=>{
 		if(typeof obj[key] !== 'undefined') opts[key] = obj[key];
-	})
+	});
 };
 
-let opts = {
+const opts = {
 	tests    : ['**/*.test.js'],
 	ignore   : ['node_modules/**'],
 	reporter : false,
@@ -31,11 +33,11 @@ const getPckg = (currPath = path.resolve(''))=>{
 	if(info.root == info.dir) return {};
 	return getPckg(info.dir);
 };
-const pckg = getPckg()
-const packageOpts = pckg.picotest || pckg.picoTest || pckg['pico-check'] || {};
+const pckg = getPckg();
+const packageOpts = pckg.picocheck || pckg.picoCheck || pckg['pico-check'] || {};
 
 const cliOpts = cli
-	.version(package.version)
+	.version(rootPckg.version)
 	.command('pico-check [tests]')
 	.usage('[options] <test files...>')
 	.option('-v --verbose', 'use the verbose reporter')
@@ -46,16 +48,12 @@ const cliOpts = cli
 	.option('--reporter [path]', 'path to custom reporter')
 	.option('--require [path]', 'path to extra modules to require before tests are ran')
 	.option('--source [path]', 'paths to files to watch')
-	.parse(process.argv)
-if(cliOpts.args.length) cliOpts.tests = cliOpts.args;
+	.parse(process.argv);
 
+
+if(cliOpts.args.length) cliOpts.tests = cliOpts.args;
 applyToOpts(packageOpts);
 applyToOpts(cliOpts);
-
-ensureArray('tests')
-ensureArray('watch')
-ensureArray('ignore')
-ensureArray('require')
-ensureArray('source')
+ensureArray(['tests', 'watch', 'ignore', 'require', 'source']);
 
 module.exports = opts;
