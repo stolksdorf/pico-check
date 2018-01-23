@@ -7,7 +7,9 @@
     "test": "pico-check",
     "cli": "pico-check -v cli.test.js",
     "verbose": "pico-check -v -w reporter.test.js",
-    "mini": "pico-check -w reporter.test.js"
+    "mini": "pico-check -w reporter.test.js",
+    "utils": "pico-check -w utils.test.js",
+    "only": "pico-check -w only.test.js",
   },
   "author": "",
   "license": "ISC",

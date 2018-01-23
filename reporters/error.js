@@ -9,7 +9,10 @@ const utils = require('../src/utils.js');
 const InternalPaths = Object.keys(process.binding('natives'))
 	.concat(['bootstrap_node', 'node'])
 	.map((name)=>new RegExp(`${name}\\.js:\\d+:\\d+`))
-	.concat([new RegExp(`\\\\pico-check\\\\src\\\\`)]);
+	.concat([
+		new RegExp(`\\\\pico-check\\\\src\\\\`),
+		new RegExp(`<anonymous>`)
+	]);
 
 const parseError = (err)=>{
 	const newStack = err.stack.split('\n')

@@ -23,12 +23,9 @@ const Utils = {
 	flatMap         : (list, fn)=>[].concat(...list.map(fn)),
 	relativePath    : (modulePath)=>path.resolve(process.cwd(), modulePath),
 	requireRelative : (modulePath)=>require(Utils.relativePath(modulePath)),
-	isObjectLike    : (val1, val2)=>{
-		return (val1 != null && typeof val1 == 'object') ||
-			   (val2 != null && typeof val2 == 'object');
-	},
+	isObjectLike    : (...args)=>!!args.find((val)=>val != null && typeof val == 'object'),
 	indent : (string, pad=1)=>{
-		if(typeof pad == 'number') pad = new Array(pad).join(' ');
+		if(typeof pad == 'number') pad = new Array(pad+1).join(' ');
 		return string.split('\n').map((line)=>`${pad}${line}`).join('\n');
 	},
 	sequence : (list, fn)=>{

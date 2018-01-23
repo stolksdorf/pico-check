@@ -51,6 +51,7 @@ if(opts.watch){
 	};
 	chokidar.watch(opts.source, { ignored: opts.ignore, ignoreInitial: true }).on('all', runWatch);
 	runWatch();
+}else{
+	runTestSuite();
 }
 
-runTestSuite();

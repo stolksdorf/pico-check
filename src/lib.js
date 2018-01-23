@@ -2,7 +2,7 @@ const Assert = require('./assert.js');
 const utils = require('./utils.js');
 
 const Test = {
-	createTestCase : (name, testFunc, paramOpts={})=>{
+	createTestCase : (name, testScope, paramOpts={})=>{
 		const testCase = { name, opts : paramOpts,
 			run  : (runOpts={})=>{
 				const opts = utils.merge(testCase.opts, runOpts);
@@ -11,7 +11,7 @@ const Test = {
 				return new Promise((resolve, reject)=>{
 					if(opts.skip) return resolve(false);
 					try {
-						const testResult = testFunc(Assert);
+						const testResult = testScope(Assert);
 						if(!(testResult instanceof Promise)) return resolve();
 						timeout = Assert.timeout(resolve, opts.timeout);
 						testResult.then(resolve).catch((err)=>resolve(err));
@@ -44,7 +44,8 @@ const Test = {
 				const opts = utils.merge(group.opts, runOpts);
 				(opts.reporter && opts.reporter.startGroup(group));
 				return utils.sequence(group.tests, (test)=>{
-					if(group.opts.has_only && !test.opts.only) return false;
+					if(opts.skip) return test.run({skip:true, ...opts});
+					if(group.opts.has_only && !test.opts.only) return test.run({skip:true, ...opts});
 					return test.run(opts);
 				})
 					.then((results)=>{
