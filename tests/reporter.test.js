@@ -20,34 +20,34 @@ const Tests = [
 	lib.createTestCase('Sluggish test', (t)=>{
 		return new Promise((resolve, reject)=>{
 			t.pass();
-			setTimeout(resolve, 500)
-		})
-	}, {timeout : 600}),
-	lib.createTestCase('Diff fail',    (t)=>t.is({a : 6}, {a : false, b : true})),
+			setTimeout(resolve, 500);
+		});
+	}, { timeout: 600 }),
+	lib.createTestCase('Diff fail',    (t)=>t.is({ a: 6 }, { a: false, b: true })),
 	lib.createTestCase('Too slow', (t)=>{
 		return new Promise((resolve, reject)=>{
 			t.pass();
-			setTimeout(resolve, 5000)
-		})
-	}, {timeout : 800}),
-	lib.createTestCase('Diff success', (t)=>t.is({a : 6}, {a : 6})),
+			setTimeout(resolve, 5000);
+		});
+	}, { timeout: 800 }),
+	lib.createTestCase('Diff success', (t)=>t.is({ a: 6 }, { a: 6 })),
 	lib.createTestCase('Forced Fail',  (t)=>t.fail('Super Forced')),
-	lib.createTestCase('Skipped fail',  (t)=>t.fail(), {skip : true}),
+	lib.createTestCase('Skipped fail',  (t)=>t.fail(), { skip: true }),
 	lib.createTestCase('Reject async', (t)=>{
 		return new Promise((resolve, reject)=>{
 			t.pass();
-			setTimeout(reject, 500)
-		})
-	}, {timeout : 2000})
+			setTimeout(reject, 500);
+		});
+	}, { timeout: 2000 })
 ];
 Tests.map(test.add);
 
 
 const newGroup = lib.createGroup('Grouped tests');
-newGroup.add(Tests[3])
-newGroup.add(Tests[2])
-newGroup.add(Tests[6])
-newGroup.add(Tests[7])
+newGroup.add(Tests[3]);
+newGroup.add(Tests[2]);
+newGroup.add(Tests[6]);
+newGroup.add(Tests[7]);
 test.add(newGroup);
 
 

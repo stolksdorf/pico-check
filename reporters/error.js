@@ -14,14 +14,14 @@ const InternalPaths = Object.keys(process.binding('natives'))
 const parseError = (err)=>{
 	const newStack = err.stack.split('\n')
 		.filter((line)=>!InternalPaths.some((regex)=>regex.test(line)))
-		.map((line)=>line.replace(process.cwd(), '.'))
+		.map((line)=>line.replace(process.cwd(), '.'));
 	const matches = /\((.*):(\d+):(\d+)/.exec(newStack[1]);
 	if(!matches) return {
 		stack : err.stack,
 		file  : false,
 		line  : '??',
 		col   : '??'
-	}
+	};
 	return {
 		file  : matches[1],
 		stack : newStack.join('\n'),
@@ -41,7 +41,7 @@ const codeSnippet = (file, line, col, indent='')=>{
 		indent + renderLine(line-1),
 		indent + chalk.bgRed.bold(renderLine(line, 'white')),
 		indent + renderLine(line+1)
-	].join('\n')
+	].join('\n');
 };
 
 module.exports = (error, title='')=>{

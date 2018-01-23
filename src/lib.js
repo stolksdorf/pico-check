@@ -4,7 +4,7 @@ const utils = require('./utils.js');
 const Test = {
 	createTestCase : (name, testFunc, paramOpts={})=>{
 		const testCase = { name, opts : paramOpts,
-			run : (runOpts={})=>{
+			run  : (runOpts={})=>{
 				const opts = utils.merge(testCase.opts, runOpts);
 				(opts.reporter && opts.reporter.startTest(testCase));
 				let timeout;
@@ -19,12 +19,12 @@ const Test = {
 						resolve(err);
 					}
 				})
-				.then((result = true)=>{
-					clearTimeout(timeout);
-					if(result instanceof Error) result.test = testCase;
-					(opts.reporter && opts.reporter.endTest(testCase, result));
-					return result;
-				});
+					.then((result = true)=>{
+						clearTimeout(timeout);
+						if(result instanceof Error) result.test = testCase;
+						(opts.reporter && opts.reporter.endTest(testCase, result));
+						return result;
+					});
 			}
 		};
 		return testCase;
@@ -47,10 +47,10 @@ const Test = {
 					if(group.opts.has_only && !test.opts.only) return false;
 					return test.run(opts);
 				})
-				.then((results)=>{
-					(opts.reporter && opts.reporter.endGroup(group, results));
-					return results;
-				});
+					.then((results)=>{
+						(opts.reporter && opts.reporter.endGroup(group, results));
+						return results;
+					});
 			}
 		};
 		return group;

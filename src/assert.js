@@ -9,7 +9,7 @@ const Assert = Object.assign({}, assert, {
 	pass : (msg)=>assert.ok(true, msg),
 	fail : (msg=failMsg)=>assert.ok(false, msg),
 
-	timeout : (resolve, time)=>setTimeout(()=>resolve(new Error('Async timeout')), time),
+	timeout      : (resolve, time)=>setTimeout(()=>resolve(new Error('Async timeout')), time),
 	isForcedFail : (err)=>err.message===failMsg
 });
 

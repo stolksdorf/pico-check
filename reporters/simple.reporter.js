@@ -1,24 +1,24 @@
 const utils = require('../src/utils.js');
 const chalk = require('chalk');
-const ErrorReporter = require('./error.js')
+const ErrorReporter = require('./error.js');
 
-let groups = [];
+const groups = [];
 
 const print = (text, color='grey')=>{
 	return console.log(utils.indent(chalk[color](text), groups.length * 3));
 };
 
-const divider = ()=>console.log(chalk.grey('\n──────────────────────────────\n'))
+const divider = ()=>console.log(chalk.grey('\n──────────────────────────────\n'));
 
 module.exports = {
-	start : ()=>divider(),
+	start      : ()=>divider(),
 	startGroup : (group)=>{
 		print(group.name);
 		groups.push(group.name);
 	},
-	endGroup   : (group, result)=>groups.pop(),
-	startTest  : (test)=>{},
-	endTest    : (test, result)=>{
+	endGroup  : (group, result)=>groups.pop(),
+	startTest : (test)=>{},
+	endTest   : (test, result)=>{
 		if(result === true) print(`✓ ${test.name}`, 'greenBright');
 		if(result === false) print(`• ${test.name}`, 'cyanBright');
 		if(result instanceof Error) print(`X ${test.name}`, 'redBright');

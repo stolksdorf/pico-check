@@ -8,11 +8,11 @@ const assert = require('assert');
 
 const manualError = new Error('This is an error');
 let codeError;
-try{ a + b }catch(err){ codeError = err; }
+try { a + b; } catch (err){ codeError = err; }
 let diffError;
-try{ Assert.deepEqual({b:6, a : true}, {a: false}) }catch(err){ diffError = err; }
+try { Assert.deepEqual({ b: 6, a: true }, { a: false }); } catch (err){ diffError = err; }
 let failError;
-try{ Assert.fail() }catch(err){ failError = err; }
+try { Assert.fail(); } catch (err){ failError = err; }
 
 
 console.log(ErrorReport(manualError, 'This is an manualError'));

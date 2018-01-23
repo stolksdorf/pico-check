@@ -19,7 +19,7 @@ const printSummary = ()=>{
 	console.log(chalk.greenBright(`${passed} passed`));
 	console.log(chalk.redBright(`${failed} failed`));
 	console.log(chalk.cyanBright(`${skipped} skipped`));
-}
+};
 
 
 const Mini = {

@@ -1,33 +1,32 @@
 const path = require('path');
 
 //Polyfills
-if (!String.prototype.padEnd) {
-	String.prototype.padEnd = function padEnd(pad=1,char=' ') {
-		if (this.length > pad) return String(this);
+if(!String.prototype.padEnd) {
+	String.prototype.padEnd = function padEnd(pad=1, char=' ') {
+		if(this.length > pad) return String(this);
 		pad = pad-this.length;
-		if (pad > char.length) char += char.repeat(pad/char.length);
-		return String(this) + char.slice(0,pad);
+		if(pad > char.length) char += char.repeat(pad/char.length);
+		return String(this) + char.slice(0, pad);
 	};
 }
-if (!String.prototype.padStart) {
-	String.prototype.padStart = function padStart(pad=1,char=' ') {
-		if (this.length > pad) return String(this);
+if(!String.prototype.padStart) {
+	String.prototype.padStart = function padStart(pad=1, char=' ') {
+		if(this.length > pad) return String(this);
 		pad = pad-this.length;
-		if (pad > char.length) char += char.repeat(pad/char.length);
-		return char.slice(0,pad) + String(this);
+		if(pad > char.length) char += char.repeat(pad/char.length);
+		return char.slice(0, pad) + String(this);
 	};
 }
 
 const Utils = {
-	merge        : (...args)=>Object.assign({}, ...args),
-	flatMap      : (list, fn)=>[].concat(...list.map(fn)),
-	relativePath : (modulePath)=>path.resolve(process.cwd(), modulePath),
+	merge           : (...args)=>Object.assign({}, ...args),
+	flatMap         : (list, fn)=>[].concat(...list.map(fn)),
+	relativePath    : (modulePath)=>path.resolve(process.cwd(), modulePath),
 	requireRelative : (modulePath)=>require(Utils.relativePath(modulePath)),
-	isObjectLike : (val1, val2)=>{
+	isObjectLike    : (val1, val2)=>{
 		return (val1 != null && typeof val1 == 'object') ||
-				 (val2 != null && typeof val2 == 'object');
+			   (val2 != null && typeof val2 == 'object');
 	},
-	//Todo: Allow numerical pad?
 	indent : (string, pad=1)=>{
 		if(typeof pad == 'number') pad = new Array(pad).join(' ');
 		return string.split('\n').map((line)=>`${pad}${line}`).join('\n');
@@ -36,13 +35,13 @@ const Utils = {
 		return list.reduce((prom, val, key)=>{
 			return prom.then((result)=>{
 				let temp = fn(val, key);
-				temp = (temp instanceof Promise ? temp : Promise.resolve(temp))
+				temp = (temp instanceof Promise ? temp : Promise.resolve(temp));
 				return temp.then((value)=>{
 					result.push(value);
 					return result;
 				});
 			});
-		}, Promise.resolve([]))
+		}, Promise.resolve([]));
 	},
 	getSummary : (results)=>{
 		//let summary = {passed : 0, failed : 0, skipped : 0, passing : true, errors: [] };
@@ -59,11 +58,9 @@ const Utils = {
 				summary.failed++;
 				summary.errors.push(result);
 				summary.passing = false;
-			}
-			else if(result === true){  summary.passed++; }
-			else if(result === false){ summary.skipped++; }
+			} else if(result === true){  summary.passed++; } else if(result === false){ summary.skipped++; }
 			return summary;
-		}, {passed : 0, failed : 0, skipped : 0, passing : true, errors: []});
+		}, { passed: 0, failed: 0, skipped: 0, passing: true, errors: [] });
 
 
 		// results.map((result)=>{
@@ -77,19 +74,7 @@ const Utils = {
 		// 	else summary = mergeSummaries(summary, Utils.getSummary(result));
 		// });
 		// return summary;
-	},
-	// parseError : (err)=>{
-	// 	let stack = err.stack.split('\n')
-	// 		.filter((line)=>!internalPaths.some((regex)=>regex.test(line)))
-	// 		.map((line)=>line.replace(process.cwd(), '.'))
-	// 	const matches = /\((.*):(\d+):(\d+)/.exec(stack[1]);
-	// 	return {
-	// 		file  : matches[1],
-	// 		stack : stack.join('\n'),
-	// 		line  : Number(matches[2]),
-	// 		col   : Number(matches[3])
-	// 	};
-	// },
+	}
 };
 
 module.exports = Utils;
