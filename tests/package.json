@@ -4,17 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pico-check",
+    "test": "pico-check -v",
     "cli": "pico-check -v cli.test.js",
     "verbose": "pico-check -v -w reporter.test.js",
     "mini": "pico-check -w reporter.test.js",
     "utils": "pico-check -w utils.test.js",
-    "only": "pico-check -w only.test.js",
+    "opts": "pico-check -w opts.test.js",
+    "only": "pico-check -w only.test.js"
   },
   "author": "",
   "license": "ISC",
   "pico-check": {
     "timeout": 1500,
-    "source" : "../**/*.js"
+    "source" : "../**/*.js",
+    "require": "./test.require.js"
   }
 }

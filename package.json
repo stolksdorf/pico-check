@@ -5,8 +5,8 @@
   "main": "pico-check.js",
   "scripts": {
     "lint": "eslint --fix **/*.js",
-    "lint:dry": "eslint **/*.js",
     "dev": "nodemon --exec npm run test",
+    "test": "cd ./tests && npm run test",
     "test:cli": "cd ./tests/cli-test && npm run test",
     "test:simple": "nodemon tests/simple.test.js",
     "test:error": "nodemon tests/error.test.js",

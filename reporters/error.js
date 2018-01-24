@@ -45,7 +45,7 @@ const codeSnippet = (file, line, col, indent='')=>{
 
 module.exports = (error, title='')=>{
 	const err = parseError(error);
-	const name = (title ? `${title} ` : error.test.name);
+	const name = title || error.title || error.message;
 	const location = chalk.grey(`${err.file}:${err.line}`);
 	const getReport = ()=>{
 		if(Assert.isForcedFail(error)) return utils.indent(error.message, 5);

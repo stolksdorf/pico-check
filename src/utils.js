@@ -58,19 +58,6 @@ const Utils = {
 			} else if(result === true){  summary.passed++; } else if(result === false){ summary.skipped++; }
 			return summary;
 		}, { passed: 0, failed: 0, skipped: 0, passing: true, errors: [] });
-
-
-		// results.map((result)=>{
-		// 	if(result instanceof Error){
-		// 		summary.failed++;
-		// 		summary.errors.push(result);
-		// 		summary.passing = false;
-		// 	}
-		// 	else if(result === true){  summary.passed++; }
-		// 	else if(result === false){ summary.skipped++; }
-		// 	else summary = mergeSummaries(summary, Utils.getSummary(result));
-		// });
-		// return summary;
 	}
 };
 

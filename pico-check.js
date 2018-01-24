@@ -20,8 +20,8 @@ const GroupBuilder = (name, groupOpts={})=>{
 		addCmd('todo', { todo: true });
 		testcase.group = (name, scope, opts)=>{
 			const newBuilder = GroupBuilder(name, utils.merge(baseOpts, opts));
-			group.add(newBuilder.get());
 			scope(newBuilder);
+			group.add(newBuilder.get());
 			return newBuilder;
 		};
 		testcase.run = (...args)=>group.run(...args);
