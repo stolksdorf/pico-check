@@ -2,10 +2,9 @@
 let current = 0;
 const TAP = {
 	start : (testSuite)=>{
-		//TODO: Count all the tests
-		const count = 4;
+		const getCount = (group)=>group.tests.reduce((acc, test)=>acc + (test.tests ? getCount(test) : 1), 0);
 		current = 0;
-		console.log(`1..${count}`);
+		console.log(`1..${getCount(testSuite)}`);
 	},
 	startGroup : (group)=>{},
 	endGroup   : (group, result)=>{},

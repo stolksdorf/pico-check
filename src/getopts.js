@@ -22,6 +22,7 @@ const opts = {
 	ignore   : ['node_modules/**'],
 	reporter : false,
 	verbose  : false,
+	tap      : false,
 	require  : false,
 	watch    : false,
 	source   : ['**/*.js'],
