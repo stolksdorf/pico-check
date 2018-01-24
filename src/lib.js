@@ -47,10 +47,10 @@ const Test = {
 				(opts.reporter && opts.reporter.startGroup(group));
 				if(opts.contains_only) runOpts.run_only = true;
 				return utils.sequence(group.tests, (test)=>{
-					if(opts.skip) return test.run({...runOpts, skip:true});
+					if(opts.skip) return test.run({ ...runOpts, skip: true });
 					if(runOpts.run_only){
-						if(opts.only && !opts.contains_only) return test.run({...runOpts, run_only : false});
-						if(!(opts.contains_only || opts.only)) return test.run({...runOpts, skip:true});
+						if(opts.only && !opts.contains_only) return test.run({ ...runOpts, run_only: false });
+						if(!(opts.contains_only || opts.only)) return test.run({ ...runOpts, skip: true });
 					}
 					return test.run(runOpts);
 				})

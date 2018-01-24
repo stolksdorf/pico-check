@@ -7,14 +7,14 @@ test('padEnd/padStart', (t)=>{
 });
 
 test('flatMap', (t)=>{
-	t.is(utils.flatMap([1,2,3,4], (i)=>i), [1,2,3,4]);
-	t.is(utils.flatMap([1, [2], [3, 4]], (i)=>i), [1,2,3,4]);
+	t.is(utils.flatMap([1, 2, 3, 4], (i)=>i), [1, 2, 3, 4]);
+	t.is(utils.flatMap([1, [2], [3, 4]], (i)=>i), [1, 2, 3, 4]);
 });
 
 test('isObjectLike', (t)=>{
-	t.ok(utils.isObjectLike({a:6}));
+	t.ok(utils.isObjectLike({ a: 6 }));
 	t.ok(utils.isObjectLike([false]));
-	t.ok(utils.isObjectLike(5, 'test', {a:6}));
+	t.ok(utils.isObjectLike(5, 'test', { a: 6 }));
 	t.no(utils.isObjectLike(5));
 	t.no(utils.isObjectLike(5, 'hello', true));
 	t.no(utils.isObjectLike());
@@ -28,12 +28,12 @@ test('indent', (t)=>{
 
 test.group('sequence', (test)=>{
 	test('non-promise based', (t)=>{
-		return utils.sequence([1,2,3,4], (i)=>i)
-			.then((res)=>t.is(res, [1,2,3,4]));
+		return utils.sequence([1, 2, 3, 4], (i)=>i)
+			.then((res)=>t.is(res, [1, 2, 3, 4]));
 	});
 	test('promise based', (t)=>{
-		return utils.sequence([1,2,3,4], (i)=>Promise.resolve(i))
-			.then((res)=>t.is(res, [1,2,3,4]));
+		return utils.sequence([1, 2, 3, 4], (i)=>Promise.resolve(i))
+			.then((res)=>t.is(res, [1, 2, 3, 4]));
 	});
 });
 

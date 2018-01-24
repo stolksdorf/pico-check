@@ -5,6 +5,8 @@
 const test = require('../pico-check.js');
 const lib = require('../src/lib.js');
 
+// Groups should be named by letter, and tests by
+
 const Tests = [
 	lib.createTestCase('A basic test', (t)=>t.not(4, 5)),
 	lib.createTestCase('A test with logs', (t)=>{

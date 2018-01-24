@@ -47,16 +47,16 @@ const runTestSuite = ()=>{
 
 if(opts.watch){
 	const runWatch = ()=>{
-		try{
+		try {
 			runTestSuite()
 				.then(()=>console.log(chalk.magentaBright(`\n🕑 Watching enabled on ${opts.source.toString()}`)));
-		}catch(err){
+		} catch (err){
 			console.log(ErrorReporter(err));
 		}
 	};
 	chokidar.watch(opts.source, { ignored: opts.ignore, ignoreInitial: true }).on('all', runWatch);
 	runWatch();
-}else{
+} else {
 	runTestSuite();
 }
 

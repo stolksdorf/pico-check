@@ -1,8 +1,31 @@
 const test = require('../pico-check.js');
-const ErrorReport = require('../src/error.js');
-const Assert = require('../src/assert.js');
+//const ErrorReport = require('../src/error.js');
+//const Assert = require('../src/assert.js');
 
 
+
+
+
+test.skip('Manual Error', (t)=>{
+
+});
+
+test.skip('Code Error', (t)=>{
+
+});
+
+test.skip('Diff Error', (t)=>{
+
+});
+
+
+test.skip('Fail Error', (t)=>{
+
+});
+
+test.skip('Timeout Error', (t)=>{
+
+});
 
 
 // const manualError = new Error('This is an error');

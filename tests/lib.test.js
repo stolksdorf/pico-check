@@ -13,12 +13,12 @@ test.group('testcase', (test)=>{
 			.then((res)=>t.ok(res instanceof Error));
 	});
 	test('skipped', (t)=>{
-		const tc = lib.createTestCase('sample', (t)=>t.fail(), {skip : true});
+		const tc = lib.createTestCase('sample', (t)=>t.fail(), { skip: true });
 		return tc.run()
 			.then((res)=>t.is(res, false));
 	});
 	test('error', (t)=>{
-		const tc = lib.createTestCase('sample', (t)=>{ throw 'error!' });
+		const tc = lib.createTestCase('sample', (t)=>{ throw 'error!'; });
 		return tc.run()
 			.then((res)=>t.ok(res instanceof Error));
 	});
@@ -29,34 +29,28 @@ test.group('async', (test)=>{
 	test('passed', (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{
 			return new Promise((resolve, reject)=>{
-				setTimeout(()=>{
-					t.pass();
-					resolve();
-				}, 100)
-			})
+				t.pass();
+				setTimeout(resolve, 100);
+			});
 		});
 		return tc.run()
 			.then((res)=>t.ok(res));
 	});
-	test('custome timeout', (t)=>{
+	test('custom timeout', (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{
 			return new Promise((resolve, reject)=>{
-				setTimeout(()=>{
-					t.pass();
-					resolve();
-				}, 40)
-			})
-		}, {timeout : 50});
+				t.pass();
+				setTimeout(resolve, 40);
+			});
+		}, { timeout: 50 });
 		return tc.run()
 			.then((res)=>t.ok(res));
 	});
 	test('failed', (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{
 			return new Promise((resolve, reject)=>{
-				setTimeout(()=>{
-					reject();
-				}, 100)
-			})
+				setTimeout(reject, 100);
+			});
 		});
 		return tc.run()
 			.then((res)=>t.ok(res instanceof Error));
@@ -64,11 +58,9 @@ test.group('async', (test)=>{
 	test('timeout', (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{
 			return new Promise((resolve, reject)=>{
-				setTimeout(()=>{
-					t.pass();
-					resolve();
-				}, 10000)
-			})
+				t.pass();
+				setTimeout(resolve, 10000);
+			});
 		});
 		return tc.run()
 			.then((res)=>t.ok(res instanceof Error));
@@ -80,15 +72,15 @@ test.group('group', (test)=>{
 	test('basic', (t)=>{
 		const group = lib.createGroup('New group');
 		group.add(lib.createTestCase('sample', (t)=>t.pass()));
-		group.add(lib.createTestCase('sample', (t)=>t.fail(), {skip:true}));
+		group.add(lib.createTestCase('sample', (t)=>t.fail(), { skip: true }));
 		return group.run()
 			.then((res)=>t.is(res, [true, false]));
 	});
 
 	test('skipped', (t)=>{
-		const group = lib.createGroup('New group', {skip : true});
+		const group = lib.createGroup('New group', { skip: true });
 		group.add(lib.createTestCase('sample', (t)=>t.pass()));
-		group.add(lib.createTestCase('sample', (t)=>t.fail(), {skip:true}));
+		group.add(lib.createTestCase('sample', (t)=>t.fail(), { skip: true }));
 		return group.run()
 			.then((res)=>t.is(res, [false, false]));
 	});
@@ -98,7 +90,7 @@ test.group('group', (test)=>{
 		const group2 = lib.createGroup('New group');
 		group.add(lib.createTestCase('sample', (t)=>t.pass()));
 		group.add(group2);
-		group.add(lib.createTestCase('sample', (t)=>t.fail(), {skip:true}));
+		group.add(lib.createTestCase('sample', (t)=>t.fail(), { skip: true }));
 
 		group2.add(lib.createTestCase('sample', (t)=>t.pass()));
 		group2.add(lib.createTestCase('sample', (t)=>t.pass()));
@@ -108,7 +100,7 @@ test.group('group', (test)=>{
 				[true, true],
 				false
 			]));
-	})
+	});
 });
 
 module.exports = test;

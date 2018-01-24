@@ -24,7 +24,7 @@ const Utils = {
 	relativePath    : (modulePath)=>path.resolve(process.cwd(), modulePath),
 	requireRelative : (modulePath)=>require(Utils.relativePath(modulePath)),
 	isObjectLike    : (...args)=>!!args.find((val)=>val != null && typeof val == 'object'),
-	indent : (string, pad=1)=>{
+	indent          : (string, pad=1)=>{
 		if(typeof pad == 'number') pad = new Array(pad+1).join(' ');
 		return string.split('\n').map((line)=>`${pad}${line}`).join('\n');
 	},
