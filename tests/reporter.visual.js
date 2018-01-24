@@ -1,8 +1,11 @@
-/* This test is to simulate a full projects Tests cases to testing
-   the visuals of the reporters.
+/*
+	This test is to simulate a full projects Tests cases to testing
+	the visuals of the reporters.
 */
 const test = require('../pico-check.js');
 const lib = require('../src/lib.js');
+
+// Groups should be named by letter, and tests by
 
 const Tests = [
 	lib.createTestCase('A basic test', (t)=>t.not(4, 5)),

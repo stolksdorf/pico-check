@@ -1,38 +1,106 @@
+const test = require('../pico-check.js');
 const lib = require('../src/lib.js');
 
-
-const group = lib.createGroup('New group');
-
-const test1 = lib.createTestCase('This is a test', (t)=>{
-
-	t.pass();
+test.group('testcase', (test)=>{
+	test('basic', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>t.pass());
+		return tc.run()
+			.then((res)=>t.is(res, true));
+	});
+	test('failed', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>t.fail());
+		return tc.run()
+			.then((res)=>t.ok(res instanceof Error));
+	});
+	test('skipped', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>t.fail(), { skip: true });
+		return tc.run()
+			.then((res)=>t.is(res, false));
+	});
+	test('error', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>{ throw 'error!'; });
+		return tc.run()
+			.then((res)=>t.ok(res instanceof Error));
+	});
 });
 
-const test2 = lib.createTestCase('This is a failed test', (t)=>{
-	t.is(3, [3]);
+
+test.group('async', (test)=>{
+	test('passed', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>{
+			return new Promise((resolve, reject)=>{
+				t.pass();
+				setTimeout(resolve, 100);
+			});
+		});
+		return tc.run()
+			.then((res)=>t.ok(res));
+	});
+	test('custom timeout', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>{
+			return new Promise((resolve, reject)=>{
+				t.pass();
+				setTimeout(resolve, 40);
+			});
+		}, { timeout: 50 });
+		return tc.run()
+			.then((res)=>t.ok(res));
+	});
+	test('failed', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>{
+			return new Promise((resolve, reject)=>{
+				setTimeout(reject, 100);
+			});
+		});
+		return tc.run()
+			.then((res)=>t.ok(res instanceof Error));
+	});
+	test('timeout', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>{
+			return new Promise((resolve, reject)=>{
+				t.pass();
+				setTimeout(resolve, 10000);
+			});
+		});
+		return tc.run()
+			.then((res)=>t.ok(res instanceof Error));
+	});
 });
 
-const test3 = lib.createTestCase('This is a skipped test', (t)=>{
-	t.fail();
-}, { skip: true });
+test.group('group', (test)=>{
 
-const test4 = lib.createTestCase('This is a skipped test', (t)=>{
-	return new Promise((resolve)=>setTimeout(resolve, 400));
-}, { timeout: 30 });
+	test('basic', (t)=>{
+		const group = lib.createGroup('New group');
+		group.add(lib.createTestCase('sample', (t)=>t.pass()));
+		group.add(lib.createTestCase('sample', (t)=>t.fail(), { skip: true }));
+		return group.run()
+			.then((res)=>t.is(res, [true, false]));
+	});
 
+	test('skipped', (t)=>{
+		const group = lib.createGroup('New group', { skip: true });
+		group.add(lib.createTestCase('sample', (t)=>t.pass()));
+		group.add(lib.createTestCase('sample', (t)=>t.fail(), { skip: true }));
+		return group.run()
+			.then((res)=>t.is(res, [false, false]));
+	});
 
-test1.run().then((res)=>console.log('test1', res));
-test2.run().then((res)=>console.log('test2', res));
-test3.run().then((res)=>console.log('test3', res));
-test4.run().then((res)=>console.log('test4', res));
+	test('nested', (t)=>{
+		const group = lib.createGroup('New group');
+		const group2 = lib.createGroup('New group');
+		group.add(lib.createTestCase('sample', (t)=>t.pass()));
+		group.add(group2);
+		group.add(lib.createTestCase('sample', (t)=>t.fail(), { skip: true }));
 
+		group2.add(lib.createTestCase('sample', (t)=>t.pass()));
+		group2.add(lib.createTestCase('sample', (t)=>t.pass()));
+		return group.run()
+			.then((res)=>t.is(res, [
+				true,
+				[true, true],
+				false
+			]));
+	});
+});
 
-
-
-
-group.add(test1);
-group.add(test2);
-group.add(test3);
-group.add(test4);
-
-group.run().then((res)=>console.log('group', res));
+module.exports = test;

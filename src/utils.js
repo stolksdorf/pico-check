@@ -1,4 +1,5 @@
 const path = require('path');
+const chalk = require('chalk');
 
 //Polyfills
 if(!String.prototype.padEnd) {
@@ -23,12 +24,9 @@ const Utils = {
 	flatMap         : (list, fn)=>[].concat(...list.map(fn)),
 	relativePath    : (modulePath)=>path.resolve(process.cwd(), modulePath),
 	requireRelative : (modulePath)=>require(Utils.relativePath(modulePath)),
-	isObjectLike    : (val1, val2)=>{
-		return (val1 != null && typeof val1 == 'object') ||
-			   (val2 != null && typeof val2 == 'object');
-	},
-	indent : (string, pad=1)=>{
-		if(typeof pad == 'number') pad = new Array(pad).join(' ');
+	isObjectLike    : (...args)=>!!args.find((val)=>val != null && typeof val == 'object'),
+	indent          : (string, pad=1)=>{
+		if(typeof pad == 'number') pad = new Array(pad+1).join(' ');
 		return string.split('\n').map((line)=>`${pad}${line}`).join('\n');
 	},
 	sequence : (list, fn)=>{
@@ -61,20 +59,13 @@ const Utils = {
 			} else if(result === true){  summary.passed++; } else if(result === false){ summary.skipped++; }
 			return summary;
 		}, { passed: 0, failed: 0, skipped: 0, passing: true, errors: [] });
-
-
-		// results.map((result)=>{
-		// 	if(result instanceof Error){
-		// 		summary.failed++;
-		// 		summary.errors.push(result);
-		// 		summary.passing = false;
-		// 	}
-		// 	else if(result === true){  summary.passed++; }
-		// 	else if(result === false){ summary.skipped++; }
-		// 	else summary = mergeSummaries(summary, Utils.getSummary(result));
-		// });
-		// return summary;
-	}
+	},
+	printSummary : ({passed, skipped, failed})=>{
+		console.log(chalk.greenBright(`✓ ${summary.passed}`.padEnd(4) + ` passed`));
+		console.log(chalk.cyanBright(`• ${summary.skipped}`.padEnd(4) + ` skipped`));
+		console.log(chalk.redBright(`X ${summary.failed}`.padEnd(4) + ` failed`));
+	},
+	printDivivder : ()=>{}
 };
 
 module.exports = Utils;

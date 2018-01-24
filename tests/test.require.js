@@ -1,0 +1,1 @@
+global.test_working = true;

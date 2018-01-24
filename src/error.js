@@ -45,10 +45,9 @@ const codeSnippet = (file, line, col, indent='')=>{
 };
 
 module.exports = (error, title='')=>{
-	console.log('DEPRICATE THIS');
 	const err = parseError(error);
 	const name = title || error.title || error.message;
-	const location = chalk.grey(`${err.file}:${err.line}`);
+	const location = err.file ? chalk.grey(`${err.file}:${err.line}`) : '';
 	const getReport = ()=>{
 		if(Assert.isForcedFail(error)) return utils.indent(error.message, 5);
 		if(error instanceof Assert.AssertionError) return utils.indent(`Difference: \n${codeDiff(error.actual, error.expected)}`, 5);

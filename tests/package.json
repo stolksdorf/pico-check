@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pico-check",
-    "cli": "pico-check -v cli.test.js",
-    "verbose": "pico-check -v -w reporter.test.js",
-    "mini": "pico-check -w reporter.test.js"
+    "test": "node ../src/cli.js",
+    "verbose": "node ../src/cli.js -v -w reporter.visual.js",
+    "mini": "node ../src/cli.js -w reporter.visual.js",
+    "simple": "node ../src/cli.js -w reporter.visual.js",
+    "utils": "node ../src/cli.js -w utils.test.js",
+    "opts": "node ../src/cli.js -w opts.test.js",
+    "only": "node ../src/cli.js -w only.test.js",
+    "lib": "node ../src/cli.js -w lib.test.js"
   },
   "author": "",
   "license": "ISC",
   "pico-check": {
-    "timeout": 1500,
-    "source" : "../**/*.js"
+    "timeout": 1337,
+    "source" : "../**/*.js",
+    "require": "./test.require.js"
   }
 }

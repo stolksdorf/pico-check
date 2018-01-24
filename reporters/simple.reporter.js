@@ -1,14 +1,14 @@
 const utils = require('../src/utils.js');
 const chalk = require('chalk');
-const ErrorReporter = require('./error.js');
+const ErrorReporter = require('../src/error.js');
 
 const groups = [];
 
 const print = (text, color='grey')=>{
-	return console.log(utils.indent(chalk[color](text), groups.length * 3));
+	return console.log(utils.indent(chalk[color](text), groups.length * 2));
 };
 
-const divider = ()=>console.log(chalk.grey('\n──────────────────────────────\n'));
+const divider = ()=>console.log(chalk.grey('──────────────────────────────\n'));
 
 module.exports = {
 	start      : ()=>divider(),
@@ -24,11 +24,19 @@ module.exports = {
 		if(result instanceof Error) print(`X ${test.name}`, 'redBright');
 	},
 	end : (summary, results)=>{
-		divider();
+		//divider();
 
-		console.log(chalk.greenBright(`${summary.passed} passed`));
-		console.log(chalk.cyanBright(`${summary.skipped} skipped`));
-		console.log(chalk.redBright(`${summary.failed} failed`));
+		console.log();
+
+		utils.printSummary(summary);
+
+		//TODO: move to utils
+		//console.log(chalk.greenBright(`${summary.passed} passed`));
+		//console.log(chalk.cyanBright(`${summary.skipped} skipped`));
+		//console.log(chalk.redBright(`${summary.failed} failed`));
+
+		console.log();
+
 
 		divider();
 
