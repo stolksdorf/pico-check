@@ -1,4 +1,5 @@
 const path = require('path');
+const chalk = require('chalk');
 
 //Polyfills
 if(!String.prototype.padEnd) {
@@ -58,7 +59,13 @@ const Utils = {
 			} else if(result === true){  summary.passed++; } else if(result === false){ summary.skipped++; }
 			return summary;
 		}, { passed: 0, failed: 0, skipped: 0, passing: true, errors: [] });
-	}
+	},
+	printSummary : ({passed, skipped, failed})=>{
+		console.log(chalk.greenBright(`✓ ${summary.passed}`.padEnd(4) + ` passed`));
+		console.log(chalk.cyanBright(`• ${summary.skipped}`.padEnd(4) + ` skipped`));
+		console.log(chalk.redBright(`X ${summary.failed}`.padEnd(4) + ` failed`));
+	},
+	printDivivder : ()=>{}
 };
 
 module.exports = Utils;

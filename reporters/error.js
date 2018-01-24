@@ -3,7 +3,8 @@ const path   = require('path');
 const chalk  = require('chalk');
 const Assert = require('../src/assert.js');
 
-const codeDiff = require('../src/codediff.js');
+//const codeDiff = require('../src/codediff.js');
+const codeDiff = require('concordance').diff;
 const utils = require('../src/utils.js');
 
 const InternalPaths = Object.keys(process.binding('natives'))
@@ -44,6 +45,7 @@ const codeSnippet = (file, line, col, indent='')=>{
 };
 
 module.exports = (error, title='')=>{
+	console.log('DEPRICATE THIS');
 	const err = parseError(error);
 	const name = title || error.title || error.message;
 	const location = chalk.grey(`${err.file}:${err.line}`);

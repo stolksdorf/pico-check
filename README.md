@@ -2,6 +2,13 @@
 An incredibly tiny javascript testing library. Heavily inspired by the wonderful [ava](https://github.com/avajs/ava) and [tape](https://github.com/substack/tape).
 
 
+### todo
+- move simple to verbose
+- fix the cli reporter routing
+- finish the resporter.visual test
+- remove ./repoerters/error.js
+
+
 ## Contents
 
 - [Usage](#usage)

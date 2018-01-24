@@ -3,7 +3,8 @@ const path   = require('path');
 const chalk  = require('chalk');
 const Assert = require('../src/assert.js');
 
-const codeDiff = require('../src/codediff.js');
+//const codeDiff = require('../src/codediff.js');
+const codeDiff = require('concordance').diff;
 const utils = require('../src/utils.js');
 
 const InternalPaths = Object.keys(process.binding('natives'))
@@ -46,7 +47,7 @@ const codeSnippet = (file, line, col, indent='')=>{
 module.exports = (error, title='')=>{
 	const err = parseError(error);
 	const name = title || error.title || error.message;
-	const location = chalk.grey(`${err.file}:${err.line}`);
+	const location = err.file ? chalk.grey(`${err.file}:${err.line}`) : '';
 	const getReport = ()=>{
 		if(Assert.isForcedFail(error)) return utils.indent(error.message, 5);
 		if(error instanceof Assert.AssertionError) return utils.indent(`Difference: \n${codeDiff(error.actual, error.expected)}`, 5);

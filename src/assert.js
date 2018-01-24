@@ -10,6 +10,7 @@ const Assert = Object.assign({}, assert, {
 	fail : (msg=failMsg)=>assert.ok(false, msg),
 	no   : (act, msg)=>assert.ok(!act, msg),
 
+	//TODO: Might nee dto throw and catch here to get stack trace
 	timeout      : (resolve, time)=>setTimeout(()=>resolve(new Error('Async timeout')), time),
 	isForcedFail : (err)=>err.message===failMsg
 });

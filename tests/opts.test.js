@@ -1,7 +1,7 @@
 const test = require('../pico-check.js');
 const opts = require('../src/getopts.js');
 
-console.log('opts', opts);
+//console.log('opts', opts);
 
 test('defaults', (t)=>{
 	t.is(opts.ignore, ['node_modules/**']);

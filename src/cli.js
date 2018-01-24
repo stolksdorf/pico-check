@@ -29,7 +29,7 @@ const runTestSuite = ()=>{
 			return acc.concat(testFile);
 		}, []);
 
-	const TestSuite = testGroups.reduce((suite, group)=>suite.add(group), Test.createGroup(''));
+	const TestSuite = testGroups.reduce((suite, group)=>suite.add(group), Test.createGroup('tests'));
 
 	opts.reporter.start(TestSuite);
 	return TestSuite
@@ -49,7 +49,7 @@ if(opts.watch){
 	const runWatch = ()=>{
 		try {
 			runTestSuite()
-				.then(()=>console.log(chalk.magentaBright(`\n🕑 Watching enabled on ${opts.source.toString()}`)));
+				.then(()=>console.log(chalk.magentaBright(`🕑 Watching enabled on ${opts.source.toString()}`)));
 		} catch (err){
 			console.log(ErrorReporter(err));
 		}
