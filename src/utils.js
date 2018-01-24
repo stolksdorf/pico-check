@@ -60,10 +60,10 @@ const Utils = {
 			return summary;
 		}, { passed: 0, failed: 0, skipped: 0, passing: true, errors: [] });
 	},
-	printSummary : ({passed, skipped, failed})=>{
-		console.log(chalk.greenBright(`✓ ${summary.passed}`.padEnd(4) + ` passed`));
-		console.log(chalk.cyanBright(`• ${summary.skipped}`.padEnd(4) + ` skipped`));
-		console.log(chalk.redBright(`X ${summary.failed}`.padEnd(4) + ` failed`));
+	printSummary : ({ passed, skipped, failed })=>{
+		console.log(chalk.greenBright(`${`✓ ${summary.passed}`.padEnd(4)} passed`));
+		console.log(chalk.cyanBright(`${`• ${summary.skipped}`.padEnd(4)} skipped`));
+		console.log(chalk.redBright(`${`X ${summary.failed}`.padEnd(4)} failed`));
 	},
 	printDivivder : ()=>{}
 };

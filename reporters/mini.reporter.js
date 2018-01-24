@@ -1,5 +1,5 @@
 const utils = require('../src/utils.js');
-const chalk = require('chalk');
+//const chalk = require('chalk');
 const ErrorReporter = require('../src/error.js');
 
 //https://github.com/helloIAmPau/node-spinner/blob/master/spinners.json
@@ -9,8 +9,8 @@ const clearLines = (numLines = 1)=>{
 	process.stdout.clearScreenDown();
 };
 
-const spinner = "⠙⠹⠸⠼⠴⠦⠧⠇⠏"
-let groups, timer, idx=0, status = {passed:0, failed:0, skipped:0};
+const spinner = '⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+let groups, timer, idx=0, status = { passed: 0, failed: 0, skipped: 0 };
 
 const update = (test)=>{
 	clearLines(5);
@@ -25,14 +25,14 @@ const Mini = {
 		console.log('\n\n\n');
 		groups = [];
 		status = {
-			passed : 0,
-			failed : 0,
+			passed  : 0,
+			failed  : 0,
 			skipped : 0,
 		};
 		timer = setInterval(()=>{
 			idx = idx++ % spinner.length;
 			update();
-		}, 80)
+		}, 80);
 	},
 	startGroup : (group)=>groups.push(group.name),
 	endGroup   : (group, result)=>groups.pop(),
@@ -44,7 +44,7 @@ const Mini = {
 		update(test);
 	},
 	end : (summary)=>{
-		clearInterval(timer)
+		clearInterval(timer);
 		//console.log(summary);
 		//console.dir(results, {depth:null})
 		console.log('──────────');
