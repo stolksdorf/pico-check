@@ -65,7 +65,7 @@ const Utils = {
 		console.log(chalk.cyanBright(`${`• ${skipped}`.padEnd(4)} skipped`));
 		console.log(chalk.redBright(`${`X ${failed}`.padEnd(4)} failed`));
 	},
-	printDivivder : ()=>{}
+	printDivider : ()=>console.log(chalk.grey('──────────────────────────────\n'))
 };
 
 module.exports = Utils;

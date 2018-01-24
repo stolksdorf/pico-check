@@ -1,5 +1,5 @@
 const utils = require('../src/utils.js');
-//const chalk = require('chalk');
+const chalk = require('chalk');
 const ErrorReporter = require('../src/error.js');
 
 //https://github.com/helloIAmPau/node-spinner/blob/master/spinners.json
@@ -10,19 +10,21 @@ const clearLines = (numLines = 1)=>{
 };
 
 const spinner = '⠙⠹⠸⠼⠴⠦⠧⠇⠏';
-let groups, timer, idx=0, status = { passed: 0, failed: 0, skipped: 0 };
+let groups, currentTestName='', timer, idx=0, status = { passed: 0, failed: 0, skipped: 0 };
 
-const update = (test)=>{
-	clearLines(5);
-	console.log(`${spinner[idx]} ${groups[groups.length-1]} >> ${test.name}`);
+const update = ()=>{
+	clearLines(6);
+	console.log(`${chalk.magentaBright(spinner[idx])} ${groups[groups.length-1]} >> ${currentTestName}`);
 	console.log();
 	utils.printSummary(status);
+	console.log();
 };
 
 
 const Mini = {
 	start : ()=>{
-		console.log('\n\n\n');
+		utils.printDivider();
+		console.log('\n\n\n\n\n');
 		groups = [];
 		status = {
 			passed  : 0,
@@ -30,7 +32,7 @@ const Mini = {
 			skipped : 0,
 		};
 		timer = setInterval(()=>{
-			idx = idx++ % spinner.length;
+			idx = ++idx % spinner.length;
 			update();
 		}, 80);
 	},
@@ -41,17 +43,24 @@ const Mini = {
 		if(result === true) status.passed++;
 		if(result === false) status.skipped++;
 		if(result instanceof Error) status.failed++;
-		update(test);
+		currentTestName = test.name;
+		update();
 	},
 	end : (summary)=>{
 		clearInterval(timer);
 		//console.log(summary);
 		//console.dir(results, {depth:null})
-		console.log('──────────');
+		utils.printDivider();
 		//console.log(summary.errors);
 		//errors.map(ErrorReport);
 
 		summary.errors.map((err)=>console.log(ErrorReporter(err)));
+
+		utils.printDivider();
+
+		utils.printSummary(summary);
+
+		console.log();
 	}
 };
 

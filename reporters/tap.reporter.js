@@ -1,6 +1,6 @@
 /* https://testanything.org/ */
 let current = 0;
-const TAP = {
+module.exports = {
 	start : (testSuite)=>{
 		const getCount = (group)=>group.tests.reduce((acc, test)=>acc + (test.tests ? getCount(test) : 1), 0);
 		current = 0;
@@ -17,5 +17,3 @@ const TAP = {
 	},
 	end : (summary)=>{}
 };
-
-module.exports = TAP;

@@ -8,10 +8,9 @@ const print = (text, color='grey')=>{
 	return console.log(utils.indent(chalk[color](text), groups.length * 2));
 };
 
-const divider = ()=>console.log(chalk.grey('──────────────────────────────\n'));
 
 module.exports = {
-	start      : ()=>divider(),
+	start      : ()=>utils.printDivider(),
 	startGroup : (group)=>{
 		print(group.name);
 		groups.push(group.name);
@@ -24,7 +23,7 @@ module.exports = {
 		if(result instanceof Error) print(`X ${test.name}`, 'redBright');
 	},
 	end : (summary, results)=>{
-		//divider();
+		//utils.printDivider();
 
 		console.log();
 
@@ -38,7 +37,7 @@ module.exports = {
 		console.log();
 
 
-		divider();
+		utils.printDivider();
 
 		summary.errors.map((err)=>console.log(ErrorReporter(err)));
 	}
