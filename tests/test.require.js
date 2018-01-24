@@ -1,1 +1,1 @@
-global.test_working = true;
+global.require_is_working = true;

@@ -10,7 +10,7 @@ test('defaults', (t)=>{
 
 //Should be populated by test.require.js
 test('require', (t)=>{
-	t.ok(global.test_working);
+	t.ok(global.require_is_working);
 });
 
 test('opts from package', (t)=>{
