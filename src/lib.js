@@ -18,7 +18,7 @@ const Test = {
 						timeout = Assert.timeout(resolve, opts.timeout);
 						testResult.then(resolve).catch((err)=>resolve(err));
 					} catch (err){
-						resolve(err);
+						resolve(err instanceof Error ? err : new Error(err));
 					}
 				})
 					.then((result = true)=>{

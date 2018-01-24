@@ -1,22 +1,26 @@
-const ErrorReport = require('../reporters/error.js');
+const test = require('../pico-check.js');
+const ErrorReport = require('../src/error.js');
 const Assert = require('../src/assert.js');
 
 
 
 
-const manualError = new Error('This is an error');
-let codeError;
-try { a + b; } catch (err){ codeError = err; }
-let diffError;
-try { Assert.deepEqual({ b: 6, a: true }, { a: false }); } catch (err){ diffError = err; }
-let failError;
-try { Assert.fail(); } catch (err){ failError = err; }
+// const manualError = new Error('This is an error');
+// let codeError;
+// try { a + b; } catch (err){ codeError = err; }
+// let diffError;
+// try { Assert.deepEqual({ b: 6, a: true }, { a: false }); } catch (err){ diffError = err; }
+// let failError;
+// try { Assert.fail(); } catch (err){ failError = err; }
 
 
-console.log(ErrorReport(manualError, 'This is an manualError'));
-console.log(ErrorReport(codeError, 'This is an codeError'));
-console.log(ErrorReport(diffError, 'This is an diffError'));
-console.log(ErrorReport(failError, 'This is an failError'));
+// console.log(ErrorReport(manualError, 'This is an manualError'));
+// console.log(ErrorReport(codeError, 'This is an codeError'));
+// console.log(ErrorReport(diffError, 'This is an diffError'));
+// console.log(ErrorReport(failError, 'This is an failError'));
+
+
+module.exports = test;
 
 
 // console.log(utils.parseError(manualError));

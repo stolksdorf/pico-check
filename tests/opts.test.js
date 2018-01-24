@@ -1,13 +1,14 @@
 const test = require('../pico-check.js');
 const opts = require('../src/getopts.js');
 
+console.log('opts', opts);
 
 test('defaults', (t)=>{
 	t.is(opts.ignore, ['node_modules/**']);
 	t.is(typeof opts.reporter, 'object');
 });
 
-//Should be popualted by test.require.js
+//Should be populated by test.require.js
 test('require', (t)=>{
 	t.ok(global.test_working);
 });

@@ -7,15 +7,10 @@
     "lint": "eslint --fix **/*.js",
     "dev": "nodemon --exec npm run test",
     "test": "cd ./tests && npm run test",
-    "test:cli": "cd ./tests/cli-test && npm run test",
-    "test:simple": "nodemon tests/simple.test.js",
-    "test:error": "nodemon tests/error.test.js",
-    "test:lib": "nodemon tests/lib.test.js",
-    "test:builder": "nodemon tests/builder.test.js",
-    "test:utils": "nodemon tests/utils.test.js",
-    "utils": "cd ./tests && npm run utils",
     "verbose": "cd ./tests && npm run verbose",
-    "mini": "cd ./tests && npm run mini"
+    "mini": "cd ./tests && npm run mini",
+    "simple": "cd ./tests && npm run simple",
+    "mini": "cd ./tests && npm run simple"
   },
   "bin": "src/cli.js",
   "repository": {

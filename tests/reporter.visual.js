@@ -1,5 +1,6 @@
-/* This test is to simulate a full projects Tests cases to testing
-   the visuals of the reporters.
+/*
+	This test is to simulate a full projects Tests cases to testing
+	the visuals of the reporters.
 */
 const test = require('../pico-check.js');
 const lib = require('../src/lib.js');
