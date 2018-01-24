@@ -36,7 +36,11 @@ const runTestSuite = ()=>{
 		.then((results)=>{
 			const summary = utils.getSummary(results);
 			opts.reporter.end(summary, results);
-			if(!opts.watch) summary.passing ? process.exit(0) : process.exit(1);
+			if(!opts.watch){
+				if(opts.failSkip && summary.skipped !== 0) return process.exit(1);
+				if(summary.passing) return process.exit(0);
+				return process.exit(1);
+			}
 		})
 		.catch((err)=>{
 			console.error(err);

@@ -25,6 +25,7 @@ const opts = {
 	tap      : false,
 	require  : false,
 	watch    : false,
+	failSkip : false,
 	source   : ['**/*.js'],
 	timeout  : 500
 };
@@ -51,6 +52,7 @@ const cliOpts = cli
 	.option('--reporter [path]', 'path to custom reporter')
 	.option('--require [path]', 'path to extra modules to require before tests are ran')
 	.option('--source [path]', 'paths to files to watch')
+	.option('--fail-skip', 'testsuite will fail if any tests are skipped')
 	.parse(process.argv);
 
 
