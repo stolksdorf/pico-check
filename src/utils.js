@@ -42,7 +42,6 @@ const Utils = {
 		}, Promise.resolve([]));
 	},
 	getSummary : (results)=>{
-		//let summary = {passed : 0, failed : 0, skipped : 0, passing : true, errors: [] };
 		const mergeSummaries = (sum1, sum2)=>({
 			passed  : sum1.passed  + sum2.passed,
 			failed  : sum1.failed  + sum2.failed,

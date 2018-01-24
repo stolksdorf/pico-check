@@ -20,7 +20,6 @@ const update = ()=>{
 	console.log();
 };
 
-
 const Mini = {
 	start : ()=>{
 		utils.printDivider();
@@ -48,18 +47,10 @@ const Mini = {
 	},
 	end : (summary)=>{
 		clearInterval(timer);
-		//console.log(summary);
-		//console.dir(results, {depth:null})
 		utils.printDivider();
-		//console.log(summary.errors);
-		//errors.map(ErrorReport);
-
 		summary.errors.map((err)=>console.log(ErrorReporter(err)));
-
 		utils.printDivider();
-
 		utils.printSummary(summary);
-
 		console.log();
 	}
 };
