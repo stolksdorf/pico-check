@@ -6,16 +6,15 @@ const chalk = require('chalk');
 const utils = require('./utils.js');
 const Test = require('./lib.js');
 const opts = require('./getopts.js');
-const ErrorReporter = require('../reporters/error.js');
+const ErrorReporter = require('../src/error.js');
 
 if(opts.require) opts.require.map((modulePath)=>utils.requireRelative(modulePath));
 
 const loadReporter = ()=>{
 	if(opts.reporter) return utils.requireRelative(opts.reporter);
-	if(opts.verbose)  return require('../reporters/verbose.js');
-	if(opts.tap)      return require('../reporters/tap.js');
-	return require('../reporters/simple.reporter.js');
-	//return require('../reporters/mini.js');
+	if(opts.verbose)  return require('../reporters/verbose.reporter.js');
+	if(opts.tap)      return require('../reporters/tap.reporter.js');
+	return require('../reporters/mini.reporter.js');
 };
 opts.reporter = loadReporter();
 

@@ -15,11 +15,14 @@ const applyToOpts = (obj)=>{
 	});
 };
 
+//TODO: Add a skip fail option
+
 const opts = {
 	tests    : ['**/*.test.js'],
 	ignore   : ['node_modules/**'],
 	reporter : false,
 	verbose  : false,
+	tap      : false,
 	require  : false,
 	watch    : false,
 	source   : ['**/*.js'],
