@@ -65,6 +65,11 @@ test.group('async', (test)=>{
 		return tc.run()
 			.then((res)=>t.ok(res instanceof Error));
 	});
+
+	test('async/await', async (t)=>{
+		const bar = Promise.resolve('bar');
+		t.is(await bar, 'bar');
+	});
 });
 
 test.group('group', (test)=>{
