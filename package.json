@@ -1,11 +1,10 @@
 {
   "name": "pico-check",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An incredibly tiny javascript testing library",
   "main": "pico-check.js",
   "scripts": {
     "lint": "eslint --fix **/*.js",
-    "dev": "nodemon --exec npm run test",
     "test": "cd ./tests && npm run test",
     "verbose": "cd ./tests && npm run verbose",
     "mini": "cd ./tests && npm run simple",
