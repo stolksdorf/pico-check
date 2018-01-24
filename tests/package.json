@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pico-check",
+    "test": "pico-check -v",
     "verbose": "pico-check -v -w reporter.visual.js",
     "mini": "pico-check -w reporter.visual.js",
     "tap": "pico-check -w -t reporter.visual.js",
@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "pico-check": {
-    "timeout": 1500,
+    "timeout": 1337,
     "source" : "../**/*.js",
     "require": "./test.require.js"
   }

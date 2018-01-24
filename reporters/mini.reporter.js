@@ -47,11 +47,11 @@ const Mini = {
 	},
 	end : (summary)=>{
 		clearInterval(timer);
-		utils.printDivider();
+		clearLines(8);
 		summary.errors.map((err)=>console.log(ErrorReporter(err)));
 		utils.printDivider();
 		utils.printSummary(summary);
-		console.log();
+		utils.printDivider();
 	}
 };
 
