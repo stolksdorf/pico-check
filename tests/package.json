@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "pico-check": {
-    "timeout": 1500,
+    "timeout": 1337,
     "source" : "../**/*.js",
     "require": "./test.require.js"
   }

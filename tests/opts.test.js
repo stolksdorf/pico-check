@@ -14,7 +14,7 @@ test('require', (t)=>{
 });
 
 test('opts from package', (t)=>{
-	t.is(opts.timeout, 1500);
+	t.is(opts.timeout, 1337);
 	t.is(opts.source, ['../**/*.js']);
 	t.is(opts.require, ['./test.require.js']);
 });
