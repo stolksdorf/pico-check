@@ -125,31 +125,33 @@ You can create your own reporters ... TODO
 
 
 ## Assertion
-The testing function provided to a test case will be executed with `pico-check`'s assertion object as it's first and only parameter. `pico-check`s assertion object is an extension of node's built-in [assert](https://nodejs.org/api/assert.html).
+The testing function provided to a test case will be executed with `pico-check`'s assertion object as it's first and only parameter. `pico-check`s assertion object is an extension of node's built-in [assert](https://nodejs.org/api/assert.html). Here are some of the most common assertions:
 
 #### `t.pass([msg]) / t.fail([msg])`
 Passes/fails a test case with an optional message
 
 ```js
 test('sample', (t)=>{
-  if()
+  (complexCondition ? t.pass() : t.fail('The complex condition failed'))
+});
+```
+#### `t.ok(actual, [msg]) / t.no(actual, [msg])`
+Verifies that `actual` is truthy/falsey with an optional message
 
+```js
+test('sample', (t)=>{
+  t.ok(a == 3);
+  t.no(b instanceof Error);
 });
 ```
 
-
-- ** -
-- *`t.ok/t.no(actual, [msg])`* - Verifies that `actual` is truthy/falsey
-- *`t.is/t.not(actual, expected, [msg])`* - Intelligently chooses between `assert.equal`/`assert.notEqual` or `assert.deepEqual`/`assert.notDeepEqual` based on the type of `expected` and `actual`.
+#### `t.is(actual, expected, [msg]) / t.not(actual, expected, [msg])`
+Intelligently chooses between `assert.equal`/`assert.notEqual` or `assert.deepEqual`/`assert.notDeepEqual` based on the type of `expected` and `actual`.
 
 ```js
-const test = require('pico-check');
-
-test('Various assertions', (t)=>{
-  (complexCondition ? t.pass() : t.fail('The complex condition failed'))
+test('sample', (t)=>{
   t.not(3 + 4, 8);
-  t.is({a : 6}, {a:6});
-  t.no(shallNotPass, 'You must be a balrog');
+  t.is({a : 6, b : [1,2,3]}, {a:6, b:[1,2,3]});
 });
 ```
 
@@ -162,6 +164,9 @@ test('Various assertions', (t)=>{
 **package.json**
 ```json
 {
+  "scripts": {
+    "test": "pico-check **/*.test.{js,jsx}"
+  },
   "pico-check": {
     "require": "babel-register"
   },

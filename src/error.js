@@ -3,8 +3,8 @@ const path   = require('path');
 const chalk  = require('chalk');
 const Assert = require('../src/assert.js');
 
-//const codeDiff = require('../src/codediff.js');
-const codeDiff = require('concordance').diff;
+const codeDiff = require('../src/codediff.js');
+//const codeDiff = require('concordance').diff;
 const utils = require('../src/utils.js');
 
 const InternalPaths = Object.keys(process.binding('natives'))
@@ -19,13 +19,14 @@ const parseError = (err)=>{
 	const newStack = err.stack.split('\n')
 		.filter((line)=>!InternalPaths.some((regex)=>regex.test(line)))
 		.map((line)=>line.replace(process.cwd(), '.'));
-	const matches = /\((.*):(\d+):(\d+)/.exec(newStack[1]);
-	if(!matches) return {
+	const sourceLine = newStack.find((line)=>/\((.*):(\d+):(\d+)/.test(line));
+	if(!sourceLine) return {
 		stack : err.stack,
 		file  : false,
 		line  : '??',
 		col   : '??'
 	};
+	const matches = /\((.*):(\d+):(\d+)/.exec(sourceLine);
 	return {
 		file  : matches[1],
 		stack : newStack.join('\n'),
