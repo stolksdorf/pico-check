@@ -8,7 +8,14 @@ const Test = require('./lib.js');
 const opts = require('./getopts.js');
 const ErrorReporter = require('../src/error.js');
 
-if(opts.require) opts.require.map((modulePath)=>utils.requireRelative(modulePath));
+if(opts.require) opts.require.map((modulePath)=>{
+	if(modulePath[0] == '.'){
+		utils.requireRelative(modulePath);
+	}else{
+		require(modulePath);
+	}
+});
+
 
 const loadReporter = ()=>{
 	if(opts.reporter) return utils.requireRelative(opts.reporter);
