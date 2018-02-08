@@ -16,7 +16,6 @@ if(opts.require) opts.require.map((modulePath)=>{
 	}
 });
 
-
 const loadReporter = ()=>{
 	if(opts.reporter) return utils.requireRelative(opts.reporter);
 	if(opts.verbose)  return require('../reporters/verbose.reporter.js');
@@ -64,9 +63,11 @@ if(opts.watch){
 			console.log(ErrorReporter(err));
 		}
 	};
-	chokidar.watch(opts.source, { ignored: opts.ignore, ignoreInitial: true }).on('all', runWatch);
+	chokidar.watch(opts.source, { ignored: opts.ignore, ignoreInitial: true }).on('all', (err, filepath)=>{
+		delete require.cache[require.resolve(utils.relativePath(filepath))];
+		runWatch();
+	});
 	runWatch();
 } else {
 	runTestSuite();
 }
-
