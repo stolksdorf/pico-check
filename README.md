@@ -220,26 +220,6 @@ Tests happen in serial
 can use tests to function as before and after hooks
 
 
-## TODO
-
-### Configuration
-
-### Clean Stack Traces
-
-### Groups
-
-### Only & Skipping
-Chaining
-
-### Watching
-
-### Async tests
-
-### Before & after hooks
-Test implicitly pass,
-Tests happen in serial
-can use tests to function as before and after hooks
-
 ### JSX support
 Use `babel-register`
 Show setup for the package.json
