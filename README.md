@@ -52,7 +52,8 @@ $ npm install --save-dev pico-check
 {
   "name": "smashing-project",
   "scripts": {
-    "test": "pico-check"
+    "test": "pico-check",
+    "test:dev": "pico-check -v -w"
   },
   "pico-check": {
     //configs here
@@ -158,8 +159,11 @@ test('sample', (t)=>{
 
 ## Tips & Tricks
 
-### JSX testing
+### Require Init
+If your project requires some initiation, such as with config files, or databases, or servers, you can use the `require` option to specify a script that will be run before any test file gets ran.  
 
+
+### JSX testing
 
 **package.json**
 ```json
