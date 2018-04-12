@@ -16,12 +16,12 @@ const InternalPaths = Object.keys(process.binding('natives'))
 	]);
 
 const parseError = (err)=>{
-	const newStack = err.stack.split('\n')
+	const newStack = (err.stack || '').split('\n')
 		.filter((line)=>!InternalPaths.some((regex)=>regex.test(line)))
 		.map((line)=>line.replace(process.cwd(), '.'));
 	const sourceLine = newStack.find((line)=>/\((.*):(\d+):(\d+)/.test(line));
 	if(!sourceLine) return {
-		stack : err.stack,
+		stack : err.stack || '',
 		file  : false,
 		line  : '??',
 		col   : '??'
