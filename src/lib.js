@@ -7,7 +7,7 @@ const Test = {
 			name,
 			opts : paramOpts,
 			run  : (runOpts={})=>{
-				const opts = utils.merge(testCase.opts, runOpts);
+				const opts = utils.merge(runOpts, testCase.opts);
 				(opts.reporter && opts.reporter.startTest(testCase));
 				let timeout;
 				return new Promise((resolve, reject)=>{

@@ -7,7 +7,9 @@ const GroupBuilder = (name, groupOpts={})=>{
 	const group = Test.createGroup(name, groupOpts);
 	const TestBuilder = (baseOpts={})=>{
 		const testcase = function(name, testFunc, opts={}){
-			group.add(Test.createTestCase(name, testFunc, utils.merge(baseOpts, opts)));
+			const newCase = Test.createTestCase(name, testFunc, utils.merge(baseOpts, opts));
+			group.add(newCase);
+			return newCase;
 		};
 		const addCmd = (name, cmdOpts)=>{
 			testcase[name] = (...args)=>{
