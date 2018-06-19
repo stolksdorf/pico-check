@@ -16,7 +16,7 @@ const Test = {
 						const testResult = testScope(Assert);
 						if(!(testResult instanceof Promise)) return resolve();
 						timeout = Assert.timeout(resolve, opts.timeout);
-						testResult.then(resolve).catch((err)=>resolve(err));
+						testResult.then(resolve).catch((err)=>resolve(err instanceof Error ? err : new Error(err)));
 					} catch (err){
 						resolve(err instanceof Error ? err : new Error(err));
 					}

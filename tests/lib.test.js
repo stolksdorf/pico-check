@@ -17,6 +17,11 @@ test.group('testcase', (test)=>{
 		return tc.run()
 			.then((res)=>t.is(res, false));
 	});
+	test('rejected', (t)=>{
+		const tc = lib.createTestCase('sample', (t)=>{ return Promise.reject('bad news') });
+		return tc.run()
+			.then((res)=>t.ok(res instanceof Error));
+	});
 	test('error', (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{ throw 'error!'; });
 		return tc.run()

@@ -8,6 +8,7 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 - [CLI](#cLI])
 - [Reporters](#reporters])
 - [Assertion](#assertion])
+- [Before and After](#lifecycle])
 - [TODO](#todo])
 - [Ideas](#ideas])
 
@@ -72,7 +73,7 @@ Create a file named `basic.test.js` in your project's `/tests` directory:
 const test = require('pico-check');
 
 test('testing addition', (t)=>{
-  t.is(3 + 4, 7);
+  t.is(3 + 4, 7, `Making sure math isn't broken`);
 });
 
 module.exports = test;
@@ -156,11 +157,15 @@ test('sample', (t)=>{
 });
 ```
 
+## Before & After
+
+Common design patterns
+
 
 ## Tips & Tricks
 
 ### Require Init
-If your project requires some initiation, such as with config files, or databases, or servers, you can use the `require` option to specify a script that will be run before any test file gets ran.  
+If your project requires some initiation, such as with config files, or databases, or servers, you can use the `require` option to specify a script that will be run before any test file gets ran.
 
 
 ### JSX testing
