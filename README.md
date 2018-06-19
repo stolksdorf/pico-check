@@ -157,9 +157,104 @@ test('sample', (t)=>{
 });
 ```
 
-## Before & After
+## Lifecycle Triggers
+A Common design pattern for testing is to have `before`, `after`, `beforeEach`, and `afterEach` triggers for your test cases. While `pico-check` lacks these functiosn explicitly, you can replicate this functionality using native javascript, since your tests run syncronously.
 
-Common design patterns
+#### Before & After
+Since tests run sync, the simplist way to achive this is to make a testcase at the beginning or end of your test file.
+
+```js
+const test = require('pico-check');
+
+test('start', async ()=>{
+  await DB.startup();
+});
+
+/** Your test cases... **/
+
+test('cleanup', async ()=>{
+  await DB.shutdown();
+});
+
+module.exports = test;
+```
+
+**Notes**:
+- If you have many before or after triggers, it's useful to create a group for them to easily turn them off/on, or add it them.
+- When using `.only()`, you have to remember to add `.only()` to your before and after triggers or they will get skipped.
+- If you have many test files that use the same before/after triggers, it useful to store the create group/testcases in a separate file and require them in as needed
+
+```js
+/** in ./tests/lifecycle.js **/
+
+module.exports = {
+  startDB : (test)=>{
+    test('start db', async ()=>await DB.start());
+    test('add user', async ()=>await DB.addUser({id : '123'}));
+  },
+  stopDB : (test)=>{
+    test('remove user', async ()=>await DB.removeUser({id : '123'}));
+    test('shutdown db', async ()=>await DB.stop());
+  },
+};
+
+/** in ./tests/user.test.js **/
+
+const test = require('pico-check');
+const {startDB, stopDB } = require('./lifecycle.js');
+
+test.group('startup', startDB);
+
+/** Your test cases... **/
+
+test.group('cleanup', stopDB);
+
+module.exports = test;
+```
+
+#### BeforeEach & AfterEach
+
+The easiest way to implement BeforeEach and AfterEach is just to create local functions in the test file and call them within your test cases.
+
+```js
+const test = require('pico-check');
+
+const ensureUser = ()=>{...};
+const highfiveUser = ()=>{...};
+
+test('Is User a cool dude', (t)=>{
+  ensureUser();
+  t.ok(user.isCool);
+  highfiveUser();
+});
+
+// ...
+
+module.exports = test;
+```
+
+This can become tedious with many tests, so a better pattern is to create a testcase wrapper function.
+
+```js
+const test = require('pico-check');
+
+const ensureUser = ()=>{...};
+const highfiveUser = ()=>{...};
+const usertest = (testcase)=>{
+  return (t)=>{
+    ensureUser();
+    testcase(t);
+    highfiveUser();
+  };
+};
+
+test('Is User a cool dude', usertest((t)=>{
+  t.ok(user.isCool);
+}));
+
+module.exports = test;
+```
+
 
 
 ## Tips & Tricks

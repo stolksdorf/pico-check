@@ -2,30 +2,30 @@ const test = require('../pico-check.js');
 const lib = require('../src/lib.js');
 
 test.group('testcase', (test)=>{
-	test('basic', (t)=>{
+	test('basic', async (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>t.pass());
-		return tc.run()
-			.then((res)=>t.is(res, true));
+		const res = await tc.run();
+		t.is(res, true);
 	});
-	test('failed', (t)=>{
+	test('failed', async (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>t.fail());
-		return tc.run()
-			.then((res)=>t.ok(res instanceof Error));
+		const res = await tc.run();
+		t.ok(res instanceof Error);
 	});
-	test('skipped', (t)=>{
+	test('skipped', async (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>t.fail(), { skip: true });
-		return tc.run()
-			.then((res)=>t.is(res, false));
+		const res = await tc.run();
+		t.is(res, false);
 	});
-	test('rejected', (t)=>{
+	test('rejected', async (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{ return Promise.reject('bad news') });
-		return tc.run()
-			.then((res)=>t.ok(res instanceof Error));
+		const res = await tc.run();
+		t.ok(res instanceof Error);
 	});
-	test('error', (t)=>{
+	test('error', async (t)=>{
 		const tc = lib.createTestCase('sample', (t)=>{ throw 'error!'; });
-		return tc.run()
-			.then((res)=>t.ok(res instanceof Error));
+		const res = await tc.run();
+		t.ok(res instanceof Error);
 	});
 });
 
