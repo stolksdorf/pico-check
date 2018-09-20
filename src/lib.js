@@ -14,14 +14,21 @@ const Test = {
 					if(opts.skip || (opts.run_only && !opts.only)) return resolve(false);
 					try {
 						const testResult = testScope(Assert);
-						if(!(testResult instanceof Promise)) return resolve();
+						if(!(testResult instanceof Promise)){
+							Assert.detonate();
+							return resolve();
+						}
 						timeout = Assert.timeout(resolve, opts.timeout);
-						testResult.then(resolve).catch((err)=>resolve(err instanceof Error ? err : new Error(err)));
+						testResult
+							.then(Assert.detonate)
+							.then(resolve)
+							.catch((err)=>resolve(err instanceof Error ? err : new Error(err)));
 					} catch (err){
 						resolve(err instanceof Error ? err : new Error(err));
 					}
 				})
 					.then((result = true)=>{
+						Assert.disarm();
 						clearTimeout(timeout);
 						if(result instanceof Error) result.title = testCase.name;
 						(opts.reporter && opts.reporter.endTest(testCase, result));

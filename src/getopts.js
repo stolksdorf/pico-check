@@ -15,8 +15,6 @@ const applyToOpts = (obj)=>{
 	});
 };
 
-//TODO: Add a skip fail option
-
 const opts = {
 	tests    : ['**/*.test.js'],
 	ignore   : ['node_modules/**'],

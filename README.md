@@ -127,7 +127,7 @@ You can create your own reporters ... TODO
 
 
 ## Assertion
-The testing function provided to a test case will be executed with `pico-check`'s assertion object as it's first and only parameter. `pico-check`s assertion object is an extension of node's built-in [assert](https://nodejs.org/api/assert.html). Here are some of the most common assertions:
+The testing function provided to a test case will be executed with `pico-check`'s assertion object as it's first and only parameter. `pico-check`s assertion object is an extension of node's built-in [assert](https://nodejs.org/api/assert.html), so you can use any of the default assertions. Here are `pico-check`s additional assertions:
 
 #### `t.pass([msg]) / t.fail([msg])`
 Passes/fails a test case with an optional message
@@ -156,6 +156,16 @@ test('sample', (t)=>{
   t.is({a : 6, b : [1,2,3]}, {a:6, b:[1,2,3]});
 });
 ```
+
+#### `t.prime([msg]) / t.disarm()`
+Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.prime()`, and stop it from failing by calling `t.disarm()`.
+
+test('emitter fires', (t)=>{
+  t.prime();
+  emitter.on('update', ()=>t.disarm());
+  emitter.emit('update');
+});
+
 
 ## Lifecycle Triggers
 A Common design pattern for testing is to have `before`, `after`, `beforeEach`, and `afterEach` triggers for your test cases. While `pico-check` lacks these functiosn explicitly, you can replicate this functionality using native javascript, since your tests run syncronously.
