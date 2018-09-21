@@ -1,6 +1,6 @@
 {
   "name": "pico-check",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "An incredibly tiny javascript testing library",
   "main": "pico-check.js",
   "scripts": {

@@ -1,11 +1,13 @@
 const test = require('../pico-check.js');
 
+const _ = (t)=>{};
+
 test('basic', (t)=>{
 	const pc = require('../pico-check.js');
 
-	pc.only('A', (t)=>{});
-	pc('B', (t)=>{});
-	pc.only('C', (t)=>{});
+	pc.only('A', _);
+	pc('B', _);
+	pc.only('C', _);
 
 	return pc.run()
 		.then((res)=>t.is(res, [true, false, true]));
@@ -15,8 +17,8 @@ test('group', (t)=>{
 	const pc = require('../pico-check.js');
 
 	pc.group('A', (test)=>{
-		test.only('Aa', (t)=>{});
-		test('Ab', (t)=>{});
+		test.only('Aa', _);
+		test('Ab', _);
 	});
 
 	return pc.run()
@@ -33,8 +35,8 @@ test('multigroup', (t)=>{
 	const pc = require('../pico-check.js');
 
 	pc.only().group('A', (test)=>{
-		test('Aa', (t)=>{});
-		test('Ab', (t)=>{});
+		test('Aa', _);
+		test('Ab', _);
 	});
 	pc.group('B', (test)=>{
 		test('Ba', (t)=>{t.fail();});
@@ -51,19 +53,19 @@ test('nested groups', (t)=>{
 	const pc = require('../pico-check.js');
 
 	pc.group('A', (test)=>{
-		test.only('Aa', (t)=>{});
-		test('Ab', (t)=>{});
+		test.only('Aa', _);
+		test('Ab', _);
 		test.only().group('C', (test)=>{
-			test('Ca', (t)=>{});
-			test('Cb', (t)=>{});
+			test('Ca', _);
+			test('Cb', _);
 		});
 		test.only().group('D', (test)=>{
-			test('Da', (t)=>{});
-			test.only('Db', (t)=>{});
+			test('Da', _);
+			test.only('Db', _);
 		});
 	});
 	pc.group('B', (test)=>{
-		test('Ba', (t)=>{});
+		test('Ba', _);
 	});
 
 	return pc.run()
