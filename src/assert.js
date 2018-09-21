@@ -12,7 +12,7 @@ const Assert = Object.assign({}, assert, {
 	fail : (msg=failMsg)=>assert.ok(false, msg),
 	no   : (act, msg)=>assert.ok(!act, msg),
 
-	prime : (msg='Test was primed, but not disarmed')=>primed=msg,
+	arm : (msg='Test was armed, but not disarmed')=>primed=msg,
 	disarm : ()=>primed=false,
 	detonate : ()=>{if(primed){ throw new Error(primed) }},
 

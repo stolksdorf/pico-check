@@ -157,18 +157,18 @@ test('sample', (t)=>{
 });
 ```
 
-#### `t.prime([msg]) / t.disarm()`
-Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.prime()`, and stop it from failing by calling `t.disarm()`.
+#### `t.arm([msg]) / t.disarm()`
+Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.arm()`, and stop it from failing by calling `t.disarm()`.
 
 test('emitter fires', (t)=>{
-  t.prime();
+  t.arm('Update event was never caught');
   emitter.on('update', ()=>t.disarm());
   emitter.emit('update');
 });
 
 
 ## Lifecycle Triggers
-A Common design pattern for testing is to have `before`, `after`, `beforeEach`, and `afterEach` triggers for your test cases. While `pico-check` lacks these functiosn explicitly, you can replicate this functionality using native javascript, since your tests run syncronously.
+A common design pattern for testing is to have `before`, `after`, `beforeEach`, and `afterEach` triggers for your test cases. While `pico-check` lacks these functions explicitly, you can replicate this functionality using native javascript, since your tests run syncronously.
 
 #### Before & After
 Since tests run sync, the simplist way to achive this is to make a testcase at the beginning or end of your test file.
@@ -324,22 +324,8 @@ module.exports = test;
 Conditional testing based on environment or other factors.
 
 
-### Before & after hooks
-Test implicitly pass,
-Tests happen in serial
-can use tests to function as before and after hooks
-
-
 ### JSX support
 Use `babel-register`
 Show setup for the package.json
 Show examples using the `react-test-renderer`
-
-
-
-## Ideas
-
-### `t.log()`
-
-### [Power Assert](https://github.com/power-assert-js/power-assert)
 
