@@ -12,8 +12,8 @@ const Assert = Object.assign({}, assert, {
 	fail : (msg=failMsg)=>assert.ok(false, msg),
 	no   : (act, msg)=>assert.ok(!act, msg),
 
-	arm : (msg='Test was armed, but not disarmed')=>primed=msg,
-	disarm : ()=>primed=false,
+	arm      : (msg='Test was armed, but not disarmed')=>primed=msg,
+	disarm   : ()=>primed=false,
 	detonate : ()=>{if(primed){ throw new Error(primed) }},
 
 	timeout      : (resolve, time)=>setTimeout(()=>resolve(new Error('Async timeout')), time),
