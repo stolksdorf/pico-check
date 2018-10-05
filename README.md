@@ -1,4 +1,4 @@
-# pico-check ✅
+# ✅ pico-check 
 An incredibly tiny javascript testing library. Heavily inspired by the wonderful [ava](https://github.com/avajs/ava) and [tape](https://github.com/substack/tape).
 
 
