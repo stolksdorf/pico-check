@@ -3,14 +3,14 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 
 
 ## Contents
-- [Test Syntax](#test-syntax])
-- [Usage](#usage])
-- [CLI](#cLI])
-- [Reporters](#reporters])
-- [Assertion](#assertion])
-- [Before and After](#lifecycle])
-- [TODO](#todo])
-- [Ideas](#ideas])
+- [Test Syntax](#test-syntax)
+- [Usage](#usage)
+- [CLI](#cli)
+- [Reporters](#reporters)
+- [Assertion](#assertion)
+- [Before and After](#lifecycle)
+- [TODO](#todo)
+- [Ideas](#ideas)
 
 
 ## Test Syntax
