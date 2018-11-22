@@ -1,12 +1,13 @@
 {
   "name": "pico-check",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "An incredibly tiny javascript testing library",
   "bin": "src/cli.js",
   "main": "pico-check.js",
   "scripts": {
     "lint": "eslint --fix **/*.js",
     "test": "cd ./tests && npm run test",
+    "dev": "cd ./tests && npm run dev",
     "verbose": "cd ./tests && npm run reporter:verbose",
     "mini": "cd ./tests && npm run reporter:mini",
     "basic": "cd ./tests && npm run reporter:basic"

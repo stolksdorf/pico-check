@@ -115,9 +115,16 @@ $ pico-check --help
 
 ## Reporters
 
+<<<<<<< 52e1258fbb13886f224beb8dab3548327738839d
 ### verbose reporter (default)
 Prints out all testcases in an easy to read format.
 
+=======
+### continous reporter (default)
+
+
+### mini reporter
+>>>>>>> Adding in new snapshot files
 `//TODO: add gif`
 
 ### mini reporter

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "pico-check",
+    "dev": "pico-check -w -b",
     "reporter:verbose": "pico-check -v reporter.visual.js",
     "reporter:mini": "pico-check -m reporter.visual.js",
     "reporter:basic": "pico-check -b reporter.visual.js",
