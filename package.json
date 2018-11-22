@@ -2,15 +2,15 @@
   "name": "pico-check",
   "version": "1.1.1",
   "description": "An incredibly tiny javascript testing library",
+  "bin": "src/cli.js",
   "main": "pico-check.js",
   "scripts": {
     "lint": "eslint --fix **/*.js",
     "test": "cd ./tests && npm run test",
-    "verbose": "cd ./tests && npm run verbose",
-    "mini": "cd ./tests && npm run simple",
-    "simple": "cd ./tests && npm run simple"
+    "verbose": "cd ./tests && npm run reporter:verbose",
+    "mini": "cd ./tests && npm run reporter:mini",
+    "basic": "cd ./tests && npm run reporter:basic"
   },
-  "bin": "src/cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stolksdorf/pico-check.git"

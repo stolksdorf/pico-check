@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pico-check -v",
-    "verbose": "pico-check -v -w reporter.visual.js",
-    "mini": "pico-check -w reporter.visual.js",
-    "tap": "pico-check -w -t reporter.visual.js",
-    "utils": "pico-check -w -v utils.test.js",
-    "opts": "pico-check -w -v opts.test.js",
-    "only": "pico-check -w -v only.test.js",
-    "lib": "pico-check -w -v lib.test.js"
+    "test": "pico-check",
+    "reporter:verbose": "pico-check -v reporter.visual.js",
+    "reporter:mini": "pico-check -m reporter.visual.js",
+    "reporter:basic": "pico-check -b reporter.visual.js",
+    "reporter:tap": "pico-check -t reporter.visual.js",
+    "utils": "pico-check -w utils.test.js",
+    "opts": "pico-check -w opts.test.js",
+    "only": "pico-check -w only.test.js",
+    "lib": "pico-check -w lib.test.js"
   },
   "author": "",
   "license": "ISC",

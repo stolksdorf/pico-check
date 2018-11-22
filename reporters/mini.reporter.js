@@ -2,8 +2,6 @@ const utils = require('../src/utils.js');
 const chalk = require('chalk');
 const ErrorReporter = require('../src/error.js');
 
-//https://github.com/helloIAmPau/node-spinner/blob/master/spinners.json
-
 const clearLines = (numLines = 1)=>{
 	process.stdout.moveCursor(0, -numLines);
 	process.stdout.clearScreenDown();

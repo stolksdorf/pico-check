@@ -19,9 +19,4 @@ test('opts from package', (t)=>{
 	t.is(opts.require, ['./test.require.js']);
 });
 
-test('opts from args', (t)=>{
-	t.is(opts.verbose, true);
-});
-
-
 module.exports = test;

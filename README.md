@@ -1,4 +1,4 @@
-# ✅ pico-check 
+# ✅ pico-check
 An incredibly tiny javascript testing library. Heavily inspired by the wonderful [ava](https://github.com/avajs/ava) and [tape](https://github.com/substack/tape).
 
 
@@ -54,7 +54,7 @@ $ npm install --save-dev pico-check
   "name": "smashing-project",
   "scripts": {
     "test": "pico-check",
-    "test:dev": "pico-check -v -w"
+    "test:dev": "pico-check -b -w"
   },
   "pico-check": {
     //configs here
@@ -95,6 +95,8 @@ $ pico-check --help
 
   Options:
     -v --verbose        use the verbose reporter
+    -m --mini           use the mini reporter
+    -b --basic          use the basic reporter
     -t --tap            use the TAP reporter
     -w --watch          enable watching
     -i --ignore [path]  paths to ignore
@@ -113,11 +115,19 @@ $ pico-check --help
 
 ## Reporters
 
-### mini reporter
+### verbose reporter (default)
+Prints out all testcases in an easy to read format.
+
 `//TODO: add gif`
 
-### verbose reporter
+### mini reporter
+A compact reporter that live updates as the tests are running. Finishes with a list of all fails and a summary.
+
 `//TODO: add gif`
+
+### basic reporter
+Only prints out errors and a summary. Good to use with the `--watch` flag.
+
 
 ### TAP reporter
 `pico-check` supports the [TAP format](https://testanything.org/) and will work with [any TAP reporter](https://testanything.org/consumers.html#javascript)
