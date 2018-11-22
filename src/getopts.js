@@ -20,6 +20,8 @@ const opts = {
 	ignore   : ['node_modules/**'],
 	reporter : false,
 	verbose  : false,
+	mini     : false,
+	basic    : false,
 	tap      : false,
 	require  : false,
 	watch    : false,
@@ -43,6 +45,8 @@ const cliOpts = cli
 	.command('pico-check [tests]')
 	.usage('[options] <test files...>')
 	.option('-v --verbose', 'use the verbose reporter')
+	.option('-m --mini', 'use the mini reporter')
+	.option('-b --basic', 'use the basic reporter')
 	.option('-t --tap', 'use the TAP reporter')
 	.option('-w --watch', 'enable watching')
 	.option('-i --ignore [path]', 'paths to ignore')

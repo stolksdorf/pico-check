@@ -19,8 +19,10 @@ if(opts.require) opts.require.map((modulePath)=>{
 const loadReporter = ()=>{
 	if(opts.reporter) return utils.requireRelative(opts.reporter);
 	if(opts.verbose)  return require('../reporters/verbose.reporter.js');
+	if(opts.mini)     return require('../reporters/mini.reporter.js');
+	if(opts.basic)    return require('../reporters/basic.reporter.js');
 	if(opts.tap)      return require('../reporters/tap.reporter.js');
-	return require('../reporters/mini.reporter.js');
+	return require('../reporters/verbose.reporter.js');
 };
 opts.reporter = loadReporter();
 
