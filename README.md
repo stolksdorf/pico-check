@@ -8,8 +8,8 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 - [CLI](#cli)
 - [Reporters](#reporters)
 - [Assertion](#assertion)
-- [Before and After](#lifecycle)
-- [TODO](#todo)
+- [Snapshots](#snapshots)
+- [Before and After Tests](#lifecycle)
 - [Ideas](#ideas)
 
 
@@ -115,17 +115,8 @@ $ pico-check --help
 
 ## Reporters
 
-<<<<<<< 52e1258fbb13886f224beb8dab3548327738839d
 ### verbose reporter (default)
 Prints out all testcases in an easy to read format.
-
-=======
-### continous reporter (default)
-
-
-### mini reporter
->>>>>>> Adding in new snapshot files
-`//TODO: add gif`
 
 ### mini reporter
 A compact reporter that live updates as the tests are running. Finishes with a list of all fails and a summary.
@@ -183,8 +174,25 @@ test('emitter fires', (t)=>{
   emitter.emit('update');
 });
 
+## Snapshots
+`pico-check` supports very simplistic snapshots capability. `/snapshots` returns a function that takes a relative path as a parameter. The function will then recursively walk that folder and subfolders and reads in any file it finds. It then stores each as a string within a nested object where the keys are folder names and filenames (without extensions)
 
-## Lifecycle Triggers
+```js
+const test = require('pico-check');
+const Snapshots = require('pico-check/snapshots')('./tests/snapshots');
+
+
+test('Does renderer match expected', (t)=>{
+  t.is(render('basic'), Snapshots.render.basic);
+});
+```
+
+### Generating Snapshots
+`pico-check` doesn't give you a direct way to generate snapshots, but since they are just files, any file I/O procedure can generate new snapshots, even mid-test.
+
+
+
+## Lifecycle
 A common design pattern for testing is to have `before`, `after`, `beforeEach`, and `afterEach` triggers for your test cases. While `pico-check` lacks these functions explicitly, you can replicate this functionality using native javascript, since your tests run syncronously.
 
 #### Before & After
@@ -228,7 +236,7 @@ module.exports = {
 /** in ./tests/user.test.js **/
 
 const test = require('pico-check');
-const {startDB, stopDB } = require('./lifecycle.js');
+const { startDB, stopDB } = require('./lifecycle.js');
 
 test.group('startup', startDB);
 
@@ -290,7 +298,7 @@ module.exports = test;
 If your project requires some initiation, such as with config files, or databases, or servers, you can use the `require` option to specify a script that will be run before any test file gets ran.
 
 
-### JSX testing
+### JSX Testing
 
 **package.json**
 ```json
@@ -335,14 +343,3 @@ test('can be clicked', (t)=>{
 
 module.exports = test;
 ```
-
-
-### Conditional Testing
-Conditional testing based on environment or other factors.
-
-
-### JSX support
-Use `babel-register`
-Show setup for the package.json
-Show examples using the `react-test-renderer`
-
