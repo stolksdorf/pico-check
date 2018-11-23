@@ -21,14 +21,15 @@
     "assert"
   ],
   "eslintIgnore": [
-    "node_modules"
+    "!.*"
   ],
   "prettier": {
     "useTabs"       : true,
     "singleQuote"   : true,
     "trailingComma" : "es5",
     "arrowParens"   : "always",
-    "printWidth"    : 100,
+    "endOfLine"     : "lf",
+    "printWidth"    : 100
   },
   "author": "stolksdorf",
   "license": "ISC",

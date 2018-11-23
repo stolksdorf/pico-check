@@ -1,10 +1,12 @@
 module.exports = {
 	root          : true,
 	parserOptions : {
-		sourceType : 'module',
+		ecmaVersion : 9,
+		sourceType  : 'module',
 	},
 	env : {
 		node : true,
+		es6  : true,
 	},
 	rules : {
 		/** Errors **/
@@ -38,12 +40,14 @@ module.exports = {
 		],
 
 		/** Fixable **/
-		'no-var'          : 'warn',
-		'prefer-const'    : 'warn',
-		'prefer-template' : 'warn',
-		'indent'                : ['warn', 'tab'],
-		'no-trailing-spaces'            : 'warn',
-		'key-spacing'     : [
+		'no-var'              : 'warn',
+		'prefer-const'        : 'warn',
+		'prefer-template'     : 'warn',
+		indent                : ['warn', 'tab'],
+		'no-trailing-spaces'  : 'warn',
+		'keyword-spacing'     : ['warn', { before : false, after : false }],
+		'space-before-blocks' : ['warn', 'never'],
+		'key-spacing'         : [
 			'warn',
 			{
 				multiLine  : { beforeColon : true, afterColon : true, align : 'colon' },

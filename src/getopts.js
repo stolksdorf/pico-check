@@ -1,16 +1,16 @@
 const cli = require('commander');
 const rootPckg = require('../package.json');
 const path = require('path');
-const fs   = require('fs');
+const fs = require('fs');
 const utils = require('./utils.js');
 
-const ensureArray = (keys)=>{
-	keys.map((key)=>{
+const ensureArray = (keys) => {
+	keys.map((key) => {
 		if(opts[key] && !Array.isArray(opts[key])) opts[key] = [opts[key]];
 	});
 };
-const applyToOpts = (obj)=>{
-	Object.keys(opts).map((key)=>{
+const applyToOpts = (obj) => {
+	Object.keys(opts).map((key) => {
 		if(typeof obj[key] !== 'undefined') opts[key] = obj[key];
 	});
 };
@@ -27,14 +27,14 @@ const opts = {
 	watch    : false,
 	failSkip : false,
 	source   : ['**/*.js'],
-	timeout  : 500
+	timeout  : 500,
 };
 
-const getPckg = (currPath = path.resolve(''))=>{
+const getPckg = (currPath = path.resolve('')) => {
 	const pckg = path.join(currPath, 'package.json');
-	if(fs.existsSync(pckg)) return utils.requireRelative(pckg);
+	if(fs.existsSync(pckg))return utils.requireRelative(pckg);
 	const info = path.parse(currPath);
-	if(info.root == info.dir) return {};
+	if(info.root == info.dir)return{};
 	return getPckg(info.dir);
 };
 const pckg = getPckg();
@@ -56,7 +56,6 @@ const cliOpts = cli
 	.option('--source [path]', 'paths to files to watch')
 	.option('--fail-skip', 'testsuite will fail if any tests are skipped')
 	.parse(process.argv);
-
 
 if(cliOpts.args.length) cliOpts.tests = cliOpts.args;
 applyToOpts(packageOpts);

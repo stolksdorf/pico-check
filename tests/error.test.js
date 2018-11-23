@@ -2,31 +2,15 @@ const test = require('../pico-check.js');
 //const ErrorReport = require('../src/error.js');
 //const Assert = require('../src/assert.js');
 
+test.skip('Manual Error', (t) => {});
 
+test.skip('Code Error', (t) => {});
 
+test.skip('Diff Error', (t) => {});
 
+test.skip('Fail Error', (t) => {});
 
-test.skip('Manual Error', (t)=>{
-
-});
-
-test.skip('Code Error', (t)=>{
-
-});
-
-test.skip('Diff Error', (t)=>{
-
-});
-
-
-test.skip('Fail Error', (t)=>{
-
-});
-
-test.skip('Timeout Error', (t)=>{
-
-});
-
+test.skip('Timeout Error', (t) => {});
 
 // const manualError = new Error('This is an error');
 // let codeError;
@@ -36,15 +20,12 @@ test.skip('Timeout Error', (t)=>{
 // let failError;
 // try { Assert.fail(); } catch (err){ failError = err; }
 
-
 // console.log(ErrorReport(manualError, 'This is an manualError'));
 // console.log(ErrorReport(codeError, 'This is an codeError'));
 // console.log(ErrorReport(diffError, 'This is an diffError'));
 // console.log(ErrorReport(failError, 'This is an failError'));
 
-
 module.exports = test;
-
 
 // console.log(utils.parseError(manualError));
 // console.log('-----------------');
@@ -52,12 +33,7 @@ module.exports = test;
 // console.log('-----------------');
 // console.log(utils.parseError(assertError));d
 
-
-
-
 //console.log(ErrorReport();
-
-
 
 // try{
 // 	assert.equal([1,2], [2,1], "Let's go");
@@ -85,15 +61,12 @@ module.exports = test;
 
 // console.log('pure', pureTest);
 
-
 // // test('this is a built testcase', (t)=>{
 // // 	console.log('running');
 // // 	t.equal(5,6)
 // // })
 
 // test.get().add(pureTest)
-
-
 
 // test.get().run().then((res)=>{
 // 	console.log('RES', res);
