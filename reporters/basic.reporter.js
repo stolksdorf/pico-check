@@ -3,7 +3,8 @@ const ErrorReporter = require('../src/error.js');
 
 const Basic = {
 	start : ()=>{
-		utils.printDivider();
+		process.stdout.write('\033c');
+		utils.printDivider(`Last Ran [${new Date().toLocaleTimeString()}]`);
 	},
 	startGroup : (group)=>{},
 	endGroup   : (group, result)=>{},
