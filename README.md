@@ -133,7 +133,7 @@ A compact reporter that live updates as the tests are running. Finishes with a l
 `//TODO: add gif`
 
 ### basic reporter
-Only prints out errors and a summary. Good to use with the `--watch` flag.
+Always clears the console and only prints out errors and the summary. Good to use with the `--watch` flag.
 
 
 ### TAP reporter
