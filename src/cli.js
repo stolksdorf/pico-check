@@ -27,11 +27,23 @@ const loadReporter = () => {
 };
 opts.reporter = loadReporter();
 
+let testPaths = [];
+const decacheModuleTree = (modulePath = '') => {
+	if(testPaths.includes(modulePath))return;
+	if(modulePath.includes('node_modules'))return;
+	const mod = require.cache[modulePath];
+	if(!mod || !mod.parent)return;
+	delete require.cache[modulePath];
+	decacheModuleTree(mod.parent.id);
+};
+
 const runTestSuite = () => {
+	testPaths = [];
 	const testGroups = utils
 		.flatMap(opts.tests, (testGlob) => glob.sync(testGlob, { ignore : opts.ignore }))
 		.reduce((acc, testPath) => {
 			testPath = utils.relativePath(testPath);
+			testPaths.push(require.resolve(testPath));
 			delete require.cache[require.resolve(testPath)];
 			const testFile = utils.requireRelative(testPath);
 			if(!testFile || !testFile.run)throw`Err: ${testPath} did not export a test group.`;
@@ -73,7 +85,7 @@ if(opts.watch){
 	chokidar
 		.watch(opts.source, { ignored : opts.ignore, ignoreInitial : true })
 		.on('all', (err, filepath) => {
-			delete require.cache[require.resolve(utils.relativePath(filepath))];
+			decacheModuleTree(require.resolve(utils.relativePath(filepath)));
 			runWatch();
 		});
 	runWatch();

@@ -13,8 +13,3 @@ const GetSnapshots = (dir) => {
 };
 
 module.exports = (dir) => GetSnapshots(path.resolve(path.dirname(module.parent.filename), dir));
-
-// module.exports = (dir)=>{
-// 	const temp = GetSnapshots(path.resolve(path.dirname(module.parent.filename), dir))
-// 	return temp;
-// };
