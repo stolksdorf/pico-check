@@ -165,6 +165,17 @@ test('sample', (t)=>{
 });
 ```
 
+#### `t.type(value, type, [msg])`
+A shorthand for `assert.equal(typeof value, type, msg)`. Handles arrays as type `'array'`;
+
+```js
+test('sample', (t)=>{
+  t.type(3, 'number');
+  t.type({a:true}, 'object');
+  t.type([1,2,3], 'array');
+});
+```
+
 #### `t.arm([msg]) / t.disarm()`
 Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.arm()`, and stop it from failing by calling `t.disarm()`.
 

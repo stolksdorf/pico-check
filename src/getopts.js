@@ -16,7 +16,7 @@ const applyToOpts = (obj) => {
 };
 
 const opts = {
-	tests    : ['**/*.test.js'],
+	tests    : ['**/*.test.js', '**/test.js'],
 	ignore   : ['node_modules/**'],
 	reporter : false,
 	verbose  : false,
