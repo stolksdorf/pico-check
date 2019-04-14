@@ -10,7 +10,7 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 - [Assertion](#assertion)
 - [Snapshots](#snapshots)
 - [Before and After Tests](#lifecycle)
-- [Ideas](#ideas)
+- [Tips & Tricks](#tips--tricks)
 
 
 ## Test Syntax
