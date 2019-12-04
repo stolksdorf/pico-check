@@ -6,6 +6,7 @@ const Test = {
 		const testCase = {
 			name,
 			opts : paramOpts,
+			info : utils.getTrace(2),
 			run  : (runOpts = {}) => {
 				const opts = utils.merge(runOpts, testCase.opts);
 				opts.reporter && opts.reporter.startTest(testCase);

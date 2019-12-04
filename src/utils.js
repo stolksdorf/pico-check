@@ -19,6 +19,22 @@ if(!String.prototype.padStart){
 	};
 }
 
+const getTrace = (offset=0)=>{
+	const stack = (new Error()).stack.split('\n').reduce((stack, raw)=>{
+		const [_, name, file, line, col] =
+			/    at (.*?) \((.*?):(\d*):(\d*)\)/.exec(raw) || /    at ()(.*?):(\d*):(\d*)/.exec(raw) || [];
+		if(file) stack.push({
+			name,
+			file : file.replace(process.cwd(), '').slice(1),
+			line : Number(line),
+			col  : Number(col),
+			raw
+		});
+		return stack;
+	}, []).slice(offset);
+	return stack[0] || {};
+};
+
 const Utils = {
 	merge           : (...args) => Object.assign({}, ...args),
 	flatMap         : (list, fn) => [].concat(...list.map(fn)),
@@ -32,6 +48,7 @@ const Utils = {
 			.map((line) => `${pad}${line}`)
 			.join('\n');
 	},
+	getTrace,
 	sequence : (list, fn) => {
 		return list.reduce((prom, val, key) => {
 			return prom.then((result) => {
