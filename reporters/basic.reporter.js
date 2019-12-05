@@ -10,7 +10,7 @@ const Basic = {
 	endGroup   : (group, result) => {},
 	startTest  : (test) => {},
 	endTest    : (test, result) => {
-		if(result instanceof Error) console.log(ErrorReporter(result, test));
+		if(result instanceof Error) console.log(ErrorReporter(result));
 	},
 	end : (summary) => {
 		utils.printDivider();

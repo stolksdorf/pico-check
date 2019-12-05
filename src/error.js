@@ -43,12 +43,12 @@ const codeSnippet = (file, line, col, indent = '') => {
 	].join('\n');
 };
 
-module.exports = (error, test) => {
+module.exports = (error) => {
 	const trace = getTrace(error);
 	const name = error.title || error.message;
 	const location = trace.file
 		? chalk.grey(`${trace.file}:${trace.line}`)
-		: chalk.grey(`${test.info.file}:${test.info.line}`);
+		: chalk.grey(`${error.test.info.file}:${error.test.info.line}`);
 	const getReport = () => {
 		if(Assert.isForcedFail(error))return;
 		if(error instanceof Assert.AssertionError && error.generatedMessage){

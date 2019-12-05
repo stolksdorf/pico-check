@@ -30,7 +30,10 @@ const Test = {
 				}).then((result = true) => {
 					Assert.disarm();
 					clearTimeout(timeout);
-					if(result instanceof Error) result.title = testCase.name;
+					if(result instanceof Error){
+						result.title = testCase.name;
+						result.test = testCase;
+					}
 					opts.reporter && opts.reporter.endTest(testCase, result);
 					return result;
 				});
