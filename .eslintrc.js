@@ -35,7 +35,7 @@ module.exports = {
 			{
 				vars              : 'all',
 				args              : 'none',
-				varsIgnorePattern : 'config|cx',
+				varsIgnorePattern : 'config|cx|_',
 			},
 		],
 

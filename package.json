@@ -5,7 +5,7 @@
   "bin": "src/cli.js",
   "main": "pico-check.js",
   "scripts": {
-    "lint": "prettier --write --loglevel warn \"**/*.js\" && eslint --fix \"**/*.js\"",
+    "lint": "eslint --fix \"**/*.js\"",
     "test": "cd ./tests && npm run test",
     "dev": "cd ./tests && npm run dev",
     "verbose": "cd ./tests && npm run reporter:verbose",
@@ -46,7 +46,6 @@
     "glob": "^7.1.2"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
-    "prettier": "^1.15.2"
+    "eslint": "^5.9.0"
   }
 }

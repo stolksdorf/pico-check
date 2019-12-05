@@ -51,16 +51,15 @@ const Tests = [
 		},
 		{ timeout : 2000 }
 	),
-	lib.createTestCase(
-		'throw async',
-		(t) => {
-			return new Promise((resolve, reject) => {
-				throw "I am an error"
-			});
-		}
+	lib.createTestCase('throw async', (t) => {
+		return new Promise((resolve, reject) => {
+			throw'I am an error';
+		});
+	}),
+	lib.createTestCase('Should show custom message', (t) =>
+		t.ok(false, 'Oh this should have worked')
 	),
-	lib.createTestCase('Should show custom message', (t) => t.ok(false, 'Oh this should have worked')),
-	lib.createTestCase('Custom message when throws', (t) => t.throws(()=>a+b, 'oops')),
+	lib.createTestCase('Custom message when throws', (t) => t.throws(() => a + b, 'oops')),
 ];
 Tests.map(test.add);
 

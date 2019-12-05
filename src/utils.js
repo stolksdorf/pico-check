@@ -19,19 +19,16 @@ if(!String.prototype.padStart){
 	};
 }
 
-const getTrace = (offset=0)=>{
-	const stack = (new Error()).stack.split('\n').reduce((stack, raw)=>{
-		const [_, name, file, line, col] =
+const getTrace = (offset = 0) => {
+	const stack = (new Error()).stack.split('\n').reduce((stack, raw) => {
+		const[_, name, file, line, col] =
 			/    at (.*?) \((.*?):(\d*):(\d*)\)/.exec(raw) || /    at ()(.*?):(\d*):(\d*)/.exec(raw) || [];
 		if(file) stack.push({
-			name,
-			file : file.replace(process.cwd(), '').slice(1),
-			line : Number(line),
-			col  : Number(col),
-			raw
+			name, file : file.replace(process.cwd(), '').slice(1), line : Number(line), col : Number(col), raw
 		});
 		return stack;
-	}, []).slice(offset);
+	}, [])
+	.slice(offset);
 	return stack[0] || {};
 };
 
