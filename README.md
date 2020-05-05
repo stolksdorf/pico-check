@@ -179,11 +179,13 @@ test('sample', (t)=>{
 #### `t.arm([msg]) / t.disarm()`
 Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.arm()`, and stop it from failing by calling `t.disarm()`.
 
+```js
 test('emitter fires', (t)=>{
   t.arm('Update event was never caught');
   emitter.on('update', ()=>t.disarm());
   emitter.emit('update');
 });
+```
 
 ## Snapshots
 `pico-check` supports very simplistic snapshots capability. `/snapshots` returns a function that takes a relative path as a parameter. The function will then recursively walk that folder and subfolders and reads in any file it finds. It then stores each as a string within a nested object where the keys are folder names and filenames (without extensions)
