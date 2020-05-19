@@ -1,3 +1,4 @@
+/* TAP reporter */
 /* Mostly a proof of concept on how to write different styles of reporters */
 /* https://testanything.org/ */
 

@@ -38,10 +38,11 @@ const runTest = async (test, opts={timeout : 2000})=>{
 			testResult
 				.then(()=>{
 					return Assert.armed
-						? new Error('Test armed, but not disarmed')
+						? new Error('Test failed: Not disarmed')
 						: true
 				})
 				.catch(err=>new Error(err)),
+
 			new Promise((resolve)=>{
 				setTimeout(()=>resolve(new Error('Timeout Error')), opts.timeout)
 			})
@@ -63,23 +64,23 @@ const runCases = async (cases, opts={})=>{
 		let acc = {};
 
 		for(const [name, test] of Object.entries(cases)){
-			const hasOnly = name[0] == '$', hasSkip = name[0] == '_';
-
-			const shouldSkip = hasSkip || flags.skip || (!hasOnly && flags.only);
+			const flaggedOnly = name[0] == '$', flaggedSkip = name[0] == '_';
+			const shouldSkip = flaggedSkip || flags.skip || (!flaggedOnly && flags.only);
 
 			if(typeof test == 'object'){
 				opts.emitter.emit('start_group', name);
 				acc[name] = await recur(test, {
-					only : hasOnly ? false : flags.only,
-					skip : flags.skip || hasSkip
+					only : flaggedOnly ? false : flags.only,
+					skip : flags.skip || flaggedSkip
 				})
 				opts.emitter.emit('end_group', name);
 			}
 
 			if(typeof test == 'function'){
 				opts.emitter.emit('start_test', name);
-				let testResult = false;
-				if(!shouldSkip) testResult = await runTest(test, opts);
+				const testResult = shouldSkip
+					? false
+					: await runTest(test, opts);
 				opts.emitter.emit('end_test', name, testResult);
 				acc[name] = testResult;
 			}
@@ -93,9 +94,7 @@ const runCases = async (cases, opts={})=>{
 	};
 
 	opts.emitter.emit('start', cases, opts, flags);
-
 	const results = await recur(cases, flags);
-
 	opts.emitter.emit('finish', results);
 	return results;
 };
