@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "An incredibly tiny javascript testing library",
   "bin": "src/cli.js",
-  "main": "src/engine.js",
+  "main": "src/pico-check.js",
   "scripts": {
     "lint": "eslint --fix \"**/*.js\"",
     "test": "node src/cli.js ./tests",
@@ -28,6 +28,6 @@
   "homepage": "https://github.com/stolksdorf/pico-check#readme",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^5.9.0"
+    "eslint": "^7.0.0"
   }
 }

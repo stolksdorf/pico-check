@@ -1,4 +1,4 @@
-const check = require('../src/engine.js');
+const check = require('../src/pico-check.js');
 const runTest = check.runTest;
 
 module.exports = {

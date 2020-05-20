@@ -1,10 +1,8 @@
-const check = require('../src/engine.js');
-const runTest = check.runTest;
+const check = require('../src/pico-check.js');
 
 module.exports = {
 
 	skipped : async (t)=>{
-
 		const res = await check({
 			_should_skip : {
 				a      : ()=>{},

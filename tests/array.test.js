@@ -1,4 +1,4 @@
-const check = require('../src/engine.js');
+const check = require('../src/pico-check.js');
 
 module.exports = async (t)=>{
 
@@ -7,7 +7,7 @@ module.exports = async (t)=>{
 		(t)=>t.fail(),
 		{
 			_skipped : ()=>{},
-			failed : (t)=>t.fail()
+			failed   : (t)=>t.fail()
 		}
 	])
 

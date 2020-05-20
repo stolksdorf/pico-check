@@ -3,7 +3,7 @@ const fs = require('fs');
 
 module.exports = {
 
-	clearConsole : ()=>console.log('\033[2J'),
+	clearConsole : ()=>console.log('\x1Bc'),
 
 	indent : (string, pad=1, prefix='') => {
 		if(typeof pad == 'number') pad = ' '.repeat(pad);

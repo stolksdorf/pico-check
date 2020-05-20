@@ -1,4 +1,4 @@
-const check = require('../src/engine.js');
+const check = require('../src/pico-check.js');
 const runTest = check.runTest;
 
 const wait = async (n,val)=>new Promise((r)=>setTimeout(()=>r(val), n));
@@ -12,6 +12,7 @@ module.exports = {
 		})
 		t.is(res, true);
 	},
+
 
 	over_timeout : async (t)=>{
 		const res = await runTest(async (t)=>{
@@ -36,6 +37,7 @@ module.exports = {
 		t.err(res);
 	},
 
+
 	promise_reject : async (t)=>{
 		const res = await runTest((t)=>{
 			return Promise.reject('oops');
@@ -50,15 +52,14 @@ module.exports = {
 		t.is(res, true);
 	},
 
+
 	custom_timeouts : {
 		under_timeout : async (t)=>{
-			const res = await runTest(async (t)=>{
-				t.timeout = 3005;
-				await wait(3000);
-				t.pass();
-			})
-			t.is(res, true);
+			t.timeout = 3000;
+			await wait(2050);
+			t.pass();
 		},
+
 
 		over_timeout : async (t)=>{
 			const res = await runTest(async (t)=>{

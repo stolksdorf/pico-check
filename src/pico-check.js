@@ -22,8 +22,8 @@ const Assert = Object.assign({}, assert, {
 const hasOnlyFlag = (cases)=>{
 	const recur = (cases)=>{
 		return!!Object.entries(cases).find(([name, test])=>{
-			if(name[0]=='$')return true;
-			if(typeof test == 'object')return recur(test);
+			if(name[0]=='$') return true;
+			if(typeof test == 'object') return recur(test);
 		});
 	};
 	return recur(cases);
@@ -35,8 +35,7 @@ const runTest = async (test, opts={timeout : 2000})=>{
 		Assert.armed = false;
 		Assert.timeout = opts.timeout;
 		const testResult = test(Assert);
-		if(!(testResult instanceof Promise))return true;
-
+		if(!(testResult instanceof Promise)) return true;
 		return await Promise.race([
 			testResult
 				.then(()=>{
