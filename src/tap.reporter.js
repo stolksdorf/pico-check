@@ -8,7 +8,7 @@ let currentTestCase = 0;
 emitter.on('start', (cases, opts, flags)=>{
 	let totalCases = 0;
 	const countCases = (obj)=>{
-		if(typeof obj == 'object') return Object.values(obj).map(countCases);
+		if(typeof obj == 'object')return Object.values(obj).map(countCases);
 		totalCases++;
 	}
 	countCases(cases);

@@ -21,15 +21,15 @@ target = require.resolve(target, { paths: [process.cwd()]});
 
 
 if(flags.has('watch')){
-	return watchSource(target, async (cases)=>{
+	watchSource(target, async (cases)=>{
 		clearConsole();
 		await runCases(cases, { emitter : reporter, watch : true });
 	});
+}else{
+	runCases(require(target), { emitter : reporter })
+		.then((results)=>{
+			const { failed } = summary(results);
+			process.exit(failed === 0 ? 0 : 1);
+		})
+		.catch((err)=>{ console.log(err) });
 }
-
-runCases(require(target), { emitter : reporter })
-	.then((results)=>{
-		const { failed } = summary(results);
-		process.exit(failed === 0 ? 0 : 1);
-	})
-	.catch((err)=>{ console.log(err) });

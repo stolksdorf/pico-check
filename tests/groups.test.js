@@ -7,15 +7,15 @@ module.exports = {
 
 		const res = await check({
 			_should_skip : {
-				a : ()=>{},
-				b : ()=>{},
+				a      : ()=>{},
+				b      : ()=>{},
 				nested : {
 					c : ()=>{}
 				}
 			},
 			nested : {
 				_skipped_fail : (t)=>t.fail(),
-				pass : ()=>{},
+				pass          : ()=>{},
 			},
 			fail : (t)=>t.fail()
 		})
@@ -35,9 +35,9 @@ module.exports = {
 
 		const res = await check({
 			$only : {
-				a : ()=>{},
+				a      : ()=>{},
 				nested : {
-					c : ()=>{},
+					c        : ()=>{},
 					_skipped : ()=>{}
 				}
 			},
@@ -46,7 +46,7 @@ module.exports = {
 				b  : ()=>{}
 			},
 			skipped : (t)=>t.fail(),
-			$fail : (t)=>t.fail(),
+			$fail   : (t)=>t.fail(),
 
 		})
 

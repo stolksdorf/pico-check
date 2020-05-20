@@ -1,4 +1,4 @@
-const { chalk, indent, summary, getStackTrace } = require('./utils.js');
+const{ chalk, indent, summary, getStackTrace } = require('./utils.js');
 const emitter = new (require('events'))();
 const log = (string, pad=level, prefix)=>console.log(indent(string, pad*2, prefix));
 
@@ -27,12 +27,12 @@ emitter.on('end_test', (name, result)=>{
 	if(result instanceof Error){
 		log(chalk.red(name));
 		log(result.toString(), level+1, chalk.red('| '));
-		const { file, line } = getStackTrace(result)[0];
+		const{ file, line } = getStackTrace(result)[0];
 		log(chalk.grey(`at ${file}:${line}`), level+1, chalk.red('| '));
 	}
 });
 emitter.on('finish', (results)=>{
-	const { passed, failed, skipped } = summary(results);
+	const{ passed, failed, skipped } = summary(results);
 	console.log(chalk.grey('______________________________\n'));
 	console.log(
 		chalk.green(`${passed} passed`),

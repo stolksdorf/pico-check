@@ -31,7 +31,7 @@ module.exports = {
 
 	async_throw : async (t)=>{
 		const res = await runTest(async (t)=>{
-			throw "oops";
+			throw"oops";
 		});
 		t.err(res);
 	},
@@ -49,5 +49,33 @@ module.exports = {
 		})
 		t.is(res, true);
 	},
+
+	custom_timeouts : {
+		under_timeout : async (t)=>{
+			const res = await runTest(async (t)=>{
+				t.timeout = 3005;
+				await wait(3000);
+				t.pass();
+			})
+			t.is(res, true);
+		},
+
+		over_timeout : async (t)=>{
+			const res = await runTest(async (t)=>{
+				t.timeout = 250;
+				await wait(300);
+				t.pass();
+			})
+			t.err(res);
+		},
+
+		timeout_reset : async (t)=>{
+			const res = await runTest(async (t)=>{
+				t.is(t.timeout, 2000);
+			})
+			t.is(res, true);
+		}
+
+	}
 
 }

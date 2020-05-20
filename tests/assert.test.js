@@ -15,8 +15,8 @@ module.exports = {
 		t.ok(await runTest((t)=>t.is('yo','yo')))
 
 		t.ok(await runTest((t)=>t.is([1,2],[1,2])))
-		t.ok(await runTest((t)=>t.is({a:true}, {a:true})))
-		t.ok(await runTest((t)=>t.is({a:{b:true}}, {a:{b:true}})))
+		t.ok(await runTest((t)=>t.is({a : true}, {a : true})))
+		t.ok(await runTest((t)=>t.is({a : {b : true}}, {a : {b : true}})))
 
 
 		t.err(await runTest((t)=>t.is(3,4)))
@@ -24,8 +24,8 @@ module.exports = {
 		t.err(await runTest((t)=>t.is('yo','yo!')))
 
 		t.err(await runTest((t)=>t.is([1,2],[1,3])))
-		t.err(await runTest((t)=>t.is({a:true}, {b:true})))
-		t.err(await runTest((t)=>t.is({a:{b:true}}, {a:{b:false}})))
+		t.err(await runTest((t)=>t.is({a : true}, {b : true})))
+		t.err(await runTest((t)=>t.is({a : {b : true}}, {a : {b : false}})))
 	},
 	type : {
 		string : async (t)=>{

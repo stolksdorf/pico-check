@@ -3,6 +3,8 @@ const assert = require('assert');
 const isObjectLike = (...args) => !!args.find((val) => val != null && typeof val == 'object');
 
 const Assert = Object.assign({}, assert, {
+	timeout : 2000,
+
 	armed  : false,
 	arm    : ()=>Assert.armed=true,
 	disarm : ()=>Assert.armed=false,
@@ -19,9 +21,9 @@ const Assert = Object.assign({}, assert, {
 
 const hasOnlyFlag = (cases)=>{
 	const recur = (cases)=>{
-		return !!Object.entries(cases).find(([name, test])=>{
-			if(name[0]=='$') return true;
-			if(typeof test == 'object') return recur(test);
+		return!!Object.entries(cases).find(([name, test])=>{
+			if(name[0]=='$')return true;
+			if(typeof test == 'object')return recur(test);
 		});
 	};
 	return recur(cases);
@@ -31,8 +33,9 @@ const hasOnlyFlag = (cases)=>{
 const runTest = async (test, opts={timeout : 2000})=>{
 	try{
 		Assert.armed = false;
+		Assert.timeout = opts.timeout;
 		const testResult = test(Assert);
-		if(!(testResult instanceof Promise)) return true;
+		if(!(testResult instanceof Promise))return true;
 
 		return await Promise.race([
 			testResult
@@ -44,7 +47,7 @@ const runTest = async (test, opts={timeout : 2000})=>{
 				.catch(err=>new Error(err)),
 
 			new Promise((resolve)=>{
-				setTimeout(()=>resolve(new Error('Timeout Error')), opts.timeout)
+				setTimeout(()=>resolve(new Error('Timeout Error')), Assert.timeout)
 			})
 		]);
 	}catch(err){
@@ -61,9 +64,9 @@ const runCases = async (cases, opts={})=>{
 	};
 
 	const recur = async (cases, flags)=>{
-		let acc = {};
+		const acc = {};
 
-		for(const [name, test] of Object.entries(cases)){
+		for(const[name, test]of Object.entries(cases)){
 			const flaggedOnly = name[0] == '$', flaggedSkip = name[0] == '_';
 			const shouldSkip = flaggedSkip || flags.skip || (!flaggedOnly && flags.only);
 
