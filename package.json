@@ -1,16 +1,14 @@
 {
   "name": "pico-check",
-  "version": "1.3.2",
+  "version": "2.0.0",
   "description": "An incredibly tiny javascript testing library",
   "bin": "src/cli.js",
-  "main": "pico-check.js",
+  "main": "src/pico-check.js",
   "scripts": {
     "lint": "eslint --fix \"**/*.js\"",
-    "test": "cd ./tests && npm run test",
-    "dev": "cd ./tests && npm run dev",
-    "verbose": "cd ./tests && npm run reporter:verbose",
-    "mini": "cd ./tests && npm run reporter:mini",
-    "basic": "cd ./tests && npm run reporter:basic"
+    "test": "node src/cli.js ./tests",
+    "test:dev": "node src/cli.js ./tests --watch",
+    "example": "node docs/example.test.js"
   },
   "repository": {
     "type": "git",
@@ -23,29 +21,14 @@
   "eslintIgnore": [
     "!.*"
   ],
-  "prettier": {
-    "useTabs": true,
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "arrowParens": "always",
-    "endOfLine": "lf",
-    "printWidth": 100
-  },
   "author": "stolksdorf",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/stolksdorf/pico-check/issues"
   },
   "homepage": "https://github.com/stolksdorf/pico-check#readme",
-  "dependencies": {
-    "ansi-styles": "^3.2.0",
-    "chalk": "^2.3.0",
-    "chokidar": "^3.3.0",
-    "commander": "^2.12.2",
-    "concordance": "^3.0.0",
-    "glob": "^7.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "eslint": "^5.9.0"
+    "eslint": "^7.0.0"
   }
 }

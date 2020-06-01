@@ -1,20 +1,26 @@
+/* TAP reporter */
+/* Mostly a proof of concept on how to write different styles of reporters */
 /* https://testanything.org/ */
-let current = 0;
-module.exports = {
-	start : (testSuite) => {
-		const getCount = (group) =>
-			group.tests.reduce((acc, test) => acc + (test.tests ? getCount(test) : 1), 0);
-		current = 0;
-		console.log(`1..${getCount(testSuite)}`);
-	},
-	startGroup : (group) => {},
-	endGroup   : (group, result) => {},
-	startTest  : (test) => {},
-	endTest    : (test, result) => {
-		current++;
-		if(result === true) console.log(`ok ${current} - ${test.name}`);
-		if(result === false) console.log(`ok ${current} - # SKIP ${test.name}`);
-		if(result instanceof Error) console.log(`not ok ${current} - ${test.name}`);
-	},
-	end : (summary) => {},
-};
+
+const emitter = new (require('events'))();
+let currentTestCase = 0;
+
+emitter.on('start', (cases, opts, flags)=>{
+	let totalCases = 0;
+	const countCases = (obj)=>{
+		if(typeof obj == 'object')return Object.values(obj).map(countCases);
+		totalCases++;
+	}
+	countCases(cases);
+	console.log(`1..${totalCases}`);
+
+	currentTestCase = 0;
+});
+emitter.on('end_test', (name, result)=>{
+	currentTestCase++;
+	if(result === true) console.log(`ok ${currentTestCase} - ${name}`);
+	if(result === false) console.log(`ok ${currentTestCase} - # SKIP ${name}`);
+	if(result instanceof Error) console.log(`not ok ${currentTestCase} - ${name}`);
+});
+
+module.exports = emitter;
