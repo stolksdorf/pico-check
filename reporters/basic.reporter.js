@@ -1,4 +1,4 @@
-const{ chalk, indent, summary, getStackTrace } = require('./utils.js');
+const{ chalk, indent, summary, getStackTrace } = require('../utils.js');
 const emitter = new (require('events'))();
 const log = (string, pad=level, prefix)=>console.log(indent(string, pad*2, prefix));
 

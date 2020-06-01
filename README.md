@@ -2,43 +2,81 @@
 An incredibly tiny javascript testing library. Heavily inspired by the wonderful [ava](https://github.com/avajs/ava) and [tape](https://github.com/substack/tape).
 
 
+### Features
+- Test cases are just functions
+- Supports sync and async tests
+- Provides arming/disarming and timeouts for async tests
+- Test cases structured as simple objects and functions
+- Easy to write custom reporters based on event emitters
+- Supports TAP
+- Easily flag a test or group to skip, or only run
+- Comes with a file watcher to automatically re-run tests on file changes
+- Uses built-in `assert` lib when possible
+- No dependacies!
+
+
+
+
+### TODO
+- before/after
+- parameterized tests
+- custom timeouts
+
+
+
 ## Contents
 - [Test Syntax](#test-syntax)
 - [Usage](#usage)
 - [CLI](#cli)
 - [Reporters](#reporters)
 - [Assertion](#assertion)
-- [Snapshots](#snapshots)
 - [Before and After Tests](#lifecycle)
-- [Tips & Tricks](#tips--tricks)
+
 
 
 ## Test Syntax
 ```js
-const test = require('pico-check');
 
-test('testing addition', (t)=>{
-  t.is(3 + 4, 7);
-});
+// Tests are just functions or objects of functions. If the test passes,
+// the function returns nothing, if the test fails the function should throw an error.
 
-test.group('async tests', (test)=>{
-  test('promise check', (t)=>{
-    return request(api_url)
-      .then((result)=>{
-        t.is(result, {code : 200, body : { ok : true }});
-      });
-  });
+const check = require('pico-check');
 
-  test('async/await', async (t)=>{
-    const bar = Promise.resolve('bar');
-    t.is(await bar, 'bar');
-  });
-});
+const results = await check({
+  'testing addition' : (t)=>{
+    t.is(3 + 4, 7);
+  },
+  'async tests' : {
+    'promise check' : (t)=>{
+      return request(api_url)
+        .then((result)=>{
+          t.is(result, {code : 200, body : { ok : true }});
+        });
+    },
+    'async/await' :  async (t)=>{
+      const bar = Promise.resolve('bar');
+      t.is(await bar, 'bar');
+    }
+  },
+  '_skipped test' : (t)=>t.fail()
+})
 
-test.skip('skipped test', (t)=>t.fail());
+console.log(results);
 
-module.exports = test;
+/*
+{
+  'testing addition': true,
+  'async tests': {
+    'promise check': AssertionError [ERR_ASSERTION]: Expected values to be loosely deep-equal:
+      { code: 404 } should loosely deep-equal { code: 200, body : { ok : true }},
+    'async/await': true
+  },
+  '_skipped test': false
+}
+*/
 ```
+
+
 
 ## Usage
 
@@ -48,94 +86,62 @@ module.exports = test;
 $ npm install --save-dev pico-check
 ```
 
-`package.json`
+### CLI usage
 ```
 {
   "name": "smashing-project",
   "scripts": {
-    "test": "pico-check",
-    "test:dev": "pico-check -b -w"
-  },
-  "pico-check": {
-    //configs here
+    "test": "pico-check ./tests",
+    "test:dev": "pico-check --watch ./tests"
   },
   "devDependencies": {
-    "pico-check": "^1.0.0"
+    "pico-check": "^2.0.0"
   }
 }
 ```
 
-### test files
 
-Create a file named `basic.test.js` in your project's `/tests` directory:
+### Library Usage
 
 ```js
-const test = require('pico-check');
+const check = require('pico-check');
+const reporter = require('pico-check/reporters/basic.reporter.js');
+const { summary } = require('pico-check/utils');
 
-test('testing addition', (t)=>{
-  t.is(3 + 4, 7, `Making sure math isn't broken`);
-});
+const testCases = {
+  serious_test : (t)=>t.is(3+4, 7),
+  _skipped_test : (t)=>t.fail()
+}
 
-module.exports = test;
+
+check(testCases, { emitter : reporter })
+  .then((results)=>{
+    console.log(results)
+    const { failed } = summary(results);
+    process.exit(failed === 0 ? 0 : 1);
+  })
 ```
 
-### Run it
 
-```console
-$ npm test
-```
-
-
-## CLI
-
-```console
-$ pico-check --help
-
-  Usage: pico-check [options] <test files...>
-
-  Options:
-    -v --verbose        use the verbose reporter
-    -m --mini           use the mini reporter
-    -b --basic          use the basic reporter
-    -t --tap            use the TAP reporter
-    -w --watch          enable watching
-    -i --ignore [path]  paths to ignore
-    --timeout [value]   default timeout for async tests
-    --reporter [path]   path to custom reporter
-    --require [path]    path to extra modules to require before tests are ran
-    --source [path]     paths to files to watch
-    --fail-skip         testsuite will fail if any tests are skipp
-    -h, --help          output usage information
-
-  Examples:
-    pico-check
-    pico-check -w tests/test3.js tests/test4.js
-    pico-check --require babel-register tests/ui-*.jsx
-```
 
 ## Reporters
+`pico-check` can take an reporter event emitter as a optional parameter. As it executes your test cases it will emit various events that your reporter can react too. `pico-check` comes with a basic reporter, as well as a TAP reporter.
 
-### verbose reporter (default)
+### basic reporter (default)
 Prints out all testcases in an easy to read format.
-
-### mini reporter
-A compact reporter that live updates as the tests are running. Finishes with a list of all fails and a summary.
-
-`//TODO: add gif`
-
-### basic reporter
-Always clears the console and only prints out errors and the summary. Good to use with the `--watch` flag.
 
 
 ### TAP reporter
 `pico-check` supports the [TAP format](https://testanything.org/) and will work with [any TAP reporter](https://testanything.org/consumers.html#javascript)
 
 ### Custom reporters
-You can create your own reporters ... TODO
+You can create your own reporters, just look at the included basic reporter as a basis to create your own.
+
+
 
 
 ## Assertion
-The testing function provided to a test case will be executed with `pico-check`'s assertion object as it's first and only parameter. `pico-check`s assertion object is an extension of node's built-in [assert](https://nodejs.org/api/assert.html), so you can use any of the default assertions. Here are `pico-check`s additional assertions:
+Each test function will be provided an assertion object as it's first parameter. `pico-check`s assertion object is an extension of node's built-in [assert](https://nodejs.org/api/assert.html), so you can use any of the default assertions. Here are `pico-check`s additional assertions:
 
 #### `t.pass([msg]) / t.fail([msg])`
 Passes/fails a test case with an optional message
@@ -185,21 +191,6 @@ test('emitter fires', (t)=>{
   emitter.emit('update');
 });
 
-## Snapshots
-`pico-check` supports very simplistic snapshots capability. `/snapshots` returns a function that takes a relative path as a parameter. The function will then recursively walk that folder and subfolders and reads in any file it finds. It then stores each as a string within a nested object where the keys are folder names and filenames (without extensions)
-
-```js
-const test = require('pico-check');
-const Snapshots = require('pico-check/snapshots')('./tests/snapshots');
-
-
-test('Does renderer match expected', (t)=>{
-  t.is(render('basic'), Snapshots.render.basic);
-});
-```
-
-### Generating Snapshots
-`pico-check` doesn't give you a direct way to generate snapshots, but since they are just files, any file I/O procedure can generate new snapshots, even mid-test.
 
 
 
@@ -210,147 +201,22 @@ A common design pattern for testing is to have `before`, `after`, `beforeEach`, 
 Since tests run sync, the simplist way to achive this is to make a testcase at the beginning or end of your test file.
 
 ```js
-const test = require('pico-check');
+const tests = {
+  start : async ()=>{
+    await DB.startup();
+  },
 
-test('start', async ()=>{
-  await DB.startup();
-});
+  /** Your test cases... **/
 
-/** Your test cases... **/
+  cleanup : async ()=>{
+    await DB.shutdown();
+  },
+}
 
-test('cleanup', async ()=>{
-  await DB.shutdown();
-});
-
-module.exports = test;
+module.exports = tests;
 ```
 
 **Notes**:
 - If you have many before or after triggers, it's useful to create a group for them to easily turn them off/on, or add it them.
-- When using `.only()`, you have to remember to add `.only()` to your before and after triggers or they will get skipped.
 - If you have many test files that use the same before/after triggers, it useful to store the create group/testcases in a separate file and require them in as needed
 
-```js
-/** in ./tests/lifecycle.js **/
-
-module.exports = {
-  startDB : (test)=>{
-    test('start db', async ()=>await DB.start());
-    test('add user', async ()=>await DB.addUser({id : '123'}));
-  },
-  stopDB : (test)=>{
-    test('remove user', async ()=>await DB.removeUser({id : '123'}));
-    test('shutdown db', async ()=>await DB.stop());
-  },
-};
-
-/** in ./tests/user.test.js **/
-
-const test = require('pico-check');
-const { startDB, stopDB } = require('./lifecycle.js');
-
-test.group('startup', startDB);
-
-/** Your test cases... **/
-
-test.group('cleanup', stopDB);
-
-module.exports = test;
-```
-
-#### BeforeEach & AfterEach
-
-The easiest way to implement BeforeEach and AfterEach is just to create local functions in the test file and call them within your test cases.
-
-```js
-const test = require('pico-check');
-
-const ensureUser = ()=>{...};
-const highfiveUser = ()=>{...};
-
-test('Is User a cool dude', (t)=>{
-  ensureUser();
-  t.ok(user.isCool);
-  highfiveUser();
-});
-
-// ...
-
-module.exports = test;
-```
-
-This can become tedious with many tests, so a better pattern is to create a testcase wrapper function.
-
-```js
-const test = require('pico-check');
-
-const ensureUser = ()=>{...};
-const highfiveUser = ()=>{...};
-const usertest = (testcase)=>{
-  return (t)=>{
-    ensureUser();
-    testcase(t);
-    highfiveUser();
-  };
-};
-
-test('Is User a cool dude', usertest((t)=>{
-  t.ok(user.isCool);
-}));
-
-module.exports = test;
-```
-
-
-
-## Tips & Tricks
-
-### Require Init
-If your project requires some initiation, such as with config files, or databases, or servers, you can use the `require` option to specify a script that will be run before any test file gets ran.
-
-
-### JSX Testing
-
-**package.json**
-```json
-{
-  "scripts": {
-    "test": "pico-check **/*.test.{js,jsx}"
-  },
-  "pico-check": {
-    "require": "babel-register"
-  },
-  "babel": {
-    "only": [
-      "*.jsx"
-    ],
-    "presets": [
-      "stage-3",
-      "react"
-    ]
-  },
-}
-```
-
-```jsx
-const React  = require('react');
-const test   = require('pico-check');
-const render = (comp) => require('react-test-renderer').create(comp).toJSON();
-
-const Button = require('./button.jsx');
-
-test('renders a button', (t)=>{
-  const btn = render(<Button>test</Button>);
-  t.is(btn.type, 'button');
-  t.is(btn.children, ['test']);
-});
-
-test('can be clicked', (t)=>{
-  let clicked = false;
-  const btn = render(<Button onClick={()=>clicked=true} />);
-  btn.props.onClick();
-  t.ok(clicked);
-});
-
-module.exports = test;
-```

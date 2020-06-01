@@ -37,7 +37,7 @@ module.exports = {
 				/    at (.*?) \((.*?):(\d*):(\d*)\)/.exec(raw) || /    at ()(.*?):(\d*):(\d*)/.exec(raw) || [];
 			return { name, file : file && path.relative(process.cwd(), file), line : Number(line), col  : Number(col), raw };
 		})
-		.filter(({file})=> file && !file.endsWith('engine.js'))
+		.filter(({file})=> file && !file.endsWith('pico-check.js'))
 	},
 
 	// Requires the target and watches all files associated with it
@@ -45,8 +45,7 @@ module.exports = {
 	watchSource : (target, callback)=>{
 		const res = require(target);
 		const srcs = Object.keys(require.cache).filter(src=>src.indexOf('node_modules')==-1);
-		let running = false
-
+		let running = false;
 		const onChange = async (evt, file)=>{
 			if(running) return;
 			if(evt == 'change'){

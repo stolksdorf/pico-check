@@ -1,23 +1,4 @@
-const assert = require('assert');
-
-const isObjectLike = (...args) => !!args.find((val) => val != null && typeof val == 'object');
-
-const Assert = Object.assign({}, assert, {
-	timeout : 2000,
-
-	armed  : false,
-	arm    : ()=>Assert.armed=true,
-	disarm : ()=>Assert.armed=false,
-
-	is   : (act, exp, msg) => isObjectLike(act, exp) ? assert.deepEqual(act, exp, msg) : assert.equal(act, exp, msg),
-	not  : (act, exp, msg) => isObjectLike(act, exp) ? assert.notDeepEqual(act, exp, msg) : assert.notEqual(act, exp, msg),
-	pass : (msg) => assert.ok(true, msg),
-	fail : (msg = 'Test manually failed') => assert.ok(false, msg),
-	type : (val, type, msg) => assert.equal(Array.isArray(val) ? 'array' : typeof val, type, msg),
-	no   : (act, msg) => assert.ok(!act, msg),
-	err  : (val, msg) => assert.ok(val instanceof Error, msg)
-});
-
+const Assert = require('./assert.js');
 
 const hasOnlyFlag = (cases)=>{
 	const recur = (cases)=>{
@@ -27,8 +8,7 @@ const hasOnlyFlag = (cases)=>{
 		});
 	};
 	return recur(cases);
-}
-
+};
 
 const runTest = async (test, opts={timeout : 2000})=>{
 	try{
@@ -43,17 +23,16 @@ const runTest = async (test, opts={timeout : 2000})=>{
 						? new Error('Test failed: Not disarmed')
 						: true
 				})
-				.catch(err=>new Error(err)),
-
+				.catch(err=>new Error(err))
+			,
 			new Promise((resolve)=>{
-				setTimeout(()=>resolve(new Error('Timeout Error')), Assert.timeout)
+				setTimeout(()=>resolve(new Error('Test failed: Timeout Error')), Assert.timeout)
 			})
 		]);
 	}catch(err){
 		return err;
 	}
-}
-
+};
 
 const runCases = async (cases, opts={})=>{
 	opts = {

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 const runCases = require('./pico-check.js');
-const{ summary, watchSource, clearConsole } = require('./utils.js');
-const reporter = require('./basic.reporter');
+const{ summary, watchSource, clearConsole } = require('../utils.js');
+const reporter = require('../reporters/basic.reporter.js');
 
 
 let target = false;
@@ -15,8 +15,7 @@ process.argv.map((arg)=>{
 	}
 });
 
-
-if(!target)throw'Must provide a filepath to test cases';
+if(!target) throw'Must provide a filepath to test cases';
 target = require.resolve(target, { paths : [process.cwd()]});
 
 
