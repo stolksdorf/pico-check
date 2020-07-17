@@ -30,7 +30,8 @@ const runTest = async (test, opts={timeout : 2000})=>{
 			})
 		]);
 	}catch(err){
-		return new Error(err);
+		if(!(err instanceof Error)) return new Error('Thrown a non-Error type. Could not get a stack trace.');
+		return err;
 	}
 };
 
@@ -44,7 +45,7 @@ const runCases = async (cases, opts={})=>{
 	const recur = async (cases, flags)=>{
 		const acc = {};
 
-		for(const[name, test]of Object.entries(cases)){
+		for(const [name, test] of Object.entries(cases)){
 			const flaggedOnly = name[0] == '$', flaggedSkip = name[0] == '_';
 			const shouldSkip = flaggedSkip || flags.skip || (!flaggedOnly && flags.only);
 

@@ -27,8 +27,9 @@ emitter.on('end_test', (name, result)=>{
 	if(result instanceof Error){
 		log(chalk.red(name));
 		log(result.toString(), level+1, chalk.red('| '));
-		const{ file, line } = getStackTrace(result)[0];
-		log(chalk.grey(`at ${file}:${line}`), level+1, chalk.red('| '));
+		getStackTrace(result).slice(0,3).map(({ name, file, line })=>{
+			log(chalk.grey(`at ${name} in ${file}:${line}`), level+1, chalk.red('| '));
+		});
 	}
 });
 emitter.on('finish', (results)=>{
