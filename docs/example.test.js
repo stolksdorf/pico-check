@@ -36,9 +36,9 @@ const ExampleTests = {
 
 
 
-check(ExampleTests, { emitter : require('../src/basic.reporter.js') })
+check(ExampleTests, { emitter : require('../reporters/basic.reporter.js') })
 .then((res)=>{
-	console.log(res)
+	//console.log(res)
 })
 
 //check(ExampleTests, { emitter : require('../src/tap.reporter.js') });

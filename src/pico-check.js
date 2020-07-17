@@ -30,7 +30,7 @@ const runTest = async (test, opts={timeout : 2000})=>{
 			})
 		]);
 	}catch(err){
-		return err;
+		return new Error(err);
 	}
 };
 
