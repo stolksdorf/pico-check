@@ -1,6 +1,7 @@
 # ✅ pico-check
 An incredibly tiny javascript testing library. Heavily inspired by the wonderful [ava](https://github.com/avajs/ava) and [tape](https://github.com/substack/tape).
 
+<a href="https://www.npmjs.com/package/pico-check"><img src="https://img.shields.io/npm/v/pico-check?style=flat-square"></img></a>
 
 ### Features
 - Test cases are just functions
