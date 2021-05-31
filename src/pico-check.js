@@ -46,7 +46,7 @@ const runCases = async (cases, opts={})=>{
 		const acc = {};
 
 		for(const [name, test] of Object.entries(cases)){
-			const flaggedOnly = name[0] == '$', flaggedSkip = name[0] == '_';
+			const flaggedOnly = (name[0] == '$' || name.endsWith('$')), flaggedSkip = name[0] == '_';
 			const shouldSkip = flaggedSkip || flags.skip || (!flaggedOnly && flags.only);
 
 			if(typeof test == 'object'){

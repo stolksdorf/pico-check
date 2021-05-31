@@ -109,8 +109,16 @@ const reporter = require('pico-check/reporters/basic.reporter.js');
 const { summary } = require('pico-check/utils');
 
 const testCases = {
-  serious_test : (t)=>t.is(3+4, 7),
-  _skipped_test : (t)=>t.fail()
+  init$ : (t)=>{
+    //This test always runs, even with the only flag
+  },
+  this_is_a_group : {
+    addition_test : (t)=>t.is(3+4, 7),
+    $only_test : (t)=>{
+      //this test is flagged with a $, so pico-check will skip every other test
+    }
+  },
+  _skipped_test : (t)=>t.fail(),
 }
 
 
@@ -137,6 +145,19 @@ Prints out all testcases in an easy to read format.
 ### Custom reporters
 You can create your own reporters, just look at the included basic reporter as a basis to create your own.
 
+
+## Flags
+
+You can flag tests and groups with `_` and `$` in the test name to change the test runner behaviour.
+
+#### Skip Flag - `_test_name`
+If a test or group name starts with a `_` the test will be skipped
+
+#### Only Flag - `$test_name`
+If a test or group name starts with a `$` the test runner will be set into "only mode", and will only run tests/groups with the Only Flag and the Always Flag.
+
+#### Always Flag - `test_name$`
+If a test or group ends with a `$` it will be ran in "only mode", but not set the test runner into "only mode". This is useful for test cases that set up or clean up needed processes for other test cases (such as database connections or setting environment variables).
 
 
 
