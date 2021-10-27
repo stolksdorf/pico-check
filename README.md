@@ -15,16 +15,6 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 - Uses built-in `assert` lib when possible
 - No dependacies!
 
-
-
-
-### TODO
-- before/after
-- parameterized tests
-- custom timeouts
-
-
-
 ## Contents
 - [Test Syntax](#test-syntax)
 - [Usage](#usage)
@@ -43,7 +33,8 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 
 const check = require('pico-check');
 
-const results = await check({
+//Test Cases are just nested objects of test functions
+const testCases = {
   'testing addition' : (t)=>{
     t.is(3 + 4, 7);
   },
@@ -60,11 +51,13 @@ const results = await check({
     }
   },
   '_skipped test' : (t)=>t.fail()
-})
+};
+
+const results = await check(testCases);
 
 console.log(results);
 
-/*
+/* Returns the exact same object structure but true if pass, error if fail, and false if skipped
 {
   'testing addition': true,
   'async tests': {
