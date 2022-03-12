@@ -5,9 +5,8 @@
   "bin": "cli.js",
   "main": "pico-check.js",
   "scripts": {
-    "test": "node src/cli.js ./tests",
-    "test:dev": "node src/cli.js ./tests --watch",
-    "example": "node docs/example.test.js"
+    "test": "node cli.js ./tests",
+    "test:dev": "node cli.js ./tests --watch"
   },
   "repository": {
     "type": "git",

@@ -1,11 +1,19 @@
-const sequence = async (obj, fn)=>Object.entries(obj).reduce((a,[k,v])=>a.then((r)=>fn(v,k,r)),Promise.resolve());
+const sequence = async (obj, fn)=>{
+	let res = {};
+	return Object.entries(obj).reduce((a,[k,v])=>a.then(()=>fn(v,k).then((r)=>res[k]=r)),Promise.resolve()).then(()=>res);
+}
 const isSame = (a,b)=>(typeof a==='object')?Object.entries(a).every(([k,v])=>isSame(v,b[k])) : a===b;
 
-const runTest = async (test)=>{
+const runTest = async (test, timeout=2000)=>{
 	try{
 		const Harness = {
-			timeout : 2000,
-			type    : (val, type, msg) => Harness.is((Array.isArray(val) ? 'array' : typeof val), type, msg),
+			timeout,
+			type    : (val, type, msg) => {
+				let _type = typeof val;
+				if(Array.isArray(val)) _type = 'array';
+				if(val instanceof Error) _type = 'error';
+				Harness.is(_type, type, msg)
+			},
 			is      : (a,b)=>{ if(!isSame(a,b)){ throw new Error(`${a} does not equal ${b}`)} },
 			fail    : (msg=`Test failed manually`)=>{throw new Error(msg);}
 		};
@@ -35,16 +43,17 @@ const hasOnlyFlag = (cases)=>{
 	});
 };
 
-module.exports = async (cases, showLogs=true)=>{
-	let skipped=0, passed=0, failed=0;
-	let OnlyMode = hasOnlyFlag(cases);
-	if(OnlyMode) chalk.yellow('⚠ Some tests flagged as only ⚠ \n');
-
+const runCases = async (cases, opts={})=>{
+	opts = {logs:true, timeout:2000, ...opts};
 	const chalk = Object.entries({
 			bright: 1,  grey : 90,  red:  31,
 			green:  32, yellow:33, blue: 34,
 			magenta:35, cyan:  36, white:37,
-		}).reduce((acc, [name, id])=>{ return {...acc, [name]:(showLogs?(txt, idt=0)=>{console.log(`${' '.repeat(idt)}\x1b[${id}m${txt}\x1b[0m`)}:()=>{})}}, {})
+		}).reduce((acc, [name, id])=>{ return {...acc, [name]:(opts.logs?(txt, idt=0)=>{console.log(`${'  '.repeat(idt)}\x1b[${id}m${txt}\x1b[0m`)}:()=>{})}}, {})
+
+	let skipped=0, passed=0, failed=0;
+	let OnlyMode = hasOnlyFlag(cases);
+	if(OnlyMode) chalk.yellow('⚠ Some tests flagged as only ⚠ \n');
 
 	const log = (val, name, indent)=>{
 		if(val===null){ return chalk.magenta(name, indent); }
@@ -52,28 +61,34 @@ module.exports = async (cases, showLogs=true)=>{
 		if(val===true){ passed++; return chalk.green(`✔ ${name}`, indent); }
 		failed++;
 		chalk.red(`❌ ${name}`, indent);
-		console.log(val);
+		if(opts.logs) console.log(val);
 	};
 
 	const loop = async (obj, indent=0, skip=false, force=false)=>{
-		await sequence(obj, async (test, name)=>{
+		return await sequence(obj, async (test, name)=>{
 			let shouldSkip = skip || name.startsWith('_');
 			let onlyName = name.startsWith('$')||name.endsWith('$');
 			if(typeof test == 'object'){
 				log(null, name, indent);
-				return await loop(test, indent+2, shouldSkip, force||onlyName);
+				return await loop(test, indent+1, shouldSkip, force||onlyName);
 			}
-			if(shouldSkip || (!onlyName && OnlyMode && !force)) return log(false, name, indent);
-			const result = await runTest(test);
-			return log(result, name, indent);
+			if(shouldSkip || (!onlyName && OnlyMode && !force)){
+				log(false, name, indent);
+				return false;
+			}
+			const result = await runTest(test, opts.timeout);
+			log(result, name, indent);
+			return result;
 		});
 	};
-
-	await loop(cases);
-	chalk.grey('______________________________\n');
-	chalk.green(`${passed} passed`);
-	chalk.red(`${failed} failed`);
-	chalk.cyan(`${skipped} skipped`);
-
-	return {skipped, passed, failed};
+	const results = await loop(cases);
+	if(opts.logs){
+		chalk.grey('______________________________\n');
+		chalk.green(`${passed} passed`);
+		chalk.red(`${failed} failed`);
+		chalk.cyan(`${skipped} skipped`);
+	}
+	return {skipped, passed, failed, results};
 };
+runCases.runTest = runTest;
+module.exports = runCases;

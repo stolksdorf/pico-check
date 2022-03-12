@@ -1,9 +1,9 @@
-const check = require('../src/pico-check.js');
+const check = require('../');
 
 module.exports = {
 
 	skipped : async (t)=>{
-		const res = await check({
+		const {results} = await check({
 			_should_skip : {
 				a      : ()=>{},
 				b      : ()=>{},
@@ -16,22 +16,22 @@ module.exports = {
 				pass          : ()=>{},
 			},
 			fail : (t)=>t.fail()
-		})
+		}, {logs : false})
 
-		t.is(res._should_skip.a, false);
-		t.is(res._should_skip.b, false);
-		t.is(res._should_skip.nested.c, false);
+		t.is(results._should_skip.a, false);
+		t.is(results._should_skip.b, false);
+		t.is(results._should_skip.nested.c, false);
 
-		t.is(res.nested._skipped_fail, false);
-		t.is(res.nested.pass, true);
+		t.is(results.nested._skipped_fail, false);
+		t.is(results.nested.pass, true);
 
-		t.err(res.fail);
+		t.type(results.fail, 'error');
 	},
 
 	only : async (t)=>{
 
 
-		const res = await check({
+		const {results} = await check({
 			$only : {
 				a      : ()=>{},
 				nested : {
@@ -46,18 +46,18 @@ module.exports = {
 			skipped : (t)=>t.fail(),
 			$fail   : (t)=>t.fail(),
 
-		})
+		}, {logs : false})
 
 
-		t.is(res.$only.a, true);
-		t.is(res.$only.nested.c, true);
-		t.is(res.$only.nested._skipped, false);
+		t.is(results.$only.a, true);
+		t.is(results.$only.nested.c, true);
+		t.is(results.$only.nested._skipped, false);
 
-		t.is(res.nested.$a, true);
-		t.is(res.nested.b, false);
+		t.is(results.nested.$a, true);
+		t.is(results.nested.b, false);
 
-		t.is(res.skipped, false);
-		t.err(res.$fail);
+		t.is(results.skipped, false);
+		t.type(results.$fail, 'error');
 
 	}
 

@@ -1,4 +1,4 @@
-const check = require('../src/pico-check.js');
+const check = require('../');
 const runTest = check.runTest;
 
 module.exports = {
@@ -6,72 +6,72 @@ module.exports = {
 		t.is(await runTest((t)=>t.pass()), true)
 	},
 	fail : async (t)=>{
-		t.err(await runTest((t)=>t.fail()))
+		t.type(await runTest((t)=>t.fail()), 'error');
 	},
 
 	is : async (t)=>{
-		t.ok(await runTest((t)=>t.is(3,3)))
-		t.ok(await runTest((t)=>t.is(true,true)))
-		t.ok(await runTest((t)=>t.is('yo','yo')))
+		t.is(await runTest((t)=>t.is(3,3)), true);
+		t.is(await runTest((t)=>t.is(true,true)), true);
+		t.is(await runTest((t)=>t.is('yo','yo')), true);
 
-		t.ok(await runTest((t)=>t.is([1,2],[1,2])))
-		t.ok(await runTest((t)=>t.is({a : true}, {a : true})))
-		t.ok(await runTest((t)=>t.is({a : {b : true}}, {a : {b : true}})))
+		t.is(await runTest((t)=>t.is([1,2],[1,2])), true);
+		t.is(await runTest((t)=>t.is({a : true}, {a : true})), true);
+		t.is(await runTest((t)=>t.is({a : {b : true}}, {a : {b : true}})), true);
 
 
-		t.err(await runTest((t)=>t.is(3,4)))
-		t.err(await runTest((t)=>t.is(true,false)))
-		t.err(await runTest((t)=>t.is('yo','yo!')))
+		t.type(await runTest((t)=>t.is(3,4)), 'error');
+		t.type(await runTest((t)=>t.is(true,false)), 'error');
+		t.type(await runTest((t)=>t.is('yo','yo!')), 'error');
 
-		t.err(await runTest((t)=>t.is([1,2],[1,3])))
-		t.err(await runTest((t)=>t.is({a : true}, {b : true})))
-		t.err(await runTest((t)=>t.is({a : {b : true}}, {a : {b : false}})))
+		t.type(await runTest((t)=>t.is([1,2],[1,3])), 'error');
+		t.type(await runTest((t)=>t.is({a : true}, {b : true})), 'error');
+		t.type(await runTest((t)=>t.is({a : {b : true}}, {a : {b : false}})), 'error');
 	},
 	type : {
 		string : async (t)=>{
 
-			t.ok(await runTest((t)=>t.type('yo', 'string')));
+			t.is(await runTest((t)=>t.type('yo', 'string')), true);
 
-			t.err(await runTest((t)=>t.type(3, 'string')));
-			t.err(await runTest((t)=>t.type(true, 'string')));
-			t.err(await runTest((t)=>t.type([], 'string')));
-			t.err(await runTest((t)=>t.type({}, 'string')));
+			t.type(await runTest((t)=>t.type(3, 'string')), 'error');
+			t.type(await runTest((t)=>t.type(true, 'string')), 'error');
+			t.type(await runTest((t)=>t.type([], 'string')), 'error');
+			t.type(await runTest((t)=>t.type({}, 'string')), 'error');
 		},
 
 		number : async (t)=>{
-			t.ok(await runTest((t)=>t.type(3, 'number')));
+			t.is(await runTest((t)=>t.type(3, 'number')), true);
 
-			t.err(await runTest((t)=>t.type('yo', 'number')));
-			t.err(await runTest((t)=>t.type(true, 'number')));
-			t.err(await runTest((t)=>t.type([], 'number')));
-			t.err(await runTest((t)=>t.type({}, 'number')));
+			t.type(await runTest((t)=>t.type('yo', 'number')), 'error');
+			t.type(await runTest((t)=>t.type(true, 'number')), 'error');
+			t.type(await runTest((t)=>t.type([], 'number')), 'error');
+			t.type(await runTest((t)=>t.type({}, 'number')), 'error');
 		},
 
 		boolean : async (t)=>{
-			t.ok(await runTest((t)=>t.type(true, 'boolean')));
+			t.is(await runTest((t)=>t.type(true, 'boolean')), true);
 
-			t.err(await runTest((t)=>t.type('yo', 'boolean')));
-			t.err(await runTest((t)=>t.type(3, 'boolean')));
-			t.err(await runTest((t)=>t.type([], 'boolean')));
-			t.err(await runTest((t)=>t.type({}, 'boolean')));
+			t.type(await runTest((t)=>t.type('yo', 'boolean')), 'error');
+			t.type(await runTest((t)=>t.type(3, 'boolean')), 'error');
+			t.type(await runTest((t)=>t.type([], 'boolean')), 'error');
+			t.type(await runTest((t)=>t.type({}, 'boolean')), 'error');
 		},
 
 		array : async (t)=>{
-			t.ok(await runTest((t)=>t.type([], 'array')));
+			t.is(await runTest((t)=>t.type([], 'array')), true);
 
-			t.err(await runTest((t)=>t.type('yo', 'array')));
-			t.err(await runTest((t)=>t.type(3, 'array')));
-			t.err(await runTest((t)=>t.type(true, 'array')));
-			t.err(await runTest((t)=>t.type({}, 'array')));
+			t.type(await runTest((t)=>t.type('yo', 'array')), 'error');
+			t.type(await runTest((t)=>t.type(3, 'array')), 'error');
+			t.type(await runTest((t)=>t.type(true, 'array')), 'error');
+			t.type(await runTest((t)=>t.type({}, 'array')), 'error');
 		},
 
 		object : async (t)=>{
-			t.ok(await runTest((t)=>t.type({}, 'object')));
+			t.is(await runTest((t)=>t.type({}, 'object')), true);
 
-			t.err(await runTest((t)=>t.type('yo', 'object')));
-			t.err(await runTest((t)=>t.type(3, 'object')));
-			t.err(await runTest((t)=>t.type(true, 'object')));
-			t.err(await runTest((t)=>t.type([], 'object')));
+			t.type(await runTest((t)=>t.type('yo', 'object')), 'error');
+			t.type(await runTest((t)=>t.type(3, 'object')), 'error');
+			t.type(await runTest((t)=>t.type(true, 'object')), 'error');
+			t.type(await runTest((t)=>t.type([], 'object')), 'error');
 		},
 
 
@@ -80,5 +80,5 @@ module.exports = {
 
 	},
 
-	"Disarm" : require('./disarm.test.js'),
+	"_Disarm" : require('./disarm.test.js'),
 }

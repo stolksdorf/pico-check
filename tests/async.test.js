@@ -1,4 +1,4 @@
-const check = require('../src/pico-check.js');
+const check = require('../');
 const runTest = check.runTest;
 
 const wait = async (n,val)=>new Promise((r)=>setTimeout(()=>r(val), n));
@@ -19,7 +19,7 @@ module.exports = {
 			await wait(2100);
 			t.pass();
 		});
-		t.err(res);
+		t.type(res, 'error');
 	},
 
 	async_pass : async (t)=>{
@@ -34,7 +34,7 @@ module.exports = {
 		const res = await runTest(async (t)=>{
 			throw"oops";
 		});
-		t.err(res);
+		t.type(res, 'error');
 	},
 
 
@@ -42,7 +42,7 @@ module.exports = {
 		const res = await runTest((t)=>{
 			return Promise.reject('oops');
 		})
-		t.err(res);
+		t.type(res, 'error');
 	},
 
 	promise_resolve : async (t)=>{
@@ -67,7 +67,7 @@ module.exports = {
 				await wait(300);
 				t.pass();
 			})
-			t.err(res);
+			t.type(res, 'error');
 		},
 
 		timeout_reset : async (t)=>{
