@@ -3,20 +3,20 @@ const runTest = check.runTest;
 
 module.exports = {
 	should_pass : async (t)=>{
-		t.ok(await runTest(async (t)=>{
-			t.arm();
+		t.is(await runTest(async (t)=>{
+			t.armed = true;
 			return Promise.resolve()
-				.then(()=>t.disarm())
+				.then(()=>t.armed = false)
 				.catch(()=>{})
-		}));
+		}), true);
 	},
 	should_fail : async (t)=>{
-		t.err(await runTest(async (t)=>{
-			t.arm();
+		t.type(await runTest(async (t)=>{
+			t.armed=true;
 			return Promise.reject()
-				.then(()=>t.disarm())
+				.then(()=>t.armed = false)
 				.catch(()=>{})
-		}));
-		t.disarm();
+		}), 'error');
+		t.armed = false;
 	}
 }

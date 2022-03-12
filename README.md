@@ -4,24 +4,14 @@ An incredibly tiny javascript testing library. Heavily inspired by the wonderful
 <a href="https://www.npmjs.com/package/pico-check"><img src="https://img.shields.io/npm/v/pico-check?style=flat-square"></img></a>
 
 ### Features
-- Test cases are just functions
 - Supports sync and async tests
 - Provides arming/disarming and timeouts for async tests
 - Test cases structured as simple objects and functions
-- Easy to write custom reporters based on event emitters
-- Supports TAP
 - Easily flag a test or group to skip, or only run
+- Can be used as a CLI tool or a library
 - Comes with a file watcher to automatically re-run tests on file changes
-- Uses built-in `assert` lib when possible
 - No dependacies!
-
-## Contents
-- [Test Syntax](#test-syntax)
-- [Usage](#usage)
-- [CLI](#cli)
-- [Reporters](#reporters)
-- [Assertion](#assertion)
-- [Before and After Tests](#lifecycle)
+- **Under 100 lines!**
 
 
 
@@ -53,7 +43,7 @@ const testCases = {
   '_skipped test' : (t)=>t.fail()
 };
 
-const results = await check(testCases);
+const {results, skipped, passed, failed} = await check(testCases);
 
 console.log(results);
 
@@ -99,8 +89,6 @@ $ npm install --save-dev pico-check
 
 ```js
 const check = require('pico-check');
-const reporter = require('pico-check/reporters/basic.reporter.js');
-const { summary } = require('pico-check/utils');
 
 const testCases = {
   init$ : (t)=>{
@@ -109,35 +97,25 @@ const testCases = {
   this_is_a_group : {
     addition_test : (t)=>t.is(3+4, 7),
     $only_test : (t)=>{
-      //this test is flagged with a $, so pico-check will skip every other test
+      //this test is flagged with a $, so pico-check will skip every other test not marked with '$'
+    },
+    _skipped_group : {
+      sad_test : (t)=>{}
     }
   },
-  _skipped_test : (t)=>t.fail(),
+  _skipped_test : (t)=>{
+    // this test is flagged with '_' so it will always be skipped
+    t.fail()
+  }
 }
 
 
-check(testCases, { emitter : reporter })
-  .then((results)=>{
-    console.log(results)
-    const { failed } = summary(results);
+check(testCases, {logs: false})
+  .then(({failed, skipped, results})=>{
+    console.log(results);
     process.exit(failed === 0 ? 0 : 1);
   })
 ```
-
-
-
-## Reporters
-`pico-check` can take an reporter event emitter as a optional parameter. As it executes your test cases it will emit various events that your reporter can react too. `pico-check` comes with a basic reporter, as well as a TAP reporter.
-
-### basic reporter (default)
-Prints out all testcases in an easy to read format.
-
-
-### TAP reporter
-`pico-check` supports the [TAP format](https://testanything.org/) and will work with [any TAP reporter](https://testanything.org/consumers.html#javascript)
-
-### Custom reporters
-You can create your own reporters, just look at the included basic reporter as a basis to create your own.
 
 
 ## Flags
@@ -145,13 +123,13 @@ You can create your own reporters, just look at the included basic reporter as a
 You can flag tests and groups with `_` and `$` in the test name to change the test runner behaviour.
 
 #### Skip Flag - `_test_name`
-If a test or group name starts with a `_` the test will be skipped
+If a test or group name starts with a `_` the test/group will be skipped
 
 #### Only Flag - `$test_name`
-If a test or group name starts with a `$` the test runner will be set into "only mode", and will only run tests/groups with the Only Flag and the Always Flag.
+If a test or group name starts with a `$` the test runner will be set into "only mode", and will only run tests/groups with the Only Flag or the Always Flag.
 
 #### Always Flag - `test_name$`
-If a test or group ends with a `$` it will be ran in "only mode", but not set the test runner into "only mode". This is useful for test cases that set up or clean up needed processes for other test cases (such as database connections or setting environment variables).
+If a test or group ends with a `$` then this test will always run regardless of other flags and modes. This is useful for test cases that set up or clean up needed processes for other test cases (such as database connections or setting environment variables).
 
 
 
@@ -162,78 +140,63 @@ Each test function will be provided an assertion object as it's first parameter.
 Passes/fails a test case with an optional message
 
 ```js
-test('sample', (t)=>{
+(t)=>{
   (complexCondition ? t.pass() : t.fail('The complex condition failed'))
-});
-```
-#### `t.ok(actual, [msg]) / t.no(actual, [msg])`
-Verifies that `actual` is truthy/falsey with an optional message
-
-```js
-test('sample', (t)=>{
-  t.ok(a == 3);
-  t.no(b instanceof Error);
-});
+};
 ```
 
 #### `t.is(actual, expected, [msg]) / t.not(actual, expected, [msg])`
-Intelligently chooses between `assert.equal`/`assert.notEqual` or `assert.deepEqual`/`assert.notDeepEqual` based on the type of `expected` and `actual`.
+Will do a deep comparison between the `actual` and the `expected`.
 
 ```js
-test('sample', (t)=>{
+(t)=>{
   t.not(3 + 4, 8);
   t.is({a : 6, b : [1,2,3]}, {a:6, b:[1,2,3]});
-});
+};
 ```
 
 #### `t.type(value, type, [msg])`
-A shorthand for `assert.equal(typeof value, type, msg)`. Handles arrays as type `'array'`;
+A shorthand for `assert.equal(typeof value, type, msg)`. Handles arrays as type `'array'` and errors as type `'error'`;
 
 ```js
-test('sample', (t)=>{
+(t)=>{
   t.type(3, 'number');
   t.type({a:true}, 'object');
   t.type([1,2,3], 'array');
-});
+  t.type(new Error('oops'), 'error');
+};
 ```
 
-#### `t.arm([msg]) / t.disarm()`
-Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.arm()`, and stop it from failing by calling `t.disarm()`.
+#### `t.armed = false`
+Sometimes you need a test to implictly fail unless a certain code path is ran. For this use case you can 'prime' your test case to error using `t.armed = true`, and stop it from failing by calling `t.armed = false`.
 
 ```js
-test('emitter fires', (t)=>{
-  t.arm('Update event was never caught');
-  emitter.on('update', ()=>t.disarm());
+async (t)=>{
+  t.armed = true;
+  emitter.on('update', ()=>t.armed = false);
   emitter.emit('update');
-});
+};
 ```
 
-
-
-
-## Lifecycle
-A common design pattern for testing is to have `before`, `after`, `beforeEach`, and `afterEach` triggers for your test cases. While `pico-check` lacks these functions explicitly, you can replicate this functionality using native javascript, since your tests run syncronously.
-
-#### Before & After
-Since tests run sync, the simplist way to achive this is to make a testcase at the beginning or end of your test file.
+#### `t.timeout = 2000`
+`pico-check` only allows tests 2 seconds of run time before a timeout. You can modify this on a test by test basis by changing the `t.timeout` value in the test code.
 
 ```js
-const tests = {
-  start : async ()=>{
-    await DB.startup();
-  },
-
-  /** Your test cases... **/
-
-  cleanup : async ()=>{
-    await DB.shutdown();
-  },
-}
-
-module.exports = tests;
+async (t)=>{
+  t.timeout = 8000; //8 seconds
+  await a_longer_process();
+  t.pass();
+};
 ```
 
-**Notes**:
-- If you have many before or after triggers, it's useful to create a group for them to easily turn them off/on, or add it them.
-- If you have many test files that use the same before/after triggers, it useful to store the create group/testcases in a separate file and require them in as needed
+#### `t.wait`
+`pico-check` gives each test a promise mapping it's resolve and reject functions as `t.pass()` and `t.fail()` respectively. To use this the test function just needs to return the `t.wait`
 
+```js
+async (t)=>{
+  complex_function_with_callback(()=>{
+    t.pass();
+  });
+  return t.wait;
+};
+```

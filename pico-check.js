@@ -12,10 +12,12 @@ const runTest = async (test, timeout=2000)=>{
 				let _type = typeof val;
 				if(Array.isArray(val)) _type = 'array';
 				if(val instanceof Error) _type = 'error';
-				Harness.is(_type, type, msg)
+				Harness.is(_type, type, msg);
 			},
 			is      : (a,b)=>{ if(!isSame(a,b)){ throw new Error(`${a} does not equal ${b}`)} },
-			fail    : (msg=`Test failed manually`)=>{throw new Error(msg);}
+			not     : (a,b)=>{ if(isSame(a,b)){ throw new Error(`${a} does equal ${b}`)} },
+			fail    : (msg=`Test failed manually`)=>{throw new Error(msg);},
+			armed : false,
 		};
 		Harness.wait = new Promise((resolve, reject)=>{
 			Harness.pass = resolve;
@@ -25,11 +27,13 @@ const runTest = async (test, timeout=2000)=>{
 		const testResult = test(Harness);
 		if(!(testResult instanceof Promise)) return true;
 		Harness.fail = Harness.reject;
-		return await Promise.race([
+		const result = await Promise.race([
 			Harness.wait,
 			testResult.then(()=>true).catch(err=>new Error(err)),
 			new Promise((r)=>{setTimeout(()=>r(new Error('Test failed: Timeout Error')), Harness.timeout)})
 		]);
+		if(Harness.armed) return new Error('Test failed: Never disarmed.');
+		return result;
 	}catch(err){
 		if(!(err instanceof Error)) return new Error('Thrown a non-Error type. Could not get a stack trace.');
 		return err;

@@ -80,5 +80,5 @@ module.exports = {
 
 	},
 
-	"_Disarm" : require('./disarm.test.js'),
+	"Disarm" : require('./disarm.test.js'),
 }

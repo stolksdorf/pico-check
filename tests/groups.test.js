@@ -29,8 +29,6 @@ module.exports = {
 	},
 
 	only : async (t)=>{
-
-
 		const {results} = await check({
 			$only : {
 				a      : ()=>{},
@@ -59,9 +57,30 @@ module.exports = {
 		t.is(results.skipped, false);
 		t.type(results.$fail, 'error');
 
+	},
+
+	always : async (t)=>{
+		const {results} = await check({
+			only : {
+				a$      : ()=>{},
+			},
+			nested : {
+				$a : ()=>{},
+				b  : ()=>{}
+			},
+			skipped : (t)=>t.fail(),
+			$fail   : (t)=>t.fail(),
+
+		}, {logs : false})
+
+
+		t.is(results.only.a$, true);
+
+		t.is(results.nested.$a, true);
+		t.is(results.nested.b, false);
+
+		t.is(results.skipped, false);
+		t.type(results.$fail, 'error');
 	}
-
-
-
 
 }

@@ -22,6 +22,14 @@ module.exports = {
 		t.type(res, 'error');
 	},
 
+	_over_timeout_sync : async (t)=>{
+		const res = await runTest((t)=>{
+			while(1){}
+			t.pass();
+		});
+		t.type(res, 'error');
+	},
+
 	async_pass : async (t)=>{
 		const res = await runTest(async (t)=>{
 			await wait(600);
