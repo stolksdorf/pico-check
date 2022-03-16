@@ -16,7 +16,12 @@ let target = process.argv.reduce((acc, arg)=>{
 if(target[0] !== '.') target = './' + target;
 target = require.resolve(target, { paths : [process.cwd()]});
 
-if(!watch) return check(require(target)).then((results)=>{ process.exit(results.failed === 0 ? 0 : 1); });
+if(!watch){
+	return check(require(target))
+		.then((results)=>{
+			process.exit(results.failed === 0 ? 0 : 1);
+		});
+}
 
 let cases = require(target);
 const srcs = Object.keys(require.cache).filter(src=>src.indexOf('node_modules')==-1);
@@ -30,8 +35,7 @@ const run = ()=>{
 
 srcs.map(src=>{
 	fs.watch(src, ()=>{
-		delete require.cache[src];
-		delete require.cache[target];
+		Object.keys(require.cache).map(key=>{delete require.cache[key]});
 		clearInterval(timer);
 		timer = setTimeout(run, 10);
 	})
