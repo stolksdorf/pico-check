@@ -6,7 +6,8 @@
   "main": "pico-check.js",
   "scripts": {
     "test": "node cli.js ./tests",
-    "test:dev": "node cli.js ./tests --watch"
+    "test:dev": "node cli.js ./tests --watch",
+    "publish": "npm run test && git push && npm publish"
   },
   "repository": {
     "type": "git",
