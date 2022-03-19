@@ -26,11 +26,13 @@ if(!watch){
 let cases = require(target);
 const srcs = Object.keys(require.cache).filter(src=>src.indexOf('node_modules')==-1);
 
-let timer;
-const run = ()=>{
+let timer, counter=0;
+const run = async ()=>{
 	console.clear();
-	console.log(`-- Watch Mode ${target} --\n\n`);
-	check(require(target));
+	process.stdout.write('\033c');
+	console.log(`-- Watch Mode: ${target} --\n\n`);
+	await check(require(target));
+	console.log(`Update Count: ${counter}`);
 };
 
 srcs.map(src=>{

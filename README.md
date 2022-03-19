@@ -155,8 +155,18 @@ Will do a deep comparison between the `actual` and the `expected`.
 };
 ```
 
+#### `t.ok(value, [msg])`
+Checks if `value` is truthy
+
+```js
+(t)=>{
+  t.ok(3 + 4 == 8, 'Math is broken');
+};
+```
+
+
 #### `t.type(value, type, [msg])`
-A shorthand for `assert.equal(typeof value, type, msg)`. Handles arrays as type `'array'` and errors as type `'error'`;
+A shorthand for `t.is(typeof value, type, msg)`. Handles arrays as type `'array'` and errors as type `'error'`;
 
 ```js
 (t)=>{

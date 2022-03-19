@@ -12,10 +12,12 @@ const runTest = async (test, timeout=2000)=>{
 				let _type = typeof val;
 				if(Array.isArray(val)) _type = 'array';
 				if(val instanceof Error) _type = 'error';
-				Harness.is(_type, type, msg);
+				if(type!==_type){ throw new Error(msg || `Value is a ${_type}, not ${type}`); }
 			},
-			is      : (a,b)=>{ if(!isSame(a,b)){ throw new Error(`${a} does not equal ${b}`)} },
+			is      : (a,b, msg)=>{ if(!isSame(a,b)){ throw new Error(msg || `${a} does not equal ${b}`)} },
 			not     : (a,b)=>{ if(isSame(a,b)){ throw new Error(`${a} does equal ${b}`)} },
+			ok      : (a, msg)=>{ if(!a){ throw new Error(msg || `${a} is not truthy`)} },
+			pass    : ()={},
 			fail    : (msg=`Test failed manually`)=>{throw new Error(msg);},
 			armed : false,
 		};
