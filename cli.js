@@ -31,8 +31,13 @@ const run = async ()=>{
 	console.clear();
 	process.stdout.write('\033c');
 	console.log(`-- Watch Mode: ${target} --\n\n`);
-	await check(require(target));
+	try{
+		await check(require(target));
+	}catch(err){
+		console.log(err);
+	}
 	console.log(`Update Count: ${counter}`);
+	counter++;
 };
 
 srcs.map(src=>{

@@ -145,7 +145,7 @@ Passes/fails a test case with an optional message
 };
 ```
 
-#### `t.is(actual, expected, [msg]) / t.not(actual, expected, [msg])`
+#### `t.is(actual, expected, [msg])` / `t.not(actual, expected, [msg])`
 Will do a deep comparison between the `actual` and the `expected`.
 
 ```js
@@ -155,18 +155,19 @@ Will do a deep comparison between the `actual` and the `expected`.
 };
 ```
 
-#### `t.ok(value, [msg])`
+#### `t.ok(value, [msg])` / `t.no(value, [msg])`
 Checks if `value` is truthy
 
 ```js
 (t)=>{
-  t.ok(3 + 4 == 8, 'Math is broken');
+  t.ok(3 + 4 == 7, 'Math is broken');
+  t.no(3 + 4 == 8, 'Math is broken');
 };
 ```
 
 
 #### `t.type(value, type, [msg])`
-A shorthand for `t.is(typeof value, type, msg)`. Handles arrays as type `'array'` and errors as type `'error'`;
+A shorthand for `t.ok(typeof value === type, msg)`. Handles arrays as type `'array'` and errors as type `'error'`;
 
 ```js
 (t)=>{
@@ -174,6 +175,18 @@ A shorthand for `t.is(typeof value, type, msg)`. Handles arrays as type `'array'
   t.type({a:true}, 'object');
   t.type([1,2,3], 'array');
   t.type(new Error('oops'), 'error');
+};
+```
+
+
+#### `t.wait(time, [val])`
+async function that waits `time` milliseconds, then returns `val`;
+
+```js
+async (t)=>{
+  const val = threadedUpdate(); /* some threaded process */
+  await t.wait(500); //Wait to give some time
+  t.ok(val);
 };
 ```
 
@@ -185,6 +198,7 @@ async (t)=>{
   t.armed = true;
   emitter.on('update', ()=>t.armed = false);
   emitter.emit('update');
+  await t.wait(10);
 };
 ```
 
@@ -199,14 +213,14 @@ async (t)=>{
 };
 ```
 
-#### `t.wait`
-`pico-check` gives each test a promise mapping it's resolve and reject functions as `t.pass()` and `t.fail()` respectively. To use this the test function just needs to return the `t.wait`
+#### `t.defer`
+`pico-check` gives each test a promise with it's resolve and reject functions as `t.pass()` and `t.fail()` respectively. To use this the test function just needs to return the `t.defer`;
 
 ```js
 async (t)=>{
   complex_function_with_callback(()=>{
     t.pass();
   });
-  return t.wait;
+  return t.defer;
 };
 ```

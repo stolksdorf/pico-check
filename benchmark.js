@@ -1,10 +1,10 @@
 const times = (n,fn)=>Array.from(new Array(n*1),(v,i)=>fn(i));
 const avg = (arr)=>arr.reduce((a,v)=>a+v,0)/arr.length;
 
-const benchmark = (funcs, cases, opts={ iterations : 1})=>{
+const benchmark = (funcs, cases, iterations=1)=>{
 	let result = {
 		summary : {
-			total : cases.length * opts.iterations,
+			total : cases.length * iterations,
 		},
 		funcs : {}
 	};
@@ -13,7 +13,7 @@ const benchmark = (funcs, cases, opts={ iterations : 1})=>{
 		result.funcs[name] = { time : 0, errs : 0, mem  : 0 };
 		let timeStart = Date.now();
 		let memStart = process.memoryUsage().heapUsed;
-		times(opts.iterations, ()=>{
+		times(iterations, ()=>{
 			cases.map((c)=>{
 				try{ func(c); }catch(err){
 					result.summary.hasErrs = true;
@@ -48,7 +48,7 @@ const pad = (str, length, char=' ')=>str + char.repeat(Math.floor(length-(str+''
 
 const report = (result)=>{
 	const meterLength = 20;
-	const longName = Math.max(...Object.keys(result.funcs).map(a=>a.length));
+	const longestName = Math.max(...Object.keys(result.funcs).map(a=>a.length));
 
 	Object.entries(result.funcs).map(([name, res])=>{
 		const meter = '*'.repeat(res.score*(meterLength-1) + 1);
@@ -56,7 +56,7 @@ const report = (result)=>{
 		let color = 'bright';
 		if(res.time == result.summary.min) color = 'green';
 		if(res.time == result.summary.max) color = 'red';
-		console.log(`${chalk[color](pad(name, longName))} |${chalk[color](pad(meter, meterLength, ' '))}| ${res.time} ${errs}`);
+		console.log(`${chalk[color](pad(name, longestName))} |${chalk[color](pad(meter, meterLength, ' '))}| ${res.time} ${errs}`);
 	})
 };
 
@@ -76,5 +76,5 @@ const res = benchmark({
 	},
 }, [
 	3,4,5,6,7
-], {iterations : 10000})
+], 10000)
 */

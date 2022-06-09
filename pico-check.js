@@ -17,11 +17,13 @@ const runTest = async (test, timeout=2000)=>{
 			is      : (a,b, msg)=>{ if(!isSame(a,b)){ throw new Error(msg || `${a} does not equal ${b}`)} },
 			not     : (a,b)=>{ if(isSame(a,b)){ throw new Error(`${a} does equal ${b}`)} },
 			ok      : (a, msg)=>{ if(!a){ throw new Error(msg || `${a} is not truthy`)} },
+			no      : (a, msg)=>{ if(a){ throw new Error(msg || `${a} is not falsey`)} },
 			pass    : ()=>{},
 			fail    : (msg=`Test failed manually`)=>{throw new Error(msg);},
+			wait    : async (ms=100,val=null)=>new Promise((r)=>setTimeout(()=>r(val), ms)),
 			armed : false,
 		};
-		Harness.wait = new Promise((resolve, reject)=>{
+		Harness.defer = new Promise((resolve, reject)=>{
 			Harness.pass = resolve;
 			Harness.reject = (msg=`Test rejected manually`)=>reject(msg);
 		}).then(()=>true).catch((err)=>new Error(err));
@@ -30,7 +32,7 @@ const runTest = async (test, timeout=2000)=>{
 		if(!(testResult instanceof Promise)) return true;
 		Harness.fail = Harness.reject;
 		const result = await Promise.race([
-			Harness.wait,
+			Harness.defer,
 			testResult.then(()=>true).catch(err=>new Error(err)),
 			new Promise((r)=>{setTimeout(()=>r(new Error('Test failed: Timeout Error')), Harness.timeout)})
 		]);
